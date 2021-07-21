@@ -43,14 +43,6 @@ image_exists_in_repo() {
         echo "Proceeding as if it never existed."
         return 1
     else
-        # Any other error. For example:
-        #   - "unauthorized: access to the requested resource is not
-        #     authorized". This happens not just on auth errors, but if we
-        #     reference a repository that doesn't exist.
-        #   - "no such host".
-        #   - Network or other infrastructure failures.
-        # In all these cases, we want to bail, because we don't know whether
-        # the image exists (and we'd likely fail to push it anyway).
         echo "Error querying the repository for ${image_uri}:"
         echo "stdout: $output"
         echo "stderr: $stderr"
