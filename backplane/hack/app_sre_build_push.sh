@@ -73,17 +73,7 @@ set -exv
 IMAGE_URI=$1
 [[ -z "$IMAGE_URI" ]] && usage
 
-# NOTE(efried): Since we reference images by digest, rebuilding an image
-# with the same tag can be Bad. This is because the digest calculation
-# includes metadata such as date stamp, meaning that even though the
-# contents may be identical, the digest may change. In this situation,
-# the original digest URI no longer has any tags referring to it, so the
-# repository deletes it. This can break existing deployments referring
-# to the old digest. We could have solved this issue by generating a
-# permanent tag tied to each digest. We decided to do it this way
-# instead.
-# For testing purposes, if you need to force the build/push to rerun,
-# delete the image at $IMAGE_URI.
+
 if image_exists_in_repo "$IMAGE_URI"; then
     echo "Image ${IMAGE_URI} already exists. Nothing to do!"
     exit 0
