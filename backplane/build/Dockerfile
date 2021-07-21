@@ -6,6 +6,11 @@ RUN yum -y upgrade
 RUN yum update -y \
     yum upgrade -y \
     yum install tar wget -y \
+
+# Replace version with a version number to pin a specific version (eg: "4.7.8")
+ARG OC_VERSION="stable"
+ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
+
 # Directory for the extracted binaries, etc
 RUN mkdir -p /out
 
