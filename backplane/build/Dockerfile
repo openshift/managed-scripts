@@ -1,7 +1,6 @@
 # Pre-install packages
 FROM quay.io/centos/centos:latest
-# update all packages
-RUN yum -y upgrade
+
 # Install packages
 RUN yum update -y \
     yum upgrade -y \
@@ -11,7 +10,7 @@ RUN yum update -y \
 ARG OC_VERSION="stable"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
-# Directory for the extracted binaries, etc
+# Directory for the extracted binary
 RUN mkdir -p /out
 
 # Install the latest OC Binary from the mirror
