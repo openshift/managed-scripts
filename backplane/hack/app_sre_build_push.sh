@@ -6,16 +6,7 @@ usage() {
 }
 
 ## image_exists_in_repo IMAGE_URI
-#
-# Checks whether IMAGE_URI -- e.g. quay.io/app-sre/osd-metrics-exporter:abcd123
-# -- exists in the remote repository.
-# If so, returns success.
-# If the image does not exist, but the query was otherwise successful, returns
-# failure.
-# If the query fails for any reason, prints an error and *exits* nonzero.
-#
-# This function cribbed from:
-# https://github.com/openshift/boilerplate/blob/0ba6566d544d0df9993a92b2286c131eb61f3e88/boilerplate/_lib/common.sh#L77-L135
+
 image_exists_in_repo() {
     local image_uri=$1
     local output
@@ -25,7 +16,6 @@ image_exists_in_repo() {
 
     output=$(skopeo inspect docker://${image_uri} 2>$skopeo_stderr)
     rc=$?
-    # So we can delete the temp file right away...
     stderr=$(cat $skopeo_stderr)
     rm -f $skopeo_stderr
     if [[ $rc -eq 0 ]]; then
