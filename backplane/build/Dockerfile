@@ -1,11 +1,11 @@
 # Pre-install packages
-FROM quay.io/centos/centos:8
+FROM quay.io/centos/centos:latest
 # update all packages
 RUN yum -y upgrade
 # Install packages
 RUN yum update -y \
     yum upgrade -y \
-    yum install tar wget -y \
+    yum install tar -y
 
 # Replace version with a version number to pin a specific version (eg: "4.7.8")
 ARG OC_VERSION="stable"
@@ -33,7 +33,7 @@ RUN chmod -R +x /out
 
 # Copy previously acquired binaries into the $PATH
 ENV BIN_DIR="/usr/local/bin"
-COPY --from=builder /out/oc ${BIN_DIR}
+RUN mv /out/oc ${BIN_DIR}
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
