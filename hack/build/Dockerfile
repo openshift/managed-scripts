@@ -1,9 +1,4 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest AS build-stage0
-# Install packages
-RUN  yum -y install --disableplugin=subscription-manager \
-  python36 wget \
-  && yum --disableplugin=subscription-manager clean all
-
 ARG OC_VERSION="stable"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
@@ -11,7 +6,7 @@ ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${O
 RUN mkdir -p /out
 
 # Install the latest OC Binary from the mirror and scripts
-RUN mkdir /oc /managed-scripts
+RUN mkdir /oc
 WORKDIR /oc
 
 # Download the checksum
@@ -27,9 +22,11 @@ RUN tar --extract --gunzip --no-same-owner --directory /out oc --file *.tar.gz
 # Make binaries executable
 RUN chmod -R +x /out
 
-#FROM build-stage0 as build-stage1
-
-#COPY --from=build-stage0 /out/oc  /out/oc
+FROM registry.access.redhat.com/ubi8/ubi:latest
+RUN  yum -y install --disableplugin=subscription-manager \
+  python3 \
+  && yum --disableplugin=subscription-manager clean all
+COPY --from=build-stage0 /out/oc  /out/oc
 
 # Copy previously acquired binaries into the $PATH
 ENV BIN_DIR="/usr/local/bin"
