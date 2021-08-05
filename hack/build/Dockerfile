@@ -27,7 +27,7 @@ RUN  yum -y install --disableplugin=subscription-manager \
   python3 \
   && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /out/oc
-
+COPY ./ /managed-scripts
 # Copy previously acquired binaries into the $PATH
 ENV BIN_DIR="/usr/local/bin"
 RUN mv /out/oc ${BIN_DIR}
