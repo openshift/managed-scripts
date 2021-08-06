@@ -27,7 +27,7 @@ RUN  yum -y install --disableplugin=subscription-manager \
      python3  \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
-COPY ./ /managed-scripts
+COPY scripts /managed-scripts
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
