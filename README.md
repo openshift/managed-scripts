@@ -16,9 +16,9 @@ The repository lays out like this
 │  │  └──  Dockerfile
 │  ├──  Makefile
 │  ├──  project.mk
-│  └──  standard.mk
+│  ├──  standard.mk
+│  └──  metadata.schema.json
 ├──  LICENSE
-├──  metadata.schema.json
 ├──  README.md
 └──  scripts
    ├──  CEE # Red Hat Managed Roles
@@ -41,7 +41,7 @@ the supported languages.
 
 ## `metadata.yaml`
 
-`metadata.yaml` shall pass validation against `metadata.schema.json` see [here](https://json-schema.org/) for more details
+All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
 
 
 
