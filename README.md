@@ -18,13 +18,14 @@ The repository lays out like this
 │  ├──  project.mk
 │  └──  standard.mk
 ├──  LICENSE
+├──  metadata.schema.json
 ├──  README.md
-├──  CEE # Red Hat Managed Roles
-│     └──  ...
-└──  SREP # Red Hat Managed Roles
-   └──  example # Script Name
-      ├──  metadata.yaml # Metadata of the script
-      └──  script.sh # Actual script file
+└──  scripts
+   ├──  CEE # Red Hat Managed Roles
+   └──  SREP # Red Hat Managed Roles
+      └──  example # Script Name
+         ├──  metadata.yaml # Metadata of the script
+         └──  script.sh # Actual script file
 ```
 
 `hack` contains various helper script for CI/CD tooling and building
