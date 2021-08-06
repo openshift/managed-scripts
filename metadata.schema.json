@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft-06/schema#",
+  "$id": "https://github.com/openshift/managed-scripts/metadata.schema.json",
+  "title": "Metadata",
+  "description": "Metadata for managed scripts",
+  "type": "object",
+  "properties": {
+    "file": {
+      "description": "File name of the script",
+      "type": "string"
+    },
+    "name": {
+      "description": "Parent directory name of the script",
+      "type": "string"
+    },
+    "description": {
+      "description": "A brief description of the script",
+      "type": "string"
+    },
+    "author": {
+      "description": "Github username of the author",
+      "type": "string"
+    },
+    "language": {
+      "description": "The script language",
+      "type": "string",
+      "enum": [
+        "python",
+        "bash"
+      ]
+    },
+    "allowedGroups": {
+      "description": "Groups who are allowed to run the script",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "envs": {
+      "type": "array",
+      "description": "The environment variables declared on the script",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "description": "Key of the environment variable",
+            "type": "string"
+          },
+          "description": {
+            "description": "A brief description of the environment variable",
+            "type": "string"
+          },
+          "optional": {
+            "description": "Whether or not this environment variable is optional",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "rbac": {
+      "type": "object",
+      "properties": {
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rules"
+          }
+        },
+        "clusterRoleRules": {
+          "$ref": "#/$defs/rules"
+        }
+      }
+    }
+  },
+  "required": [
+    "file",
+    "name",
+    "description",
+    "author",
+    "language",
+    "allowedGroups"
+  ],
+  "$defs": {
+    "rules": {
+      "type": "object",
+      "properties": {
+        "verbs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "apiGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resourceNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

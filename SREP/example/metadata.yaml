@@ -1,0 +1,35 @@
+file: script.sh
+name: example # name should be the same as the subdir, eg: SRE/example in this case
+description: Example script
+author: qhua948
+allowedGroups: 
+  - SREP
+rbac:
+    roles:
+      - namespace: "openshift-monitoring"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "pods"
+            resourceNames:
+            - "*"
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+          apiGroups:
+            - ""
+          resources:
+            - "jobs"
+          resourceNames:
+            - "*"
+envs:
+  - key: "var1"
+    description: "variable 1"
+    optional: false
+language: bash
