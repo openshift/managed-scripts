@@ -41,7 +41,4 @@ the supported languages.
 
 ## `metadata.yaml`
 
-All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
-
-
-
+All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details.
