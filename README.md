@@ -4,7 +4,7 @@ This is a repository storing OpenShift Dedicated managed scripts.
 
 ## Repository layout
 
-The repository lays out like this
+The repository lays out like this:
 
 ```text
  .
