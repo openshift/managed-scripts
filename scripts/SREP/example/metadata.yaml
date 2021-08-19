@@ -15,8 +15,6 @@ rbac:
             - ""
             resources:
             - "pods"
-            resourceNames:
-            - "*"
     clusterRoleRules:
         - verbs:
             - "get"
@@ -26,8 +24,6 @@ rbac:
             - ""
           resources:
             - "jobs"
-          resourceNames:
-            - "*"
 envs:
   - key: "var1"
     description: "variable 1"
