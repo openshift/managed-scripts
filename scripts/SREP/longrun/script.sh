@@ -1,7 +1,5 @@
 #!/bin/bash
 
-oc -n openshift-monitoring get po
-
-echo "var1 is ${var1}"
+sleep 300
 
 exit 0
