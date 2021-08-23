@@ -7,6 +7,6 @@ cd $(dirname $0)/..
 
 pip install --user jsonschema
 
-find . -name 'metadata.yaml' -exec jsonschema --instance {} hack/medata.schema.json \;
+find . -name 'metadata.yaml' -exec jsonschema --instance {} hack/metadata.schema.json \;
 
 make IMAGE_REPOSITORY=${IMAGE_REPOSITORY:-app-sre} build
