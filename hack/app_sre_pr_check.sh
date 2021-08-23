@@ -4,8 +4,8 @@ set -ex
 
 cd $(dirname $0)/..
 #validate json schema
-sudo yum install gcc
-pip install jsonschema
+
+pip install --user jsonschema
 
 find . -name 'metadata.yaml' -exec jsonschema --instance {} hack/medata.schema.json \;
 
