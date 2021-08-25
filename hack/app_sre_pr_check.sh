@@ -4,13 +4,13 @@ set -ex
 
 cd $(dirname $0)/..
 
- #validate json schema
-
 pip install --user jsonschema
 pip install --user  pyyaml
-#pip install --user ruamel.yaml
 
+#convert yaml to json
 python3 hack/yamltojson.py
+
+#validate json schema
 find . -name 'file:///metadata.json' -exec jsonschema --instance {} file:///hack/metadata.schema.json \;
 
 make IMAGE_REPOSITORY=${IMAGE_REPOSITORY:-app-sre} build
