@@ -11,6 +11,6 @@ pip install --user  pyyaml
 #pip install --user ruamel.yaml
 
 python3 hack/yamltojson.py
-find . -name 'metadata.json' -exec jsonschema --instance {} hack/metadata.schema.json \;
+find . -name 'file:///metadata.json' -exec jsonschema --instance {} file:///hack/metadata.schema.json \;
 
 make IMAGE_REPOSITORY=${IMAGE_REPOSITORY:-app-sre} build
