@@ -8,8 +8,8 @@ cd $(dirname $0)/..
 
 pip install --user jsonschema
 pip install --user  pyyaml
-pip install --user ruamel.yaml
-pwd
+#pip install --user ruamel.yaml
+
 python3 hack/build/yamltojson.py
 find . -name 'metadata.json' -exec jsonschema --instance {} hack/metadata.schema.json \;
 
