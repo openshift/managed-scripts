@@ -4,11 +4,10 @@ set -ex
 
 cd $(dirname $0)/..
 
-pip install --user jsonschema
-pip install --user  pyyaml
+#pip install --user jsonschema pyyaml
 
 #convert yaml to json
-python3 hack/yamltojson.py
+find . -name 'metadata.yaml' -exec python3 hack/yamltojson.py scripts/SREP/example/metadata.yaml  {} \;
 
 #validate json schema
 find . -name 'file:///metadata.json' -exec jsonschema --instance {} file:///hack/metadata.schema.json \;
