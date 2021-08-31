@@ -3,24 +3,30 @@
 #set -ex
 
 cd $(dirname $0)/..
-
+CONTAINER_ENGINE=$(which docker 2>/dev/null || which podman)
 #convert all metadata.yaml to json first
 yfiles=$(find . -name 'metadata.yaml')
 for f in $yfiles
 do
    echo "convert $f to json"
-   python3 hack/yamltojson.py $f
+   if ! python3 hack/yamltojson.py $f; then
+     echo "convert failed"
+     exit 1
+   else
+     echo "convert succeed"
+   fi
 done
 #Verify the metadata.json are valide
 jfiles=$(find . -name 'metadata.json')
 for f in $jfiles
 do
    echo "validating the jsonschema for $f"
-   if ! jsonschema --instance $f ./hack/metadata.schema.json; then
+   if ! $CONTAINER_ENGINE run --rm -v $(pwd):/json quay.io/haowang/jsonschema:latest -i /json/$f /json/hack/metadata.schema.json; then
      echo "validating failed: $f"
+     exit 1
    else
      echo "validating succeed"
    fi
 done
 
-#make IMAGE_REPOSITORY=${IMAGE_REPOSITORY:-app-sre} build
+make IMAGE_REPOSITORY=${IMAGE_REPOSITORY:-app-sre} build
