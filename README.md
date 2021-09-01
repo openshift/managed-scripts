@@ -1,5 +1,4 @@
 # Backplane Managed scripts
-test
 
 This is a repository storing OpenShift Dedicated managed scripts.
 
