@@ -16,16 +16,16 @@ do
      echo "convert succeed"
    fi
 done
-#Verify the metadata.json are valide
+#Verify the metadata.json are valid
 jfiles=$(find . -name 'metadata.json')
 for f in $jfiles
 do
    echo "validating the jsonschema for $f"
    if ! $CONTAINER_ENGINE run --rm -v $(pwd):/json quay.io/haowang/jsonschema:latest -i /json/$f /json/hack/metadata.schema.json; then
-     echo "validating failed: $f"
+     echo "validation failed: $f"
      exit 1
    else
-     echo "validating succeed"
+     echo "validation succeed"
    fi
 done
 
