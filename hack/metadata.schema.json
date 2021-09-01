@@ -63,11 +63,14 @@
         "roles": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/rules"
+            "$ref": "#/$defs/roleRule"
           }
         },
         "clusterRoleRules": {
-          "$ref": "#/$defs/rules"
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rules"
+          }
         }
       }
     }
@@ -88,25 +91,44 @@
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "required": true
         },
         "apiGroups": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "required": true
         },
         "resources": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "required": true
         },
         "resourceNames": {
           "type": "array",
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "roleRule": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "required": true
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rules"
+          },
+          "required": true
         }
       }
     }
