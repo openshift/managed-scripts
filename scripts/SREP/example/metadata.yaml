@@ -4,6 +4,9 @@ description: Example script
 author: qhua948
 allowedGroups: 
   - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
 rbac:
     roles:
       - namespace: "openshift-monitoring"
