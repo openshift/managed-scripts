@@ -1,0 +1,27 @@
+file: script.sh
+name: etcd-health-check
+description: Print out the etcd health info.
+author: feichashao
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+rbac:
+    roles:
+      - namespace: "openshift-etcd"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "pods"
+          - verbs:
+            - "create"
+            apiGroups:
+            - ""
+            resources:
+            - "pods/exec"
+language: bash
