@@ -4,29 +4,7 @@ This is a repository storing OpenShift Dedicated managed scripts.
 
 ## Repository layout
 
-The repository lays out like this
-
-```text
- .
-├──  hack
-│  ├──  app_sre_build_deploy.sh
-│  ├──  app_sre_build_push.sh
-│  ├──  app_sre_pr_check.sh
-│  ├──  build
-│  │  └──  Dockerfile
-│  ├──  Makefile
-│  ├──  project.mk
-│  ├──  standard.mk
-│  └──  metadata.schema.json
-├──  LICENSE
-├──  README.md
-└──  scripts
-   ├──  CEE # Red Hat Managed Roles
-   └──  SREP # Red Hat Managed Roles
-      └──  example # Script Name
-         ├──  metadata.yaml # Metadata of the script
-         └──  script.sh # Actual script file
-```
+`scripts` folder contains various scripts used by different teams.
 
 `hack` contains various helper script for CI/CD tooling and building
 
@@ -42,6 +20,3 @@ the supported languages.
 ## `metadata.yaml`
 
 All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
-
-
-
