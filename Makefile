@@ -18,13 +18,17 @@ isclean:
 	@(test "$(ALLOW_DIRTY_CHECKOUT)" != "false" || test 0 -eq $$(git status --porcelain | wc -l)) || (echo "Local git checkout is not clean, commit changes and try again." >&2 && exit 1)
 
 .PHONY: build
-build: isclean validation
+build: isclean validation shellcheck
 	$(CONTAINER_ENGINE) build -t $(IMAGE_URI_VERSION) .
 	$(CONTAINER_ENGINE) tag $(IMAGE_URI_VERSION) $(IMAGE_URI_LATEST)
 
 .PHONY: validation
 validation:
 	./hack/schema_validation.sh
+
+.PHONY: shellcheck
+shellcheck:
+	$(CONTAINER_ENGINE) run -v $(shell pwd):/app --entrypoint=/bin/sh koalaman/shellcheck-alpine -c "cd /app/scripts && find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
 
 .PHONY: push
 push:
