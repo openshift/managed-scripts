@@ -8,7 +8,7 @@ IMAGE_VERSION=$(shell git rev-parse --short=7 HEAD)
 IMAGE_URI=$(IMAGE_REGISTRY)/$(IMAGE_REPOSITORY)/$(IMAGE_NAME)
 IMAGE_URI_VERSION=$(IMAGE_URI):$(IMAGE_VERSION)
 IMAGE_URI_LATEST=$(IMAGE_URI):latest
-SHELL_CHECK_IMAGE="quay.io/redhat_emp1/shellcheck"
+SHELL_CHECK_IMAGE="registry.access.redhat.com/ubi7/ubi:latest"
 
 CONTAINER_ENGINE=$(shell command -v podman 2>/dev/null || command -v docker 2>/dev/null)
 
@@ -30,7 +30,7 @@ validation:
 .PHONY: shellcheck
 shellcheck:
 	$(CONTAINER_ENGINE) pull $(SHELL_CHECK_IMAGE)
-	$(CONTAINER_ENGINE) run -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(SHELL_CHECK_IMAGE) -c "find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
+	$(CONTAINER_ENGINE) run -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(SHELL_CHECK_IMAGE) -c "yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && yum install -y ShellCheck && find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
 
 .PHONY: push
 push:
