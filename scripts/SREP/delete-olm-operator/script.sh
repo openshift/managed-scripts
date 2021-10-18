@@ -11,9 +11,9 @@ fi
 
 "$DELETE" || echo "Not going to delete resources"
 
-SUBSCRIPTION=$(oc get sub -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}')
-CATALOG_SOURCE=$(oc get catalogsource -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}')
-OPERATOR_GROUP=$(oc get og -n ${NAMESPACE} -o jsonpath='{.items[*].metadata.name}')
+SUBSCRIPTION=$(oc get sub -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
+CATALOG_SOURCE=$(oc get catalogsource -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
+OPERATOR_GROUP=$(oc get og -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 
 
 if $DELETE; then
@@ -27,7 +27,7 @@ if $DELETE; then
   fi
   if [[ -n "${OPERATOR_GROUP}" ]]; then
     echo "Deleting OperatorGroup: ${OPERATOR_GROUP}"
-    oc delete og ${OPERATOR_GROUP} -n "${NAMESPACE}" 
+    oc delete og "${OPERATOR_GROUP}" -n "${NAMESPACE}" 
   fi
 else
   echo "Will delete Subscription: ${SUBSCRIPTION}"
@@ -40,7 +40,7 @@ for csv in $(oc get csv -n "${NAMESPACE}" -o jsonpath='{range .items[*]}{.metada
 do
   if $DELETE; then
     echo "Deleting CSV: ${csv}"
-    oc delete csv $csv -n "${NAMESPACE}"
+    oc delete csv "${csv}" -n "${NAMESPACE}"
   else
     echo -e "\t${csv}"
   fi
