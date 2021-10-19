@@ -4,9 +4,15 @@ set -e
 set -o nounset
 set -o pipefail
 
+ERR_INVALID_NS=2
 DELETE=false
 if [[ -n "${FORCE}" ]]; then
 	DELETE=true
+fi
+
+if [[ "${NAMESPACE}" != openshift-* && "${NAMESPACE}" != redhat-* ]]; then
+	echo "using an invalid namespace, exiting early"
+	exit "${ERR_INVALID_NS}"
 fi
 
 "$DELETE" || echo "Not going to delete resources"
