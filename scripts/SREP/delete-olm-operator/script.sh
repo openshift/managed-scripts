@@ -15,14 +15,14 @@ if [[ "${NAMESPACE}" != openshift-* && "${NAMESPACE}" != redhat-* ]]; then
 	exit "${ERR_INVALID_NS}"
 fi
 
-"$DELETE" || echo "Not going to delete resources"
+builtin "$DELETE" || echo "Not going to delete resources"
 
 SUBSCRIPTION=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 CATALOG_SOURCE=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 OPERATOR_GROUP=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 
 
-if $DELETE; then
+if builtin $DELETE; then
   if [[ -n "${SUBSCRIPTION}" ]]; then
     echo "Deleting Subscription: ${SUBSCRIPTION}"
     oc delete subscriptions.operators.coreos.com "${SUBSCRIPTION}" -n "${NAMESPACE}"
@@ -41,10 +41,10 @@ else
   echo "Will delete OperatorGroup: ${OPERATOR_GROUP}"
 fi
 
-$DELETE || echo "Will delete CSVs:"
+builtin "${DELETE}" || echo "Will delete CSVs:"
 for csv in $(oc get clusterserviceversions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
-  if $DELETE; then
+  if builtin "${DELETE}"; then
     echo "Deleting CSV: ${csv}"
     oc delete clusterserviceversions.operators.coreos.com "${csv}" -n "${NAMESPACE}"
   else
