@@ -13,7 +13,8 @@ rbac:
             - "watch"
             - "delete"
           apiGroups:
-            - "operators.coreos.com/v1alpha1"
+            - "operators.coreos.com"
+            - "operators.coreos.com/v1alpha1" # looks like the correct one but doesn't work
           resources:
             - "clusterserviceversions"
             - "catalogsources"
