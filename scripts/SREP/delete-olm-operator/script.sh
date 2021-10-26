@@ -6,6 +6,8 @@ set -o pipefail
 
 ERR_INVALID_NS=2
 DELETE=false
+FORCE=${FORCE:-}
+
 if [[ -n "${FORCE}" ]]; then
 	DELETE=true
 fi
