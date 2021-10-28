@@ -19,8 +19,11 @@ fi
 
 "$DELETE" || echo "Not going to delete resources"
 
+SUBSCRIPTION_SAVED=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -oyaml)
 SUBSCRIPTION=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
+CATALOG_SOURCE_SAVED=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -oyaml)
 CATALOG_SOURCE=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
+OPERATOR_GROUP_SAVED=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -oyaml)
 OPERATOR_GROUP=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 
 
@@ -36,6 +39,18 @@ if $DELETE; then
   if [[ -n "${OPERATOR_GROUP}" ]]; then
     echo "Deleting OperatorGroup: ${OPERATOR_GROUP}"
     oc delete operatorgroups.operators.coreos.com "${OPERATOR_GROUP}" -n "${NAMESPACE}" 
+  fi
+  if [[ -n "${SUBSCRIPTION}" ]]; then
+    echo "Recreating Subscription: ${SUBSCRIPTION}"
+    oc create -f "${SUBSCRIPTION_SAVED}"
+  fi
+  if [[ -n "${CATALOG_SOURCE}" ]]; then
+    echo "Recreating CatalogSource: ${CATALOG_SOURCE}"
+    oc create -f  "${CATALOG_SOURCE_SAVED}"
+  fi
+  if [[ -n "${OPERATOR_GROUP}" ]]; then
+    echo "Recreating OperatorGroup: ${OPERATOR_GROUP}"
+    oc create -f "${OPERATOR_GROUP_SAVED}"
   fi
 else
   echo "Will delete Subscription: ${SUBSCRIPTION}"
