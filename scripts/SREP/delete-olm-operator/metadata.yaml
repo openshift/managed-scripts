@@ -12,6 +12,7 @@ rbac:
             - "list"
             - "watch"
             - "delete"
+            - "create"
           apiGroups:
             - "operators.coreos.com"
             - "operators.coreos.com/v1" # not sure if this works, but added to the mix
