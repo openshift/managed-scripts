@@ -1,0 +1,44 @@
+file: script.sh
+name: HighlyAvailableWorkloadIncorrectlySpread 
+description: Fix HighlyAvailableWorkloadIncorrectlySpread alert
+author: gerogettica
+allowedGroups: 
+  - SREP
+rbac:
+    roles: []
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "delete"
+          apiGroups:
+            - ""
+          resources:
+            - "pods"
+        - verbs:
+            - "get"
+            - "delete"
+          apiGroups:
+            - "v1"
+          resources:
+            - "persistentvolumeclaims"
+        - verbs:
+            - "list"
+            - "watch"
+            - "patch" # for cordon && uncordon
+          apiGroups:
+            - "v1"
+          resources:
+            - "nodes"
+envs:
+  - key: "NS"
+    description: "the namespace in which all of the operators will run"
+    optional: false
+  - key: "WORKLOAD"
+    description: "the workload which is inhibiting the issue"
+    optional: false
+  - key: "DELETE"
+    description: "without setting this, the script will just display what it was going to do"
+    optional: true
+language: bash
