@@ -20,10 +20,13 @@ fi
 "$DELETE" || echo "Not going to delete resources"
 
 SUBSCRIPTION_SAVED=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -oyaml)
+echo "${SUBSCRIPTION_SAVED}" > /tmp/sub.yaml
 SUBSCRIPTION=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 CATALOG_SOURCE_SAVED=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -oyaml)
+echo "${CATALOG_SOURCE_SAVED}"> /tmp/catsrc.yaml
 CATALOG_SOURCE=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 OPERATOR_GROUP_SAVED=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -oyaml)
+echo "${OPERATOR_GROUP_SAVED}" > /tmp/og.yaml
 OPERATOR_GROUP=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 
 
@@ -34,23 +37,11 @@ if $DELETE; then
   fi
   if [[ -n "${CATALOG_SOURCE}" ]]; then
     echo "Deleting CatalogSource: ${CATALOG_SOURCE}"
-    oc delete catalogsources.operators.coreos.com "${CATALOG_SOURCE}" -n "${NAMESPACE}" 
+    oc delete catalogsources.operators.coreos.com "${CATALOG_SOURCE}" -n "${NAMESPACE}"
   fi
   if [[ -n "${OPERATOR_GROUP}" ]]; then
     echo "Deleting OperatorGroup: ${OPERATOR_GROUP}"
-    oc delete operatorgroups.operators.coreos.com "${OPERATOR_GROUP}" -n "${NAMESPACE}" 
-  fi
-  if [[ -n "${SUBSCRIPTION}" ]]; then
-    echo "Recreating Subscription: ${SUBSCRIPTION}"
-    oc create -f "${SUBSCRIPTION_SAVED}"
-  fi
-  if [[ -n "${CATALOG_SOURCE}" ]]; then
-    echo "Recreating CatalogSource: ${CATALOG_SOURCE}"
-    oc create -f  "${CATALOG_SOURCE_SAVED}"
-  fi
-  if [[ -n "${OPERATOR_GROUP}" ]]; then
-    echo "Recreating OperatorGroup: ${OPERATOR_GROUP}"
-    oc create -f "${OPERATOR_GROUP_SAVED}"
+    oc delete operatorgroups.operators.coreos.com "${OPERATOR_GROUP}" -n "${NAMESPACE}"
   fi
 else
   echo "Will delete Subscription: ${SUBSCRIPTION}"
@@ -69,3 +60,18 @@ do
   fi
 done
 
+
+if "${DELETE}"; then
+  if [[ -n "${SUBSCRIPTION}" ]]; then
+    echo "Recreating Subscription: ${SUBSCRIPTION}"
+    echo "${SUBSCRIPTION_SAVED}" |  oc create -f -
+  fi
+  if [[ -n "${CATALOG_SOURCE}" ]]; then
+    echo "Recreating CatalogSource: ${CATALOG_SOURCE}"
+    echo "${CATALOG_SOURCE_SAVED}" | oc create -f -
+  fi
+  if [[ -n "${OPERATOR_GROUP}" ]]; then
+    echo "Recreating OperatorGroup: ${OPERATOR_GROUP}"
+    echo "${OPERATOR_GROUP_SAVED}" | oc create -f -
+  fi
+fi
