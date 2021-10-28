@@ -20,13 +20,10 @@ fi
 "$DELETE" || echo "Not going to delete resources"
 
 SUBSCRIPTION_SAVED=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -oyaml)
-echo "${SUBSCRIPTION_SAVED}" > /tmp/sub.yaml
 SUBSCRIPTION=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 CATALOG_SOURCE_SAVED=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -oyaml)
-echo "${CATALOG_SOURCE_SAVED}"> /tmp/catsrc.yaml
 CATALOG_SOURCE=$(oc get catalogsources.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 OPERATOR_GROUP_SAVED=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -oyaml)
-echo "${OPERATOR_GROUP_SAVED}" > /tmp/og.yaml
 OPERATOR_GROUP=$(oc get operatorgroups.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
 
 
