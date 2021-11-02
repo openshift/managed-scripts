@@ -1,0 +1,24 @@
+file: script.sh
+name: tsdb-status
+description: Get status of prom's time series DB
+author: mmazur
+language: bash
+allowedGroups:
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+rbac:
+    roles:
+      - namespace: "openshift-monitoring"
+        rules:
+          - apiGroups: [""]
+            verbs: ["get"]
+            resources: 
+            - "secrets"
+            - "serviceaccounts"
+          - apiGroups: ["route.openshift.io"]
+            verbs: ["get"]
+            resources: 
+            - "routes"
+
