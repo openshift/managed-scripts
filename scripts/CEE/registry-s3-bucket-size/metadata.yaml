@@ -1,0 +1,27 @@
+file: script.sh
+name: etcd-health-check
+description: Compute the size of the bucket backing the in-cluster container registry. Only AWS clusters with S3 buckets backing the registry are supported.
+author: karthikperu7
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+    roles:
+      - namespace: "openshift-image-registry"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "secrets"
+    clusterRoleRules:
+      - verbs:
+        - "get"
+        - "list"
+        apiGroups:
+        - "operator.openshift.io/v1"
+        resources:
+        - configs
+language: bash
