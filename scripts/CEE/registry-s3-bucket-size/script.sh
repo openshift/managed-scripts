@@ -6,7 +6,7 @@
 set -e
 
 get_s3_bucket_name() {
-  echo "$(oc get configs.imageregistry.operator.openshift.io/cluster -ojsonpath='{.spec.storage.s3.bucket}')"
+  oc get configs.imageregistry.operator.openshift.io/cluster -ojsonpath='{.spec.storage.s3.bucket}'
 }
 
 get_s3_access_accesskey() {
@@ -27,7 +27,7 @@ bucket_size() {
 }
 
 get_cluster_url() {
-  echo "$(oc status | head -n1 | awk '{print $6}')"
+  oc status | head -n1 | awk '{print $6}'
 }
 
 bucket=$(get_s3_bucket_name)
