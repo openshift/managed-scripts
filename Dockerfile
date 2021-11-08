@@ -7,7 +7,6 @@ ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${O
 # (eg: "awscli-exe-linux-x86_64-2.0.30.zip")
 ARG AWSCLI_VERSION="awscli-exe-linux-x86_64.zip"
 ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
-ENV AWSSIG_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}.sig"
 
 # install tools needed for installation
 RUN yum install -y unzip
