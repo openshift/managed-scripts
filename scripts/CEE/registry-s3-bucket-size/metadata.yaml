@@ -21,7 +21,7 @@ rbac:
         - "get"
         - "list"
         apiGroups:
-        - "operator.openshift.io/v1"
+        - "imageregistry.operator.openshift.io/v1"
         resources:
         - configs
 language: bash
