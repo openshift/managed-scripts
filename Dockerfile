@@ -36,7 +36,7 @@ WORKDIR /aws
 RUN curl -sSLf $AWSCLI_URL -o awscliv2.zip
 # Extract the awscli zip
 RUN unzip awscliv2.zip
-# Install the libs to the usual location, so the simlinks will be right
+# Install the libs to the usual location, so the symlinks will be right
 # The final image build will copy them later
 # Install the bins to the /aws/bin dir so the final image build copy is easier
 RUN ./aws/install -b /out

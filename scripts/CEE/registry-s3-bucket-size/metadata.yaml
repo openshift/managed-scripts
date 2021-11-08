@@ -1,5 +1,5 @@
 file: script.sh
-name: etcd-health-check
+name: registry-s3-bucket-size
 description: Compute the size of the bucket backing the in-cluster container registry. Only AWS clusters with S3 buckets backing the registry are supported.
 author: karthikperu7
 allowedGroups:
