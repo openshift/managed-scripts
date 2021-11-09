@@ -38,7 +38,7 @@ RUN unzip awscliv2.zip
 # Install the libs to the usual location, so the symlinks will be right
 # The final image build will copy them later
 # Install the bins to the /aws/bin dir so the final image build copy is easier
-RUN ./aws/install -b /out
+RUN ./aws/install -b /aws/bin
 
 # Make binaries executable
 RUN chmod -R +x /out
@@ -48,11 +48,13 @@ RUN  yum -y install --disableplugin=subscription-manager \
      python3  \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
-COPY --from=build-stage0 /out/aws  /usr/local/bin
+COPY --from=build-stage0 /aws/bin/  /usr/local/bin
+COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY scripts /managed-scripts
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
+RUN aws --version
 
 # Cleanup Home Dir
 RUN rm /root/anaconda* /root/original-ks.cfg
