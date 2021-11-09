@@ -92,7 +92,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error generating clusterrole yaml: %v", err)
 	}
-	yamls = append(yamls, string(clusterRoleYaml))
+	if len(clusterRole.Rules) > 0 {
+		yamls = append(yamls, string(clusterRoleYaml))
+	}
 
 	roles := createRoles(metadata, opts, targetScript)
 	for _, role := range roles {
@@ -117,7 +119,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error generating clusterrolebinding yaml: %v", err)
 	}
-	yamls = append(yamls, string(clusterRoleBindingYaml))
+	if len(clusterRole.Rules) > 0 {
+		yamls = append(yamls, string(clusterRoleBindingYaml))
+	}
 
 	job := createJob(metadata, opts, serviceAccount, targetScript)
 	jobYaml, err := json.MarshalIndent(job, "", "  ")
