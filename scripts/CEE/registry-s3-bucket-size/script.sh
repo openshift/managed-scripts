@@ -26,10 +26,6 @@ bucket_size() {
   AWS_ACCESS_KEY_ID="${accesskey}" AWS_SECRET_ACCESS_KEY="${secretkey}" aws s3api list-objects --bucket "${bucket}" --output json --query "sum(Contents[].Size)"
 }
 
-get_cluster_url() {
-  oc status | head -n1 | awk '{print $6}'
-}
-
 bucket=$(get_s3_bucket_name)
 access=$(get_s3_access_accesskey)
 secret=$(get_s3_access_secretkey)
@@ -37,4 +33,4 @@ secret=$(get_s3_access_secretkey)
 bucket_size_bytes=$(bucket_size "${bucket}" "${access}" "${secret}")
 bucket_size_gb=$(echo "${bucket_size_bytes}" | awk '{print $1/1024/1024/1024 " GB "}')
 
-echo "${bucket_size_gb} $(get_cluster_url)"
+echo "${bucket_size_gb}"
