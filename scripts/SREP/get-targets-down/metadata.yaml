@@ -1,7 +1,7 @@
 file: script.sh
-name: example # name should be the same as the subdir, eg: SRE/example in this case
-description: Example script
-author: qhua948
+name: get-targets-down # name should be the same as the subdir, eg: SRE/example in this case
+description: List pods marked as down by cluster Prometheus
+author: mdewald
 allowedGroups: 
   - SREP
   - CSSRE
