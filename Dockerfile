@@ -45,7 +45,7 @@ RUN chmod -R +x /out
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
 RUN  yum -y install --disableplugin=subscription-manager \
-     python3  \
+     python3 jq \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /aws/bin/  /usr/local/bin
