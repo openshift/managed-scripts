@@ -3,9 +3,8 @@
 set -euo pipefail
 
 TOKEN="$(oc -n openshift-monitoring sa get-token prometheus-k8s)"
-PROMETHEUS_HOST="$(oc -n openshift-monitoring get route prometheus-k8s -o jsonpath='{.spec.host}')"
 
-TARGETS_JSON="$(curl -G -s -k -H "Authorization: Bearer $TOKEN" "https://$PROMETHEUS_HOST/api/v1/targets")"
+TARGETS_JSON="$(curl -G -s -k -H "Authorization: Bearer $TOKEN" "https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091/api/v1/targets")"
 TARGETS_DOWN="$(jq -r '.data.activeTargets[] | select(.health=="down") | .labels.pod' <<< "$TARGETS_JSON")"
 
 echo "Targets down:"
