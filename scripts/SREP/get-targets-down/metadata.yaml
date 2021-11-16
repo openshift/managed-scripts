@@ -14,12 +14,6 @@ rbac:
           - verbs:
             - "get"
             apiGroups:
-            - "route.openshift.io"
-            resources:
-            - "routes"
-          - verbs:
-            - "get"
-            apiGroups:
             - ""
             resources:
             - "serviceaccounts"
