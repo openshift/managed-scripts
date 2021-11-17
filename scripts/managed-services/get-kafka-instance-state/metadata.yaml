@@ -1,0 +1,48 @@
+file: get-kafka-instance-state.sh
+name: get-kafka-instance-state
+description: |
+  Print out the logs for the specified Kafka instance.
+  The following commands will create a directory with all instance information:
+
+  ocm backplane managedjob logs <job-name> > mykafkadebug.tar.gz
+  tar -xvf mykafkadebug.tar.gz
+author: racheljpg
+allowedGroups:
+  - SREP
+  - CSSRE
+  - CEE
+rbac:
+  roles:
+    - namespace: "default"
+      rules:
+        - verbs:
+            - "get"
+            - "list"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
+        - verbs:
+            - "create"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
+      clusterRoleRules:
+        - verbs:
+            - "adm"
+          apiGroups:
+            - ""
+          resources:
+            - "inspect"
+        - verbs:
+            - "create"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
+envs:
+  - key: "resource_namespace"
+    description: "Namespace for the Kafka instance you want to query"
+    optional: false
+language: bash
