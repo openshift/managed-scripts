@@ -41,6 +41,18 @@ rbac:
             - ""
           resources:
             - "pods/exec"
+        - verbs:
+            - "list"
+          apiGroups:
+            - "managedkafka.bf2.org"
+          resources:
+            - "managedkafkas"
+        - verbs:
+            - "list"
+          apiGroups:
+            - "kafka.strimzi.io"
+          resources:
+            - "kafkas"
 envs:
   - key: "resource_namespace"
     description: "Namespace for the Kafka instance you want to query"
