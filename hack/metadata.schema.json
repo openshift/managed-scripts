@@ -39,6 +39,7 @@
     "envs": {
       "type": "array",
       "description": "The environment variables declared on the script",
+      "additionalProperties": false,
       "items": {
         "type": "object",
         "properties": {
@@ -59,6 +60,7 @@
     },
     "rbac": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "roles": {
           "type": "array",
@@ -75,6 +77,7 @@
       }
     }
   },
+  "additionalProperties": false,
   "required": [
     "file",
     "name",
