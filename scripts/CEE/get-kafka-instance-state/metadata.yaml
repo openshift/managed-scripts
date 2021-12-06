@@ -42,6 +42,19 @@ rbac:
           resources:
             - "pods/exec"
         - verbs:
+            - "get"
+            - "list"
+          apiGroups:
+            - "apps"
+          resources:
+            - "statefulsets"
+        - verbs:
+            - "get"
+          apiGroups:
+            - ""
+          resources:
+            - ""
+        - verbs:
             - "list"
           apiGroups:
             - "managedkafka.bf2.org"
