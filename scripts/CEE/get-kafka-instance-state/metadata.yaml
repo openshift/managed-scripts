@@ -53,7 +53,7 @@ rbac:
           apiGroups:
             - ""
           resources:
-            - ""
+            - "pods"
         - verbs:
             - "list"
           apiGroups:
