@@ -12,6 +12,44 @@ allowedGroups:
   - CSSRE
   - CEE
 rbac:
+  clusterRoleRules:
+    - verbs:
+        - "adm"
+      apiGroups:
+        - ""
+      resources:
+        - "inspect"
+    - verbs:
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/exec"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "statefulsets"
+    - verbs:
+        - "get"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "managedkafka.bf2.org"
+      resources:
+        - "managedkafkas"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "kafka.strimzi.io"
+      resources:
+        - "kafkas"
   roles:
     - namespace: "default"
       rules:
@@ -28,46 +66,9 @@ rbac:
             - ""
           resources:
             - "pods/exec"
-      clusterRoleRules:
-        - verbs:
-            - "adm"
-          apiGroups:
-            - ""
-          resources:
-            - "inspect"
-        - verbs:
-            - "create"
-          apiGroups:
-            - ""
-          resources:
-            - "pods/exec"
-        - verbs:
-            - "get"
-            - "list"
-          apiGroups:
-            - "apps"
-          resources:
-            - "statefulsets"
-        - verbs:
-            - "get"
-          apiGroups:
-            - ""
-          resources:
-            - "pods"
-        - verbs:
-            - "list"
-          apiGroups:
-            - "managedkafka.bf2.org"
-          resources:
-            - "managedkafkas"
-        - verbs:
-            - "list"
-          apiGroups:
-            - "kafka.strimzi.io"
-          resources:
-            - "kafkas"
 envs:
   - key: "resource_namespace"
     description: "Namespace for the Kafka instance you want to query"
     optional: false
 language: bash
+
