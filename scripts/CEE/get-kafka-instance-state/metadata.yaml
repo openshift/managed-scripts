@@ -50,6 +50,12 @@ rbac:
         - "kafka.strimzi.io"
       resources:
         - "kafkas"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "discovery.k8s.io"
+      resources:
+        - "endpointslice"
   roles:
     - namespace: "default"
       rules:
