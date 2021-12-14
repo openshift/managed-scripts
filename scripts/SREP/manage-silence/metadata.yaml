@@ -1,0 +1,31 @@
+file: script.sh
+name: manage-silence
+description: Script to list, clear or create silences at alertmanager level for a given cluster
+author: bdematte
+allowedGroups: 
+  - SREP
+rbac:
+    roles:
+      - namespace: "openshift-monitoring"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "secrets"
+            - "serviceaccounts"
+            - "namespaces"
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - "route.openshift.io"
+            resources:
+            - "routes"
+envs:
+  - key: "SCRIPT_PARAMETERS"
+    description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
+    optional: true
+language: bash
