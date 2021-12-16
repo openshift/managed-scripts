@@ -1,5 +1,6 @@
 #!/bin/bash
 set -o pipefail
+set -o nounset
 
 function main() {
   local timestamp
@@ -22,16 +23,15 @@ function main() {
   local kafkaStatefulSet
   kafkaStatefulSet=$(oc -n "${resource_namespace}" get statefulset -l app.kubernetes.io/name=kafka -o name)
 
+  inspectOps=(ns/"${resource_namespace}" "${managedKafkaCR}" "${kafkaCR}")
+
   if [[ -v since ]]; then
-      oc -n "${resource_namespace}" adm inspect ns/"${resource_namespace}" "${managedKafkaCR}" "${kafkaCR}" \
-        --since "${since}" --dest-dir "${inspectDir}" > "${inspectDir}"/ocadm.log 2>&1
+      inspectOps+=("--since=${since}")
   elif [[ -v since_time ]]; then
-     oc -n "${resource_namespace}" adm inspect ns/"${resource_namespace}" "${managedKafkaCR}" "${kafkaCR}" \
-        --since-time "${since_time}" --dest-dir "${inspectDir}" > "${inspectDir}"/ocadm.log 2>&1
-  else
-     oc -n "${resource_namespace}" adm inspect ns/"${resource_namespace}" "${managedKafkaCR}" "${kafkaCR}" \
-        --dest-dir "${inspectDir}" > "${inspectDir}"/ocadm.log 2>&1
+      inspectOps+=("--since-time=${since_time}")
   fi
+
+  oc -n "${resource_namespace}" adm inspect "${inspectOps[@]}" --dest-dir "${inspectDir}" > "${inspectDir}"/ocadm.log 2>&1
 
   oc exec -n "${resource_namespace}" "${kafkaStatefulSet}" -c kafka -- sh /opt/kafka/bin/kafka-topics.sh \
     --bootstrap-server localhost:9096 --list > "${inspectDir}"/kafka-topics.txt 2>&1
