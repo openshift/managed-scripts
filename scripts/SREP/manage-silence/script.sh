@@ -11,7 +11,7 @@ function json_escape {
 
 SILENCE_JSON=
 
-function prompt_for_silence_info {
+function fill_silence_info {
     local duration_default creator comment_default start end
 	
 	duration_default=60
@@ -153,8 +153,14 @@ if [[ $CREATE_SILENCE == 1 ]] ; then
         exit 1
     fi 
 
-    prompt_for_silence_info
-    curl -s -k -X POST -H "Content-Type: application/json" --data "$SILENCE_JSON" -H "Authorization: Bearer $PROM_TOKEN" "https://$AM_HOST/api/v1/silences"
+    fill_silence_info
+    REPLY_STATUS=$(curl -s -k -X POST -H "Content-Type: application/json" --data "$SILENCE_JSON" -H "Authorization: Bearer $PROM_TOKEN" "https://$AM_HOST/api/v1/silences" | jq '.status' )
+
+    if [ "$REPLY_STATUS" != "\"success\"" ] ; then
+        echo "Error creating silence. HTTP Return Code : ${HTTP_CODE}"
+    else
+        echo "Silence successfully created."
+    fi
 fi
 
 if [ $CLEAR_SILENCE == 1 ] ; then
