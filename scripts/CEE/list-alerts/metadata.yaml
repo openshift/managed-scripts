@@ -1,0 +1,34 @@
+file: script.sh
+name: list-alerts
+description: Script listing the active/pending alerts in alertmanager. It also provide an option to list active silences. 
+author: bdematte
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+rbac:
+    roles:
+      - namespace: "openshift-monitoring"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "secrets"
+            - "serviceaccounts"
+            - "namespaces"
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - "route.openshift.io"
+            resources:
+            - "routes"
+envs:
+  - key: "SCRIPT_PARAMETERS"
+    description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
+    optional: true
+language: bash
