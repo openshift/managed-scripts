@@ -76,5 +76,10 @@ envs:
   - key: "resource_namespace"
     description: "Namespace for the Kafka instance you want to query"
     optional: false
+  - key: "since"
+    description: "This is being passed to use the --since flag used by oc adm inspect. Only one of since-time/since may be used"
+    optional: true
+  - key: "since_time"
+    description: "This is being passed to use the --since-time flag used by oc adm inspect. Timestamp is in RFC 3339 format. Only one of since-time/since may be used"
+    optional: true
 language: bash
-
