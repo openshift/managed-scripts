@@ -1,0 +1,27 @@
+file: script.sh
+name: check-tech-preview-features
+description: Checks if any tech preview feature sets are enabled. If enabled, lists feature set(s) along with its feature gates.
+author: supreeth7
+allowedGroups:
+  - CEE
+  - SREP
+  - CSSRE
+  - MTSRE                      
+rbac:
+    clusterRoleRules:
+      - apiGroups:
+        - "config.openshift.io"
+        resources:
+        - featuregates
+        verbs:
+        - "get"
+        - "list"
+      - apiGroups:
+        - "operator.openshift.io"
+        resources:
+        - "kubeapiservers"
+        verbs:
+        - "get"
+        - "list"
+
+language: bash
