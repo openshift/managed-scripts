@@ -23,11 +23,11 @@ getFeatureGates() {
 }
 
 getAdditionalFeatureGates() {
-a=("$@")
-for i in ${a[@]}
+arg=(${1})
+for i in "${arg[@]}"
 	do
 		if [[ ! ${DEFAULT_FEATURE_GATES[*]}  =~ ${i} ]]; then
-			echo ${i}
+			echo "${i}"
 		fi
 	done
 }
@@ -40,5 +40,5 @@ else
 	echo -e "-> '${feature_set}' feature set enabled."
 	echo "-> Additional feature gates enabled:"
     feature_gates=$(getFeatureGates)
-    getAdditionalFeatureGates ${feature_gates}
+    getAdditionalFeatureGates "${feature_gates}" 
 fi
