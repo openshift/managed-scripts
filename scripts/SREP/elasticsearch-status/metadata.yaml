@@ -1,0 +1,39 @@
+file: script.sh
+name: elasticsearch-status # name should be the same as the subdir, eg: SRE/example in this case
+description: script to check status of elastic search on clusters
+author: lfalconm
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+rbac:
+    roles:
+      - namespace: "openshift-monitoring"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "pods"
+            - "clusterlogging"
+            - "elasticsearch"
+            - "replicasets"
+            - "deployment"
+            - "resourcequota"
+            - "persistentvolumeclaim"
+          - verbs:
+            - "create"
+            apiGroups:
+            - ""
+            resources:
+            - "pods/exec"
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - "operators.coreos.com"
+            resources:
+            - "subscriptions"
+language: bash
