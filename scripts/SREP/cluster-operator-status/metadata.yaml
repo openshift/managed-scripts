@@ -1,0 +1,44 @@
+file: script.sh
+name: cluster-operator-status # name should be the same as the subdir, eg: SRE/example in this case
+description: Retrieve status of the cluster's Cluster Operators
+author: mbargenq
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+rbac:
+    roles: []
+    clusterRoleRules:
+    - verbs:
+      - "get"
+      - "list"
+      apiGroups:
+      - "config.openshift.io"
+      resources:
+      - clusteroperators
+    - verbs:
+      - "get"
+      - "list"
+      apiGroups:
+      - "apps"
+      resources:
+      - deployments
+    - verbs:
+      - "get"
+      - "list"
+      apiGroups:
+      - ""
+      resources:
+      - pods
+envs:
+  - key: "CLUSTER_OPERATOR"
+    description: "Cluster Operator to specifically target."
+    optional: true
+  - key: "OC_LOGS_SINCE"
+    description: "Specify the time interval history of logs to retrieve (eg. 60s, 1m, 30m)."
+    optional: true
+  - key: "LOG_PATTERN"
+    description: "Extended regular expression pattern used for log filtering."
+    optional: true
+language: bash
