@@ -14,7 +14,7 @@ allowedGroups:
     
 envs:
   - key: "since"
-    description: "The --since flag is used by the oc adm inspect command. Only return logs newer than a relative duration". Either since can be added or since_time can be added but not both."
+    description: "The --since flag is used by the oc adm inspect command. Only return logs newer than a relative duration. Either since can be added or since_time can be added but not both."
     optional: true
   - key: "since_time"
     description: "The --since-time flag is used by the oc adm inspect command. Only return logs after a specific date. Date is in RFC 3339 format. Only one of since-time/since may be used". Either since can be added or since_time can be added but not both."
