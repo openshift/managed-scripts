@@ -11,7 +11,6 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
-    
 envs:
   - key: 'since'
     description: "The --since flag is used by the oc adm inspect command. Only return logs newer than a relative duration. Either since can be added or since_time can be added but not both."
