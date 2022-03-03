@@ -1,0 +1,21 @@
+file: get-rhosak-operators.sh
+name: get-RHOSAK-operators
+description: |
+  The get-rhosak-operators.sh script uses oc adm inspect to get a multitude of resources including; logs, events and managedKafkaAgents for the following namespaces:
+    * managed-application-services-observability
+    * redhat-kas-fleetshard-operator
+    * redhat-managed-kafka-operator
+
+author: Rachel Lawton
+allowedGroups:
+  - SREP
+  - CSSRE
+  - CEE
+envs:
+  - key: 'since'
+    description: "The --since flag is used by the oc adm inspect command. Only return logs newer than a relative duration. Either since can be added or since_time can be added but not both."
+    optional: true
+  - key: 'since_time'
+    description: "The --since-time flag is used by the oc adm inspect command. Only return logs after a specific date. Date is in RFC 3339 format. Either since can be added or since_time can be added but not both."
+    optional: true
+language: bash
