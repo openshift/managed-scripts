@@ -53,7 +53,7 @@ COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY scripts /managed-scripts
 
 # Install python packages
-RUN python3 -m pip install -r /managed-scripts/CSSRE/requirements.txt --user
+RUN python3 -m pip install -r tabulate requests --user
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
