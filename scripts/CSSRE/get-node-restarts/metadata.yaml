@@ -22,4 +22,4 @@ envs:
     optional: true
   - key: "log_level"
     optional: true
-language: Python
+language: python
