@@ -52,6 +52,9 @@ COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY scripts /managed-scripts
 
+# Install python packages
+RUN python3 -m pip install -r /managed-scripts/CSSRE/requirements.txt --user
+
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
 RUN aws --version
