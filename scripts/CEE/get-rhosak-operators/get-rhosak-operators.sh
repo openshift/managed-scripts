@@ -28,7 +28,7 @@ function clean(){
     find "$directory" -type f -name "rhosak.log" -delete
     find "$directory" -type f -name secrets.yaml -delete
     find "$directory" -name "*.txt" -exec sed -i '/accessToken:/d' {} \;
-    tar -zcf  "$directory".tar.gz ./"$directory"
+    tar -zcf - ./"$directory"
 }
 
 create_directory
