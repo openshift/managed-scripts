@@ -111,7 +111,7 @@ class CheckNodeRestart(Script):
                 time_difference = current_time_obj - time_obj
                 time_difference_minutes = int(time_difference.total_seconds() / 60)
                 self.logger.debug(f"time difference in minutes: {time_difference_minutes}")
-                if time_difference_minutes < self.LAST_MIN:
+                if time_difference_minutes < int(self.LAST_MIN):
                     print(node, time_difference_minutes)
                     print("----------------------------")
                     print("Pods associated with the particular node:")

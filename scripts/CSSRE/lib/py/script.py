@@ -7,7 +7,7 @@ from py.command import Command
 from py.exceptions import ScriptParserNotCreatedError
 
 from tabulate import tabulate as tb
-from py.exception import MissingEnvironmentVariable
+from py.exceptions import MissingEnvironmentVariable
 
 
 class Script:
