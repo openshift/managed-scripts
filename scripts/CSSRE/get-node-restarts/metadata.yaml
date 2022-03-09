@@ -15,11 +15,11 @@ rbac:
       - "nodes"
       - "pods"
 envs:
-  - key: PYTHONPATH
+  - key: "PYTHONPATH"
     value: /managed-scripts/CSSRE/lib
-  - key: LAST_MIN
+  - key: "LAST_MIN"
     description: "the last minutes parameters from which node restart duration is checked"
     optional: true
-  - key: LOG_LEVEL
+  - key: "LOG_LEVEL"
     optional: true
 language: python
