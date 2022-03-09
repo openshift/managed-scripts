@@ -1,21 +1,34 @@
 import sys
 import json
+import os
 
 from py.logger import Logger
 from py.command import Command
 from py.exceptions import ScriptParserNotCreatedError
 
 from tabulate import tabulate as tb
+from py.exception import MissingEnvironmentVariable
 
 
 class Script:
     def __init__(self,
                  logger_name=__name__,
-                 run_now=True):
+                 run_now=True,
+                 env_vars=None,
+                 check_env_var=True):
+
+        if env_vars is not None:
+            envs = EnvironmentVariableInjector(self,
+                                               check_env_var=check_env_var)
+            for v in env_vars:
+                envs.add(v)
+
         self._parser = None
         self.args = self.parse_args()
 
-        if not hasattr(self.args, "log_level"):
+        if hasattr(self, "LOG_LEVEL"):
+            setattr(self.args, "log_level", self.LOG_LEVEL)
+        elif not hasattr(self.args, "log_level"):
             setattr(self.args, "log_level", "info")
 
         Logger(name=logger_name, level=self.args.log_level)
@@ -67,3 +80,18 @@ class Script:
 
     def print_table(self, rows, headers):
         print(tb(rows, headers=headers))
+
+class EnvironmentVariableInjector:
+    def __init__(self, target, check_env_var=True):
+        self._target = target
+        self._check_env_var = check_env_var
+
+    def add(self, name):
+        try:
+            setattr(self._target, name, os.environ[name])
+        except KeyError:
+            if self._check_env_var:
+                raise MissingEnvironmentVariable(
+                    f"Missing environment variable: {name}")
+            else:
+                setattr(self._target, name, None)

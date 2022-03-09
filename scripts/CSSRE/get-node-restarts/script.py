@@ -8,6 +8,7 @@ import argparse
 import json
 import datetime
 import sys
+import os
 
 LIB_PATH = "/managed-scripts/CSSRE/lib"
 # Use sys.path.insert because PYTHONPATH's support is unclear
@@ -20,7 +21,9 @@ LAST_MIN = 2000
 class CheckNodeRestart(Script):
 
     def __init__(self):
-        super().__init__()
+        # this will ensure optional environment variables
+        env_vars = ["LAST_MIN", "LOG_LEVEL"]
+        super().__init__(env_vars=env_vars, check_env_var=False)
 
     def create_parser(self):
         self.parser = argparse.ArgumentParser()
@@ -90,14 +93,15 @@ class CheckNodeRestart(Script):
 
     def run(self):
         # the script is getting input arguments from metadata.yaml as env variables
-        if self.args.last_min:
-            LAST_MIN = self.args.last_min
-        self.logger.debug(f"LAST_MIN: {LAST_MIN}")
+        if not self.LAST_MIN:
+            self.LAST_MIN = LAST_MIN
+
+        self.logger.debug(f"LAST_MIN: {self.LAST_MIN}")
 
         self.logger.debug("Gathering Node Data...")
         node_transition_data = self.get_node_transition_ts(self.get_node_data())
         if node_transition_data:
-            print(f"Nodes restarted in the last {LAST_MIN} minutes")
+            print(f"Nodes restarted in the last {self.LAST_MIN} minutes")
             print("Node Name\t\tMinutes")
             for node, timestamp in node_transition_data.items():
                 time_obj = datetime.datetime.strptime(
@@ -107,7 +111,7 @@ class CheckNodeRestart(Script):
                 time_difference = current_time_obj - time_obj
                 time_difference_minutes = int(time_difference.total_seconds() / 60)
                 self.logger.debug(f"time difference in minutes: {time_difference_minutes}")
-                if time_difference_minutes < LAST_MIN:
+                if time_difference_minutes < self.LAST_MIN:
                     print(node, time_difference_minutes)
                     print("----------------------------")
                     print("Pods associated with the particular node:")

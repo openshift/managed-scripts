@@ -17,9 +17,9 @@ rbac:
 envs:
   - key: PYTHONPATH
     value: /managed-scripts/CSSRE/lib
-  - key: "last_min"
+  - key: LAST_MIN
     description: "the last minutes parameters from which node restart duration is checked"
     optional: true
-  - key: "log_level"
+  - key: LOG_LEVEL
     optional: true
 language: python
