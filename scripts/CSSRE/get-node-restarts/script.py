@@ -8,7 +8,6 @@ import argparse
 import json
 import datetime
 import sys
-import os
 
 LIB_PATH = "/managed-scripts/CSSRE/lib"
 # Use sys.path.insert because PYTHONPATH's support is unclear
