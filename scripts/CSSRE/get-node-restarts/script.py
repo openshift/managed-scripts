@@ -66,10 +66,8 @@ class CheckNodeRestart(Script):
                 conditions = node["status"]["conditions"]
                 for condition in conditions:
                     if condition["reason"] == "KubeletReady":
-                        output_dict[node["metadata"]["name"]] = condition[
-                            "lastTransitionTime"
-                        ]
-
+                        last_transition_time = condition["lastTransitionTime"]
+                        output_dict[node["metadata"]["name"]] = last_transition_time
         return output_dict
 
     def get_pods(self, node_name):
