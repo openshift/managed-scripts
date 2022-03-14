@@ -35,12 +35,6 @@ class CheckNodeRestart(Script):
 
     def create_parser(self):
         self.parser = argparse.ArgumentParser()
-        # self.parser.add_argument(
-        #     "last_min", type=int, help="NODES restarted in the last X min"
-        # )
-        # self.parser.add_argument(
-        #     "log_level", nargs="?", default="info"
-        # )
 
     def get_node_data(self):
         """
