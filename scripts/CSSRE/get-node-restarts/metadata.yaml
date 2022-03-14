@@ -1,0 +1,23 @@
+file: script.py
+name: get-node-restarts
+description: Script to get list of nodes that are restarted in the last X minutes
+author: vbommana
+allowedGroups: 
+  - CSSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+      - "get"
+      - "list"
+      apiGroups:
+      - ""
+      resources:
+      - "nodes"
+      - "pods"
+envs:
+  - key: "LAST_MIN"
+    description: "the last minutes parameters from which node restart duration is checked"
+    optional: true
+  - key: "LOG_LEVEL"
+    optional: true
+language: python
