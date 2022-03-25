@@ -1,0 +1,27 @@
+file: script.sh
+name: mg-log-ls
+description: |
+  Extracts must-gather logs from hive s3 bucket
+  Can only be run on hive clusters
+  ocm backplane mg-log-ls
+author: tfahlman
+allowedGroups: 
+  - SREP
+rbac:
+    clusterRoleRules:
+        - verbs:
+            - "get"
+          apiGroups:
+            - "hive.openshift.io"
+          resources:
+            - "hiveconfigs"
+    roles:
+      - namespace: "hive"
+        rules:
+          - verbs:
+            - "get"
+            apiGroups:
+            - ""
+            resources:
+            - "secrets"
+language: bash
