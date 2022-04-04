@@ -75,7 +75,7 @@ function main(){
   canaryRequired=$(oc get deployment "${resource_cluster_name}"-canary -n "${resource_namespace}" -ojson | jq '.spec.replicas')
   canaryCount=$(oc get deployment "${resource_cluster_name}"-canary -n "${resource_namespace}" -ojson | jq '.status.readyReplicas')
   echo "Canary(s) $canaryCount/$canaryRequired ok" >> kafka-pods.txt
-  if [ $canaryRequired -ne $canaryCount ]; then
+  if [ "$canaryRequired" -ne "$canaryCount" ]; then
     podFailCount=$((podFailCount+1))
   fi
 
@@ -86,7 +86,7 @@ function main(){
     podFailCount=$((podFailCount+1))
   fi
 
-  podCount=$(oc get pods -n "${resource_namespace}" | grep 1/1 | wc -l | sed 's/^ *//g')
+  podCount=$(oc get pods -n "${resource_namespace}" | grep -c 1/1 | sed 's/^ *//g')
   podRequired=$((kafkaBrokerRequired + zookeeperBrokerRequired + adminServerRequired + canaryRequired + kafkaExporterRequired))
   echo "---" >> kafka-pods.txt
   echo "Pod(s)-Running $podCount/$podRequired ok" >> kafka-pods.txt
@@ -100,11 +100,11 @@ function main(){
   echo " Gathering Logs for Unfiltered Kafka Broker Data" 
   echo "_______________________________________________________________"
 
-  if [ $kafkaBrokerCount -ne 0 ]; then
-    for (( i=0; i<=$kafkaBrokerCount-1; i++))
+  if [ "$kafkaBrokerCount" -ne 0 ]; then
+    for (( i=0; i<=kafkaBrokerCount-1; i++))
     do
         oc logs "${resource_cluster_name}"-kafka-"$i" -n "${resource_namespace}" --tail 1000 | egrep -v '.*INFO.*$|.*TRACE.*$' > kafka-"$i".txt
-        echo "kafka-"$i".txt created"
+        echo "kafka-$i.txt created"
     done
   fi
 
@@ -163,32 +163,32 @@ function main(){
   echo " Kafka Cluster Items in order by AGE" 
   echo "_______________________________________________________________"
 
-  echo "-------------------------DEPLOYMENTS-----------------------------" > kafka-age.txt
-  oc get deployments -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------STATEFULSETS-----------------------------" >> kafka-age.txt
-  oc get statefulsets -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------PODS-----------------------------" >> kafka-age.txt
-  oc get pods -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------SERVICES-----------------------------" >> kafka-age.txt
-  oc get services -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------ROUTES-----------------------------" >> kafka-age.txt
-  oc get routes -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------PERSISTENT VOLUMES-----------------------------" >> kafka-age.txt
-  oc get pv --sort-by=.metadata.creationTimestamp | grep "${resource_namespace}" >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------PERSISTENT VOLUME CLAIMS-----------------------------" >> kafka-age.txt
-  oc get pvc -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------SECRETS-----------------------------" >> kafka-age.txt
-  oc get secrets -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
-  echo "" >> kafka-age.txt
-  echo "-------------------------CONFIGMAPS-----------------------------" >> kafka-age.txt
-  oc get configmaps -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp >> kafka-age.txt
+  { echo "-------------------------DEPLOYMENTS-----------------------------";
+  oc get deployments -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------STATEFULSETS-----------------------------";
+  oc get statefulsets -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------PODS-----------------------------";
+  oc get pods -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------SERVICES-----------------------------";
+  oc get services -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------ROUTES-----------------------------";
+  oc get routes -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------PERSISTENT VOLUMES-----------------------------";
+  oc get pv --sort-by=.metadata.creationTimestamp | grep "${resource_namespace}";
+  echo "";
+  echo "-------------------------PERSISTENT VOLUME CLAIMS-----------------------------";
+  oc get pvc -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------SECRETS-----------------------------";
+  oc get secrets -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp;
+  echo "";
+  echo "-------------------------CONFIGMAPS-----------------------------";
+  oc get configmaps -n "${resource_namespace}" --sort-by=.metadata.creationTimestamp; } > kafka-age.txt
 
   echo "kafka-status-age.txt created"
 
@@ -196,19 +196,15 @@ function main(){
  
   echo "_______________________________________________________________"
   echo " Total Resources check $totalCount"
-  echo "Pod(s) $podCount/$podRequired" > kafka-total-resources.txt
-  echo "Service(s) $serviceCount" >> kafka-total-resources.txt
-  echo "Route(s) $routeCount" >> kafka-total-resources.txt
-  echo "PV(s) $pvCount" >> kafka-total-resources.txt
-  echo "PVC $pvcCount" >> kafka-total-resources.txt
-  echo "Secret(s) $secretCount" >> kafka-total-resources.txt
-  echo "Configmap(s) $configmapCount" >> kafka-total-resources.txt
-  cat kafka-total-resources.txt | column -t
+  { echo "Pod(s) $podCount/$podRequired"; echo "Service(s) $serviceCount"; echo "Route(s) $routeCount"; echo "PV(s) $pvCount";  
+    echo "PVC $pvcCount"; echo "Secret(s) $secretCount"; echo "Configmap(s) $configmapCount";
+  } > kafka-total-resources.txt
+  cat < kafka-total-resources.txt | column -t
   echo "_______________________________________________________________"
 
   if [[ $podFailCount -ne 0 ]]; then
     echo "_______________________________________________________________"
-    echo " FAILURES\n"
+    echo " FAILURES"
     echo "Pod-Failure(s) $podFailCount Total-Pod(s) $podCount/$podRequired" | column -t
   fi
 

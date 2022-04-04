@@ -16,7 +16,7 @@ test_endpoint "${resource_cluster_name}"-canary 8080
 
 for i in $(seq 0 $bCount)
 do
-  test_endpoint "${resource_cluster_name}"-kafka-$i 9094
+  test_endpoint "${resource_cluster_name}"-kafka-"$i" 9094
 done
 
 test_endpoint "${resource_cluster_name}"-kafka-bootstrap 9096
