@@ -1,0 +1,46 @@
+file: get-kafka-topics.sh
+name: get-kafka-topics
+description: |
+  Get topics and partitions details for a given Kafka
+author: Rob Shelly
+allowedGroups:
+  - CSSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/exec"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "statefulsets"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "kafka.strimzi.io"
+      resources:
+        - "kafkas"
+envs:
+  - key: "kafka_namespace"
+    description: "Namespace for the Kafka instance you want to query"
+    optional: false
+  - key: "topic"
+    description: "A specific topic to show"
+    optional: true
+  - key: "filter"
+    description: "Filter to show only partition "
+    optional: true
+language: bash
