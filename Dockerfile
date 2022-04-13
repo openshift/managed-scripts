@@ -53,7 +53,8 @@ COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY scripts /managed-scripts
 
 # Install python packages
-RUN python3 -m pip install tabulate --user
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install tabulate openshift-client --user
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
