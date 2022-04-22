@@ -11,15 +11,6 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
-rbac:
-  clusterRoleRules:
-    - verbs:
-        - "get"
-        - "list"
-      apiGroups:
-        - ""
-      resources:
-        - "secrets"
 envs:
   - key: "resource_namespace"
     description: "Namespace for the Kafka instance you want to query"
