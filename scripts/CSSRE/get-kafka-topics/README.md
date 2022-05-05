@@ -1,32 +1,31 @@
 # get-kafka-topics
 
-This scripts runs the `kafka-topics.sh` script built into Kafka brokers to provide details of the Kafka's topics and partitions.
+This script runs the `kafka-topics.sh` script built into Kafka brokers to provide details of the Kafka's topics and partitions.
 
 ## Usage
+Parameters should be provided as environmental variables.
 
 ### Running locally
 
 ```bash
-Usage: ./get-kafka-topics.sh -n KAFKA_NAMESPACE [-t TOPIC] [-f <under-replicated-partitions|under-min-isr-partitions|unavailable-partitions>]
+
+KAFKA_NAMESPACE=<KAFKA_NAMESPACE> [TOPIC=<TOPIC>] [FILTER=<under-replicated-partitions|under-min-isr-partitions|unavailable-partitions>] python get-kafka-topics.py
 
 # Examples
-./get-kafka-topics.sh -n my-kafka
-./get-kafka-topics.sh -n my-kafka -t canary
-./get-kafka-topics.sh -n my-kafka -t canary -f under-replicated-partitions
+KAFKA_NAMESPACE=my-kafka python get-kafka-topics.py
+KAFKA_NAMESPACE=my-kafka python get-kafka-topics.py --log-level-debug
+KAFKA_NAMESPACE=my-kafka TOPIC=canary python get-kafka-topics.py
+KAFKA_NAMESPACE=my-kafka FILTER=under-replicated-partitions python get-kafka-topics.py
 ```
 
 ### Running as managed script
 
-For use as a managed script, parameters are passed as environment variables.
-
 ```bash
-ocm backplane managedjob create CSSRE/get-kafka-topics -p kafka_namespace=<KAFKA_NAMESPACE> [topic=TOPIC] [filter=<under-replicated-partitions|under-min-isr-partitions|unavailable-partitions>]
+ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE> [TOPIC=<TOPIC>] [FILTER=<under-replicated-partitions|under-min-isr-partitions|unavailable-partitions>] [LOG_LEVEL=<LOG_LEVEL>]
 
 # Examples
-ocm backplane managedjob create CSSRE/get-kafka-topics -p kafka_namespace=my-kafka
-ocm backplane managedjob create CSSRE/get-kafka-topics -p kafka_namespace=my-kafka topic=canary
-ocm backplane managedjob create CSSRE/get-kafka-topics -p kafka_namespace=my-kafka topic=canary filter=unavailable-partitions
+ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka
+ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka -p TOPIC=canary
+ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka -p TOPIC=canary -p FILTER=unavailable-partitions
 ```
-
-
 

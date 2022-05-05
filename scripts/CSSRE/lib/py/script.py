@@ -1,13 +1,15 @@
 import sys
 import json
 import os
+import openshift
 
 from py.logger import Logger
 from py.command import Command
 from py.exceptions import ScriptParserNotCreatedError
+from py.exceptions import MissingEnvironmentVariable
+import py.settings as settings
 
 from tabulate import tabulate as tb
-from py.exceptions import MissingEnvironmentVariable
 
 
 class Script:
@@ -35,6 +37,8 @@ class Script:
         self.logger = Logger.get_logger(logger_name)
 
         self.cmd = Command(logger_name=logger_name)
+        self._oc = openshift
+        self.settings = settings
 
         if run_now:
             exit(self.run())
@@ -42,6 +46,10 @@ class Script:
     @property
     def parser(self):
         return self._parser
+    
+    @property
+    def oc(self): 
+        return self._oc
 
     @parser.setter
     def parser(self, value):
