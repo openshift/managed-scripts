@@ -20,26 +20,31 @@ class UnderReplicatedPartitions(Script):
   def run(self):
     self.logger.debug("---Running managed script: Under Replicated Partitions---")
 
-    kafka = Kafka(self._oc, self.settings, logger_name="Under Replicated Partitions")
+    kafka = Kafka(self.oc, self.settings, logger_name="Under Replicated Partitions")
     cluster = kafka.get_kafka_cluster(self.KAFKA_NAMESPACE)
     
     if cluster is None:
-      self.logger.error("No kafka found in namespace %s" % self.KAFKA_NAMESPACE)
-      sys.exit()
+      self.exit(
+        self.logger.error("No kafka found in namespace %s" % self.KAFKA_NAMESPACE)
+      )
     self.logger.info("Found Kafka %s in namespace %s" % (cluster.name(), self.KAFKA_NAMESPACE))
 
     num_pods_ready, num_pods = kafka.check_all_brokers_active(self.KAFKA_NAMESPACE)
     if num_pods_ready < num_pods:
-      self.logger.info(
-        '''There are pods in a not ready state.
-        This is the most likely cause of under replicated partitions and this script will not be able to resolve the under replicated partitions while there are pods in a not ready state.
-        Kafka pods ready: %d/%d''' % (num_pods_ready, num_pods))
-      # sys.exit() TODO
+      self.exit(
+        self.logger.info(
+          '''There are pods in a not ready state.
+          This is the most likely cause of under replicated partitions and this script will not be able to resolve the under replicated partitions while there are pods in a not ready state.
+          Kafka pods ready: %d/%d''' % (num_pods_ready, num_pods))
+      )
+
 
     topics = kafka.run_kafka_topics_script(self.KAFKA_NAMESPACE, cluster.name(), filter="under-replicated-partitions")
     if topics.out().count('Partition') == 0:
-      self.logger.info("There are no under replicated partitions")
-      sys.exit()
+      self.exit(
+        self.logger.info("There are no under replicated partitions")
+      )
+      
     self.logger.info("There are %d under replicated partitions:\n%s" % (topics.out().count('Partition'), topics.out()))
 
     out_of_sync_brokers = kafka.get_out_of_sync_brokers(topics.out())

@@ -81,7 +81,7 @@ class Kafka:
         cmd = cmd + " --" + filter
       try:
         return self._oc.invoke('exec', cmd.split())
-      except self._oc.OpenShiftPythonException as e:
+      except self._oc.OpenShiftPythonException:
         raise StatefulsetExecConnectionError(
           f"Connection to Statefulset failed: statefulset/{kafka}-kafka"
         ) from None
