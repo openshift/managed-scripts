@@ -11,6 +11,67 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "adm"
+      apiGroups:
+        - ""
+      resources:
+        - "inspect"
+    - verbs:
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/exec"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "statefulsets"
+    - verbs:
+        - "get"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "managedkafka.bf2.org"
+      resources:
+        - "managedkafkas"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "kafka.strimzi.io"
+      resources:
+        - "kafkas"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "discovery.k8s.io"
+      resources:
+        - "endpointslice"
+  roles:
+    - namespace: "default"
+      rules:
+        - verbs:
+            - "get"
+            - "list"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
+        - verbs:
+            - "create"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
 envs:
   - key: "resource_namespace"
     description: "Namespace for the Kafka instance you want to query"
