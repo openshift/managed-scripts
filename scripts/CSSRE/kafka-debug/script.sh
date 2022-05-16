@@ -5,6 +5,7 @@ set -o nounset
 
 function main(){
 
+  local resourceNamespaceCheck
   local deploymentCount
   local statefulsetCount
   local kafkaBrokerRequired
@@ -33,6 +34,12 @@ function main(){
   echo "_______________________________________________________________"
   echo " Kafka Resource Status" 
   echo "_______________________________________________________________"
+
+  resourceNamespaceCheck=$(oc get ns -l app.kubernetes.io/managed-by=kas-fleetshard-operator | grep "${resource_namespace}" | awk '{print $1}')
+  if [ "$resourceNamespaceCheck" -ne "$resource_namespace" ]; then
+    echo "No kafka namespace found with specified namespace"
+    exit
+  fi
 
   echo "_______________________________________________________________"
   echo " Deployment/Statefulset Status" 
