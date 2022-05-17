@@ -9,59 +9,34 @@ allowedGroups:
 rbac:
   clusterRoleRules:
     - verbs:
-        - "adm"
+        - "get"
+        - "list"
       apiGroups:
         - ""
       resources:
-        - "inspect"
-    - verbs:
-        - "create"
-      apiGroups:
-        - "apps"
-        - "config.openshift.io"
-        - "app.kubernetes.io"
-      resources:
-        - "pods/exec"
         - "statefulsets"
         - "deployments"
-    - verbs:
-        - "get"
-        - "list"
-      apiGroups:
-        - "apps"
-        - "config.openshift.io"
-        - "app.kubernetes.io"
-      resources:
-        - "statefulsets"
-    - verbs:
-        - "get"
-      apiGroups:
-        - "apps"
-        - "config.openshift.io"
-        - "app.kubernetes.io"
-      resources:
         - "pods"
     - verbs:
-        - "list"
+        - "get"
       apiGroups:
-        - "managedkafka.bf2.org"
-        - "app.kubernetes.io"
+        - ""
       resources:
-        - "managedkafkas"
+        - "persistentvolumes"
+        - "persistentvolumeclaims"
     - verbs:
         - "list"
       apiGroups:
-        - "kafka.strimzi.io"
-        - "app.kubernetes.io"
+        - ""
+      resources:
+        - "secrets"
+        - "configmaps"
+    - verbs:
+        - "list"
+      apiGroups:
+        - ""
       resources:
         - "kafkas"
-    - verbs:
-        - "list"
-      apiGroups:
-        - "discovery.k8s.io"
-        - "app.kubernetes.io"
-      resources:
-        - "endpointslice"
 envs:
   - key: "resource_namespace"
     description: "Namespace for the Kafka instance you want to query"
