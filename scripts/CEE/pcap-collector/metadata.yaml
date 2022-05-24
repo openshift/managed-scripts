@@ -26,6 +26,12 @@ rbac:
       resources:
         - "pods"
     - verbs:
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "nodes"
+    - verbs:
         - "get"
       apiGroups:
         - ""

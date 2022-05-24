@@ -12,7 +12,20 @@ fi
 #VARS
 NS="openshift-backplane-managed-scripts"
 OUTPUTFILE="/tmp/capture-${NODE}.pcap"
-PODNAME="pcap-collector"
+PODNAME="pcap-collector-${NODE}"
+
+NODES=$(oc get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+if [[ ! "${NODES[*]}" =~ ${NODE} ]]
+then
+    echo -e "There is no node with name $NODE in this cluster" >&2
+    exit 1
+fi
+
+if [ "$(oc -n ${NS} get pod ${PODNAME} -o jsonpath='{.metadata.name}' 2>/dev/null)" == "$PODNAME" ]
+then
+    echo -e "There is already a capture pod $PODNAME in $NS namespace. Please investigate and remove if necessary" >&2
+    exit 1
+fi
 
 #Create the capture pod
 oc create -f - >/dev/null 2>&1 <<EOF
@@ -45,7 +58,7 @@ spec:
       kubernetes.io/hostname: ${NODE}
 EOF
 
-while [ "$(oc get pod -n ${NS} ${PODNAME} -o jsonpath='{.status.phase}' 2>/dev/null)" != "Succeeded" ];
+while [ "$(oc -n ${NS} get pod ${PODNAME} -o jsonpath='{.status.phase}' 2>/dev/null)" != "Succeeded" ];
 do
   sleep 1
 done
