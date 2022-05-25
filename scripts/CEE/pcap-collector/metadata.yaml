@@ -1,0 +1,53 @@
+file: script.sh
+name: pcap-collector
+description: |
+  Capture network traffic with tcpdump on a node
+  
+  The response is a gzipped pcap file.
+
+  Examples:
+    # Capture traffic on node ip-10-0-253-170.ap-southeast-2.compute.internal for 10 mins
+    ocm backplane managedjob create CEE/pcap-collector -p TIME=600 -p NODE=ip-10-0-253-170.ap-southeast-2.compute.internal
+    
+    # Getting the resulting pcap file
+    ocm backplane managedjob logs <JOBNAME> | gunzip > node.pcap
+author: John Roche
+allowedGroups:
+  - SREP
+  - CEE
+rbac:
+    clusterRoleRules:
+    - verbs:
+        - "get"
+        - "create"
+        - "delete"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "nodes"
+    - verbs:
+        - "get"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/log"
+    - verbs:
+        - "*"
+      apiGroups:
+        - "security.openshift.io"
+      resources:
+        - "securitycontextconstraints"
+envs:
+  - key: "NODE"
+    description: "The node name"
+    optional: false
+  - key: "TIME"
+    description: "Time in seconds. Can't be greater than 900 seconds (15 mins)"
+    optional: false
+language: bash
