@@ -1,5 +1,5 @@
 from py.logger import Logger
-from py.exceptions import StatefulsetExecConnectionError
+from py.exceptions import StatefulsetExecConnectionError, NotManagedKafkaNamespace
 import copy
 
 class Kafka:
@@ -15,6 +15,20 @@ class Kafka:
   def oc(self): 
       return self._oc
 
+
+  def check_namepace_managed_kafka(self, namespace):
+    """
+    Checks if a given namespace is a managed Kafka namespace, throws an error if it's not.
+
+    Parameters:
+      namespace (str): Namespace to check.
+    """
+    label_value = self._oc.selector('namespace/'+namespace).objects()[0].get_label(self.settings.MANAGED_KAFKA_LABEL_KEY)
+    self.logger.debug("Looking for label %s:%s on namespace %s" % (self.settings.MANAGED_KAFKA_LABEL_KEY,self.settings.MANAGED_KAFKA_LABEL_VALUE, namespace))
+    if label_value != self.settings.MANAGED_KAFKA_LABEL_VALUE:
+      raise NotManagedKafkaNamespace(
+        f"Namespace not labeled {self.settings.MANAGED_KAFKA_LABEL_KEY}:{self.settings.MANAGED_KAFKA_LABEL_VALUE}"
+      )
 
   def get_kafka_cluster(self, namespace):
     """
