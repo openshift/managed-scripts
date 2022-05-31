@@ -1,7 +1,7 @@
-file: get-kafka-topics.py
-name: get-kafka-topics
+file: under-replicated-partitions.py
+name: under-replicated-partitions
 description: |
-  Get topics and partitions details for a given Kafka
+  Debug under replicated partitions alert on a cluster and instruct which brokers should and can be restarted.
 author: Rob Shelly
 allowedGroups:
   - CSSRE
@@ -37,10 +37,6 @@ envs:
   - key: "KAFKA_NAMESPACE"
     description: "Namespace for the Kafka instance you want to query"
     optional: false
-  - key: "TOPIC"
-    description: "A specific topic to show"
-    optional: true
-  - key: "FILTER"
-    description: "Filter to show only partition "
+  - key: "LOG_LEVEL"
     optional: true
 language: python
