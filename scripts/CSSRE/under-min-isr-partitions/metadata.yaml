@@ -1,0 +1,42 @@
+file: under-min-isr-partitions.py
+name: under-min-isr-partitions
+description: |
+  Debug partitions under minimum in-sync replica alert on a cluster and instruct which brokers should and can be restarted.
+author: Rob Shelly
+allowedGroups:
+  - CSSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/exec"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "statefulsets"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "kafka.strimzi.io"
+      resources:
+        - "kafkas"
+envs:
+  - key: "KAFKA_NAMESPACE"
+    description: "Namespace for the Kafka instance you want to query"
+    optional: false
+  - key: "LOG_LEVEL"
+    optional: true
+language: python
