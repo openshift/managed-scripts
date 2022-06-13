@@ -48,6 +48,8 @@ spec:
     - |-
       #!/bin/bash
 
+      set -e
+
       tcpdump -G ${TIME} -W 1 -w ${OUTPUTFILE} -i vxlan_sys_4789 -nn -s0 > /dev/null 2>&1
       gzip ${OUTPUTFILE} --stdout
     securityContext:
@@ -60,9 +62,16 @@ EOF
 
 while [ "$(oc -n ${NS} get pod "${PODNAME}" -o jsonpath='{.status.phase}' 2>/dev/null)" != "Succeeded" ];
 do
+  if [ "$(oc -n ${NS} get pod "${PODNAME}" -o jsonpath='{.status.phase}' 2>/dev/null)" == "Failed" ];
+  then
+    echo "The pcap collector pod has failed. The logs are:"
+    oc -n $NS logs "$PODNAME"
+    oc -n $NS delete pod "$PODNAME"
+    exit 1
+  fi
   sleep 1
 done
 
-oc -n $NS logs "$PODNAME" | gunzip > "$OUTPUTFILE"
+oc -n $NS logs "$PODNAME" > "$OUTPUTFILE"
 oc -n $NS delete pod "$PODNAME" >/dev/null 2>&1
-gzip "$OUTPUTFILE" --stdout
+cat "$OUTPUTFILE"
