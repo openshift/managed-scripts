@@ -21,7 +21,7 @@ class UnderMinIsrPartitions(Script):
     self.logger.debug("---Running managed script: Under Min ISR Partitions---")
 
     kafka = Kafka(self.oc, self.settings, logger_name="Under Min ISR Partitions")
-    kafka.check_namepace_managed_kafka(self.KAFKA_NAMESPACE)
+    kafka.check_namespace_managed_kafka(self.KAFKA_NAMESPACE)
     cluster = kafka.get_kafka_cluster(self.KAFKA_NAMESPACE)
     
     if cluster is None:
