@@ -69,7 +69,7 @@ do
     oc -n $NS delete pod "$PODNAME"
     exit 1
   fi
-  sleep 1
+  sleep 30
 done
 
 oc -n $NS logs "$PODNAME" > "$OUTPUTFILE"
