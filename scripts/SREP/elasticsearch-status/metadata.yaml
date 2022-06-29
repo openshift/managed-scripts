@@ -1,6 +1,6 @@
 file: script.sh
 name: elasticsearch-status # name should be the same as the subdir, eg: SRE/example in this case
-description: script to check status of elastic search on clusters
+description: Check status of elastic search on clusters
 author: lfalconm
 allowedGroups: 
   - SREP

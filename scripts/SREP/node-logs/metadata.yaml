@@ -1,6 +1,6 @@
 file: script.sh
 name: node-logs
-description: read the node logs. Restrict specific logs of oc adm node-logs.
+description: Read the node logs. Restrict specific logs of oc adm node-logs.
 author: feichashao
 allowedGroups:
   - SREP

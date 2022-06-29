@@ -1,6 +1,6 @@
 file: script.sh
 name: manage-silence
-description: Script to list, clear or create silences at alertmanager level for a given cluster
+description: Lists, clears or creates silences at alertmanager level for a given cluster
 author: bdematte
 allowedGroups: 
   - SREP

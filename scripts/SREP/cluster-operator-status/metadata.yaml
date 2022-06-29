@@ -1,6 +1,6 @@
 file: script.sh
 name: cluster-operator-status # name should be the same as the subdir, eg: SRE/example in this case
-description: Retrieve status of the cluster's Cluster Operators
+description: Retrieves status of the cluster's Cluster Operators
 author: mbargenq
 allowedGroups: 
   - SREP

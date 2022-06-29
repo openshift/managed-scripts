@@ -1,5 +1,6 @@
 file: get-kafka-instance-state.sh
 name: get-kafka-instance-state
+shortDescription: Shows logs for the specified Kafka instance.
 description: |
   Print out the logs for the specified Kafka instance.
   The following commands will create a directory with all instance information:

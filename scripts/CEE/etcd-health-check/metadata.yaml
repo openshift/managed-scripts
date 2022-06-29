@@ -1,6 +1,6 @@
 file: script.sh
 name: etcd-health-check
-description: Print out the etcd health info.
+description: Prints out the etcd health info.
 author: feichashao
 allowedGroups: 
   - SREP

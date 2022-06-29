@@ -1,6 +1,6 @@
 file: script.sh
 name: get-targets-down # name should be the same as the subdir, eg: SRE/example in this case
-description: List pods marked as down by cluster Prometheus
+description: Lists pods marked as down by cluster Prometheus
 author: mdewald
 allowedGroups: 
   - SREP

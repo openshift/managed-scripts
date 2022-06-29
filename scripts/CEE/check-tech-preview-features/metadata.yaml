@@ -1,5 +1,6 @@
 file: script.sh
 name: check-tech-preview-features
+shortDescription: Checks and lists any tech preview feature sets are enabled.
 description: Checks if any tech preview feature sets are enabled. If enabled, lists feature set(s) along with its feature gates.
 author: supreeth7
 allowedGroups:
