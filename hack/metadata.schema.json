@@ -13,6 +13,10 @@
       "description": "Parent directory name of the script",
       "type": "string"
     },
+    "shortDescription": {
+      "description": "A shorter description for tables and lists",
+      "type": "string"
+    },
     "description": {
       "description": "A brief description of the script",
       "type": "string"
