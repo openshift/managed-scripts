@@ -1,5 +1,6 @@
 file: get-rhosak-operators.sh
 name: get-rhosak-operators
+shortDescription: Inspect Production resources such as logs, event and managedKafkaAgents for certain namespaces.
 description: |
   The get-rhosak-operators.sh script uses oc adm inspect to get a multitude of Production resources including; logs, events and managedKafkaAgents for the following namespaces:
     * managed-application-services-observability

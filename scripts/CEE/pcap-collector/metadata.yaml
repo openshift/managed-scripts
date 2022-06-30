@@ -1,5 +1,6 @@
 file: script.sh
 name: pcap-collector
+shortDescription: Captures traffic on nodes and produce gzipped pcap file.
 description: |
   Capture network traffic with tcpdump on a node
   

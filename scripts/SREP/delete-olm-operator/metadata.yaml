@@ -1,6 +1,6 @@
 file: script.sh
 name: delete-olm-operator 
-description: Delete all of the olm data in a given namespace (if syncsets are working, it will recreate)
+description: Deletes all of the olm data in a given namespace (if syncsets are working, it will recreate)
 author: gerogettica
 allowedGroups: 
   - SREP

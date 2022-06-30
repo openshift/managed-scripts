@@ -1,6 +1,6 @@
 file: script.sh
 name: list-alerts
-description: Script listing the active/pending alerts in alertmanager. It also provide an option to list active silences. 
+description: Lists the active/pending alerts in alertmanager. It also provide an option to list active silences. 
 author: bdematte
 allowedGroups: 
   - SREP

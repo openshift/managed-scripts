@@ -1,6 +1,6 @@
 file: script.py
 name: get-node-restarts
-description: Script to get list of nodes that are restarted in the last X minutes
+description: Lists of nodes that are restarted in the last X minutes
 author: vbommana
 allowedGroups: 
   - CSSRE

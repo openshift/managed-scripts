@@ -1,7 +1,6 @@
 file: get-kafka-topics.py
 name: get-kafka-topics
-description: |
-  Get topics and partitions details for a given Kafka
+description: Get topics and partitions details for a given Kafka
 author: Rob Shelly
 allowedGroups:
   - CSSRE
