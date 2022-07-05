@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # default is retrieved all firing alerts (critical+warning)
 IS_CRITICAL=1
@@ -16,7 +15,9 @@ function list_prometheus_hosts(){
 
 # Check if the namespaces provided exist
 function check_namespace_exists(){
-	PROMETHEUS_HOSTS_ARRAY=("$NAMESPACES")
+
+    # Read in the list of namespaces from the command line argument
+    read -a PROMETHEUS_HOSTS_ARRAY <<< "$NAMESPACES"
 
 # If a namespace in the list doesn't exist, remove it
 for NAMESPACE in "${PROMETHEUS_HOSTS_ARRAY[@]}" ; do
@@ -96,22 +97,23 @@ function list_alerts(){
 		echo "Retrieving both Critical and Warning alerts"
 	fi
 
-	if [ -n "${PROMETHEUS_HOSTS_ARRAY[@]}" ]
-	then
-		for NAMESPACE in "${PROMETHEUS_HOSTS_ARRAY[@]}" ; do
-			while read -r a b; do declare -A hostarray["$a"]="$b"; done < <(oc get routes -n "${NAMESPACE}" -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name | grep prometheus)
-			done
-		else
-			# If the array is empty, use the default namespace and host (openshift-monitoring prometheus-k8s)
-			hostarray[openshift-monitoring]=prometheus-k8s
-	fi
+    # If the array is not empty, loop through the list and retrieve the Prometheus route from the supplied namespaces
+    if [[ -n "${PROMETHEUS_HOSTS_ARRAY[@]}" ]]
+    then
+	    for NAMESPACE in "${PROMETHEUS_HOSTS_ARRAY[@]}" ; do
+		    while read -r a b; do declare -A hostarray["$a"]="$b"; done < <(oc get routes -n "${NAMESPACE}" -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name | grep prometheus)
+		    done
+	    else
+		    # If the array is empty, use the default namespace and host (openshift-monitoring prometheus-k8s)
+		    hostarray[openshift-monitoring]=prometheus-k8s
+    fi
 
-	for host in "${!hostarray[@]}" ; do
-		echo "Retrieving alerts from the ${hostarray[$host]} Prometheus instance in the ${host} namespace:"
-		PROM_HOST=$(_get_host ${host} ${hostarray[$host]})
-		PROM_TOKEN=$(oc -n ${host} sa get-token ${hostarray[$host]})
-		# The alertmanager route name differs for each namespace, so we need to retrieve it dynamically
-		AM_HOST=$(_get_host "${host}" "$(oc get routes -n ${host} -o custom-columns=NAME:.metadata.name | grep alertmanager)")
+    for host in "${!hostarray[@]}" ; do
+	    echo "Retrieving alerts from the ${hostarray[$host]} Prometheus instance in the ${host} namespace:"
+	    PROM_HOST=$(_get_host ${host} ${hostarray[$host]})
+	    PROM_TOKEN=$(oc -n ${host} sa get-token ${hostarray[$host]})
+	    # The alertmanager route name differs for each namespace, so we need to retrieve it dynamically
+	    AM_HOST=$(_get_host "${host}" "$(oc get routes -n ${host} -o custom-columns=NAME:.metadata.name | grep alertmanager)")
 
 # Only set these if we need them
 if [[ $((IS_CRITICAL+IS_WARNING)) -gt 0 ]] ; then
