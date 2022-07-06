@@ -47,13 +47,13 @@ ocm backplane managedjob create CEE/list-alerts
 ```
 
 #### Host Options
-The `NAMESPACES` environment variable which is a list of namespaces containing a Prometheus instance that you want to check the alerts in:
+The `NAMESPACES_TO_CHECK` environment variable which is a list of namespaces containing a Prometheus instance that you want to check the alerts in:
 ```bash
 # Checks Prometheus the application-services-observability namespace only
-ocm backplane managedjob create CEE/list-alerts -p NAMESPACES="application-services-observability"
+ocm backplane managedjob create CEE/list-alerts -p NAMESPACES_TO_CHECK="application-services-observability"
 
 # Checks Prometheus in the application-services-observability and user-observability namespaces
-ocm backplane managedjob create CEE/list-alerts -p NAMESPACES="application-services-observability user-observability"
+ocm backplane managedjob create CEE/list-alerts -p NAMESPACES_TO_CHECK="application-services-observability user-observability"
 
 # [Default] Checks the openshift-monitoring Prometheus instance only
 ocm backplane managedjob create CEE/list-alerts 

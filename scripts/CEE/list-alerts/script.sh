@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # default is retrieved all firing alerts (critical+warning)
 IS_CRITICAL=1
@@ -17,12 +18,12 @@ function list_prometheus_hosts(){
 function check_namespace_exists(){
 
     # Read in the list of namespaces from the command line argument
-    read -a PROMETHEUS_HOSTS_ARRAY <<< "$NAMESPACES"
+    read -r -a PROMETHEUS_HOSTS_ARRAY <<< "$NAMESPACES_TO_CHECK"
 
 # If a namespace in the list doesn't exist, remove it
 for NAMESPACE in "${PROMETHEUS_HOSTS_ARRAY[@]}" ; do
 	if [[ $(oc get project "${NAMESPACE}" --no-headers) == "" ]]; then
-		unset PROMETHEUS_HOSTS_ARRAY[$NAMESPACE]
+		unset "PROMETHEUS_HOSTS_ARRAY[$NAMESPACE]"
 	fi
 done
 }
@@ -98,7 +99,7 @@ function list_alerts(){
 	fi
 
     # If the array is not empty, loop through the list and retrieve the Prometheus route from the supplied namespaces
-    if [[ -n "${PROMETHEUS_HOSTS_ARRAY[@]}" ]]
+    if (( ${#PROMETHEUS_HOSTS_ARRAY[@]} ))
     then
 	    for NAMESPACE in "${PROMETHEUS_HOSTS_ARRAY[@]}" ; do
 		    while read -r a b; do declare -A hostarray["$a"]="$b"; done < <(oc get routes -n "${NAMESPACE}" -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name | grep prometheus)
