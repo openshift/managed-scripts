@@ -16,7 +16,7 @@ class Kafka:
       return self._oc
 
 
-  def check_namepace_managed_kafka(self, namespace):
+  def check_namespace_managed_kafka(self, namespace):
     """
     Checks if a given namespace is a managed Kafka namespace, throws an error if it's not.
 
