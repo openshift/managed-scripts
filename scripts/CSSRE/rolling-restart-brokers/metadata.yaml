@@ -1,0 +1,43 @@
+file: rolling-restart-brokers.sh
+name: rolling-restart-brokers
+description: Manually roll the Kafka brokers
+author: Pat Cremin
+allowedGroups:
+  - CSSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "statefulsets"
+    - verbs:
+        - "get"
+        - "list"
+        - "patch"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "kafka.strimzi.io"
+      resources:
+        - "kafkas"
+    -verbs:
+        - "get"
+        - "list"
+envs:
+  - key: "kafka_namespace"
+    description: "Namespace for the Kafka instance you want to query"
+    optional: false
+  - key: "broker"
+    description: "Specify the statefulset to annotate"
+    optional: true
+  - key: "pod"
+    description: "Specific pod to manually roll"
+    optional: true
+language: bash
