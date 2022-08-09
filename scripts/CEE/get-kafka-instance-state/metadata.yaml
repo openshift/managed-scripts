@@ -83,4 +83,7 @@ envs:
   - key: "since_time"
     description: "This is being passed to use the --since-time flag used by oc adm inspect. Timestamp is in RFC 3339 format. Only one of since-time/since may be used"
     optional: true
+  - key: "max_transaction_timeout"
+    description: "Max transaction timeout in minutes to use when querying for hanging transactions"
+    optional: true
 language: bash

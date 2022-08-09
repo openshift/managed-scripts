@@ -42,11 +42,35 @@ function main() {
   oc exec -n "${resource_namespace}" "${kafkaStatefulSet}" -c kafka -- sh /opt/kafka/bin/kafka-acls.sh \
     --bootstrap-server localhost:9096 --list > "${inspectDir}"/kafka-acls.txt 2>&1
 
+  get-transaction-info
+
   find "${inspectDir}" -type f -name secrets.yaml -delete
 
   find "${inspectDir}" -path '*/managedkafkas/*' -name "*.yaml" -exec sed -i '/password:/d' {} \;
 
   tar zcf - ./"${inspectDir}"
+}
+
+function get-transaction-info() {
+    local broker_ids
+    broker_ids=$(oc exec -n "${resource_namespace}" "${kafkaStatefulSet}" -c kafka -- \
+                          ./bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9096 \
+                           | grep 9096 | sed -e 's/^.*id: //' -e 's/ rack.*$//')
+
+    local txDir
+    txDir="${inspectDir}/kafka-transactions"
+    mkdir -p "${txDir}"
+
+    oc exec -n "${resource_namespace}" "${kafkaStatefulSet}" -c kafka -- sh /opt/kafka/bin/kafka-transactions.sh \
+       --bootstrap-server localhost:9096 list > "${txDir}"/kafka-transactions-list.txt 2>&1
+
+    for b in ${broker_ids}; do
+        oc exec -n "${resource_namespace}" "${kafkaStatefulSet}" -c kafka -- sh /opt/kafka/bin/kafka-transactions.sh \
+           --bootstrap-server localhost:9096 find-hanging \
+           --max-transaction-timeout "${max_transaction_timeout:-15}" \
+           --broker-id "${b}" > "${txDir}/kafka-transactions-hanging-${b}.txt" 2>&1 &
+    done
+    wait -f
 }
 
 main
