@@ -1,0 +1,54 @@
+file: describe-kafka-transaction.sh
+name: describe-kafka-transaction
+shortDescription: Describe the specified transaction in the Kafka instance
+description: Describe the specified transaction in the Kafka instance
+author: grdryn
+allowedGroups:
+  - SREP
+  - CSSRE
+  - CEE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/exec"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "statefulsets"
+    - verbs:
+        - "get"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+  roles:
+    - namespace: "default"
+      rules:
+        - verbs:
+            - "get"
+            - "list"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
+        - verbs:
+            - "create"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/exec"
+envs:
+  - key: resource_namespace
+    description: Namespace for the Kafka instance you want to query
+    optional: false
+  - key: transactional_id
+    description: Transaction ID
+    optional: false
+language: bash
