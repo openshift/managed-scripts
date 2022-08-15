@@ -27,6 +27,19 @@ then
     exit 1
 fi
 
+NETWORKTYPE=$(oc get network cluster -o jsonpath='{.spec.networkType}')
+
+case "$NETWORKTYPE" in
+    "OpenShiftSDN") INTERFACE="vxlan_sys_4789"
+    ;;
+    "OVNKubernetes") INTERFACE="genev_sys_6081"
+    ;;
+    *) echo "NetworkType is not OpenShiftSDN or OVNKubernetes"
+    exit 1
+    ;;
+esac
+
+
 #Create the capture pod
 oc create -f - >/dev/null 2>&1 <<EOF
 apiVersion: v1
@@ -50,7 +63,7 @@ spec:
 
       set -e
 
-      tcpdump -G ${TIME} -W 1 -w ${OUTPUTFILE} -i vxlan_sys_4789 -nn -s0 > /dev/null 2>&1
+      tcpdump -G ${TIME} -W 1 -w ${OUTPUTFILE} -i ${INTERFACE} -nn -s0 > /dev/null 2>&1
       gzip ${OUTPUTFILE} --stdout
     securityContext:
       capabilities:

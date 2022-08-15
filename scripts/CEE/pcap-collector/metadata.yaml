@@ -44,6 +44,12 @@ rbac:
         - "security.openshift.io"
       resources:
         - "securitycontextconstraints"
+    - verbs:
+        - "get"
+      apiGroups:
+        - "config.openshift.io"
+      resources:
+        - "network"        
 envs:
   - key: "NODE"
     description: "The node name"
