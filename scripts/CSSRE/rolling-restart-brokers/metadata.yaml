@@ -13,6 +13,13 @@ rbac:
         - "apps"
       resources:
         - "statefulsets"
+        - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "apps"
+      resources:
+        - "strimzipodsets"
     - verbs:
         - "get"
         - "list"
@@ -27,7 +34,7 @@ rbac:
         - "kafka.strimzi.io"
       resources:
         - "kafkas"
-    -verbs:
+    - verbs:
         - "get"
         - "list"
 envs:
@@ -35,7 +42,7 @@ envs:
     description: "Namespace for the Kafka instance you want to query"
     optional: false
   - key: "broker"
-    description: "Specify the statefulset to annotate"
+    description: "Specify the statefulset or strimzipodset to annotate"
     optional: true
   - key: "pod"
     description: "Specific pod to manually roll"
