@@ -49,7 +49,7 @@ rbac:
       apiGroups:
         - "config.openshift.io"
       resources:
-        - "network"        
+        - "networks"        
 envs:
   - key: "NODE"
     description: "The node name"
