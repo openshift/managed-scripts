@@ -70,7 +70,7 @@ function get-transaction-info() {
            --max-transaction-timeout "${max_transaction_timeout:-15}" \
            --broker-id "${b}" > "${txDir}/kafka-transactions-hanging-${b}.txt" 2>&1 &
     done
-    wait -f
+    wait
 }
 
 main
