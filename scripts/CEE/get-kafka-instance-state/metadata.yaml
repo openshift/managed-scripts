@@ -54,6 +54,12 @@ rbac:
     - verbs:
         - "list"
       apiGroups:
+        - "core.strimzi.io"
+      resources:
+        - "strimzipodsets"
+    - verbs:
+        - "list"
+      apiGroups:
         - "discovery.k8s.io"
       resources:
         - "endpointslice"
