@@ -19,9 +19,9 @@ rbac:
         - "get"
         - "list"
       apiGroups:
-        - "apps"
+        - ""
       resources:
-        - "statefulsets"
+        - "services"
     - verbs:
         - "get"
       apiGroups:

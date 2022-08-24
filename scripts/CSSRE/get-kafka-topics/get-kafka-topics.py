@@ -10,7 +10,7 @@ from py.kafka import Kafka
 
 class KafkaTopics(Script):
   def __init__(self):
-    super().__init__(logger_name="Under Replicated Partitions", env_vars=["KAFKA_NAMESPACE", "TOPIC", "FILTER"], check_env_var=False)
+    super().__init__(logger_name="Kafka Topics", env_vars=["KAFKA_NAMESPACE", "TOPIC", "FILTER"], check_env_var=False)
 
   def create_parser(self):
     self.parser = argparse.ArgumentParser(description="Checks for Kafka under replicated partitions.")

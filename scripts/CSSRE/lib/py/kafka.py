@@ -1,5 +1,5 @@
 from py.logger import Logger
-from py.exceptions import StatefulsetExecConnectionError, NotManagedKafkaNamespace
+from py.exceptions import NotManagedKafkaNamespace, ServiceExecConnectionError
 import copy
 
 class Kafka:
@@ -88,7 +88,7 @@ class Kafka:
     """
     with self._oc.project(namespace), self._oc.timeout(self.settings.OC_TIMEOUT_5_MINUTES):
 
-      cmd = "-i statefulset/"+kafka+"-kafka -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe "
+      cmd = "-i svc/"+kafka+"-kafka-bootstrap -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe "
       if topic:
         cmd = cmd + " --topic " + topic
       if filter:
@@ -96,8 +96,8 @@ class Kafka:
       try:
         return self._oc.invoke('exec', cmd.split())
       except self._oc.OpenShiftPythonException:
-        raise StatefulsetExecConnectionError(
-          f"Connection to Statefulset failed: statefulset/{kafka}-kafka"
+        raise ServiceExecConnectionError(
+          f"Connection to Kafka: {kafka}-kafka bootstrap failed"
         ) from None
 
 
