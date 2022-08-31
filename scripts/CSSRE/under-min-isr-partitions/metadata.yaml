@@ -17,13 +17,6 @@ rbac:
         - "get"
         - "list"
       apiGroups:
-        - "apps"
-      resources:
-        - "statefulsets"
-    - verbs:
-        - "get"
-        - "list"
-      apiGroups:
         - ""
       resources:
         - "pods"
@@ -33,6 +26,12 @@ rbac:
         - "kafka.strimzi.io"
       resources:
         - "kafkas"
+    - verbs:
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "services"
 envs:
   - key: "KAFKA_NAMESPACE"
     description: "Namespace for the Kafka instance you want to query"
