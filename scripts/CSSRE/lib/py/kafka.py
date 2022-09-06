@@ -74,7 +74,7 @@ class Kafka:
     return (num_pods_ready, len(pods))
 
 
-  def run_kafka_topics_script(self, namespace, kafka, topic="", filter="") :
+  def run_kafka_topics_script(self, namespace, kafka, topic="", filter=""):
     """
     Runs the kafka-topics.sh script on a kafka pod in a given namespace.
 
@@ -87,14 +87,14 @@ class Kafka:
       (apiobject): OpenShift API object with description of topics and partitions.
     """
     with self._oc.project(namespace), self._oc.timeout(self.settings.OC_TIMEOUT_5_MINUTES):
-
-      cmd = "-i svc/"+kafka+"-kafka-bootstrap -c kafka -- env - bin/kafka-topics.sh --bootstrap-server localhost:9096 --describe "
+      cmd = ["-i", "svc/" + kafka + "-kafka-bootstrap", "-c", "kafka", "--", "env", "-",
+             "bin/kafka-topics.sh", "--bootstrap-server", "localhost:9096", "--describe"]
       if topic:
-        cmd = cmd + " --topic " + topic
+        cmd += ["--topic", topic]
       if filter:
-        cmd = cmd + " --" + filter
+        cmd += ["--", filter]
       try:
-        return self._oc.invoke('exec', cmd.split())
+        return self._oc.invoke('exec', cmd)
       except self._oc.OpenShiftPythonException:
         raise ServiceExecConnectionError(
           f"Connection to Kafka: {kafka}-kafka bootstrap failed"
