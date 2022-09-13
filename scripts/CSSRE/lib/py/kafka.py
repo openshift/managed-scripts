@@ -92,7 +92,7 @@ class Kafka:
       if topic:
         cmd += ["--topic", topic]
       if filter:
-        cmd += ["--", filter]
+        cmd.append(f"--{filter}")
       try:
         return self._oc.invoke('exec', cmd)
       except self._oc.OpenShiftPythonException:
