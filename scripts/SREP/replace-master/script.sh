@@ -16,7 +16,7 @@ then
     return 1
 fi
 
-if ! [[ "$machine" =~ ^[a-zA-Z0-9\-]+$ ]]
+if ! [[ "$machine" =~ ^[a-zA-Z0-9-]+$ ]]
 then
     echo "ERROR: the machine name should only include lower case characters or hyphen"
     return 1
@@ -25,7 +25,7 @@ fi
 ### only support cluster <= 4.10
 echo "INFO: validating if cluster version is supported"
 VERSION=$(oc version -o json | jq ".openshiftVersion")
-grep -E '4.8|4.9|4.10' <<< $VERSION || { echo "ERROR: only support cluster version 4.8, 4.9 and 4.10"; return 1; }
+grep -E '4.8|4.9|4.10' <<< "$VERSION" || { echo "ERROR: only support cluster version 4.8, 4.9 and 4.10"; return 1; }
 
 ### fail if an upgrade is running
 echo "INFO: validating if cluster upgrade is on-going"
@@ -73,7 +73,7 @@ done
 ### fail if the other 2 etcd members are not healthy
 echo "INFO: validating if the other 2 etcd members are healthy"
 ETCD_POD=$(oc get pod -n $ETCD_NS  -l etcd=true | grep Running | head -n1 | awk '{print $1}')
-ETCD_MEMBERS=$(oc rsh -n $ETCD_NS -c etcdctl $ETCD_POD etcdctl member list -w simple)
+ETCD_MEMBERS=$(oc rsh -n $ETCD_NS -c etcdctl "$ETCD_POD" etcdctl member list -w simple)
 for node in $OTHER_MASTER_NODES
 do
     if [[ $( { grep "$node" || true; } <<< "$ETCD_MEMBERS" | { grep started || true; } | wc -l) -ne 1 ]]
@@ -90,6 +90,7 @@ ORIGN_MASTER_JSON=$(oc -n "$MACHINE_NS" get machine "$machine" -o json)
 SPEC=$(jq '.spec' <<< "$ORIGN_MASTER_JSON" | jq '.providerID |= ""')
 API_VERSION=$(jq -r '.apiVersion' <<< "$ORIGN_MASTER_JSON")
 LABELS=$(jq '.metadata.labels' <<< "$ORIGN_MASTER_JSON")
+# shellcheck disable=SC2016
 NEW_MASTER_JSON=$( jq -n \
                   --arg apiVersion "$API_VERSION" \
                   --arg name "$machine" \
@@ -101,7 +102,7 @@ NEW_MASTER_JSON=$( jq -n \
 ### delete the master machine
 ### usually the oc delete command will block until the machine is gone.
 ### in some cases when the master node is gone, the oc command will fail to watch the status, so sleep 300s in such case.
-oc delete machine $machine -n $MACHINE_NS || sleep 300
+oc delete machine "$machine" -n $MACHINE_NS || sleep 300
 
 ### check if only 2 running masters are left
 echo "INFO: wait for the original master gone"
@@ -130,14 +131,14 @@ post_replace() {
 echo "INFO: deleting the orphan secrects"
 LIVING_MASTERS=$(oc get node -l node-role.kubernetes.io/master --no-headers -o custom-columns=NAME:.metadata.name)
 ORPHAN_SECRETS=$(oc get secret -n $ETCD_NS --no-headers -o custom-columns=NAME:.metadata.name | grep -E 'etcd-serving-|etcd-peer-|etcd-serving-metrics-')
-for master in "$LIVING_MASTERS"
+for master in $LIVING_MASTERS
 do
     ORPHAN_SECRETS=$( { grep -v "$master" || true; } <<< "$ORPHAN_SECRETS")
 done
 
-for scrt in $(echo $ORPHAN_SECRETS)
+for scrt in $ORPHAN_SECRETS
 do
-    oc delete secret $scrt -n $ETCD_NS
+    oc delete secret "$scrt" -n $ETCD_NS
 done
 
 oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "single-master-recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
@@ -145,14 +146,14 @@ oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "single-master-re
 ## delete orphan etcd member
 echo "INFO: deleting the orphan etcd member"
 ETCD_POD=$(oc get pod -n $ETCD_NS  -l etcd=true | grep Running | head -n1 | awk '{print $1}')
-ETCD_MEMBERS=$(oc rsh -n $ETCD_NS -c etcdctl $ETCD_POD etcdctl member list -w simple)
+ETCD_MEMBERS=$(oc rsh -n $ETCD_NS -c etcdctl "$ETCD_POD" etcdctl member list -w simple)
 ETCD_MEM_TO_DELETE=$ETCD_MEMBERS
 for master in $LIVING_MASTERS
 do
-    ETCD_MEM_TO_DELETE=$({ grep -v $master || true; } <<< $ETCD_MEM_TO_DELETE)
+    ETCD_MEM_TO_DELETE=$({ grep -v "$master" || true; } <<< "$ETCD_MEM_TO_DELETE")
 done
 
-if [[ $(wc -l <<< $ETCD_MEM_TO_DELETE) -gt 1 ]]
+if [[ $(wc -l <<< "$ETCD_MEM_TO_DELETE") -gt 1 ]]
 then
     echo "ERROR: There are more than 1 etcd members have no corresponding running masters, need human investigation"
     return 1
@@ -160,8 +161,8 @@ fi
 
 if [[ -n $ETCD_MEM_TO_DELETE ]]
 then
-    ETCD_ID_TO_DELETE=$(awk -F',' '{print $1}' <<< $ETCD_MEM_TO_DELETE)
-    oc rsh -n $ETCD_NS -c etcdctl $ETCD_POD etcdctl member remove $ETCD_ID_TO_DELETE
+    ETCD_ID_TO_DELETE=$(awk -F',' '{print $1}' <<< "$ETCD_MEM_TO_DELETE")
+    oc rsh -n $ETCD_NS -c etcdctl "$ETCD_POD" etcdctl member remove "$ETCD_ID_TO_DELETE"
 fi
 
 ## wait until it succeed
@@ -172,8 +173,8 @@ while [[ $RETRY -gt 0 ]]
 do
     RETRY=$((RETRY-1))
     sleep 60
-    EP_HEALTH_INFO=$( { (oc rsh -n $ETCD_NS -c etcdctl $ETCD_POD etcdctl endpoint health -w fields) || true; })
-    if [[ $( { grep "true" || true; } <<< $EP_HEALTH_INFO | wc -l ) -eq 3 ]]
+    EP_HEALTH_INFO=$( { (oc rsh -n $ETCD_NS -c etcdctl "$ETCD_POD" etcdctl endpoint health -w fields) || true; })
+    if [[ $( { grep "true" || true; } <<< "$EP_HEALTH_INFO" | wc -l ) -eq 3 ]]
     then
         SUCCEED=1
         break
