@@ -1,0 +1,83 @@
+file: script.sh
+name: replace-master
+description: Replace a master machine with a new one. Make sure to backup the machine YAML before executing this script.
+author: feichashao
+allowedGroups: 
+  - SREP
+rbac:
+    roles:
+      - namespace: "openshift-machine-api"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "create"
+            - "delete"
+            apiGroups:
+            - "machine.openshift.io"
+            resources:
+            - "machines"
+      - namespace: "openshift-etcd"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "create"
+            apiGroups:
+            - ""
+            resources:
+            - "pods"
+          - verbs:
+            - "create"
+            apiGroups:
+            - ""
+            resources:
+            - "pods/exec"
+          - verbs:
+            - "get"
+            - "list"
+            - "delete"
+            apiGroups:
+            - ""
+            resources:
+            - "secrets"
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+          apiGroups:
+            - "upgrade.managed.openshift.io"
+          resources:
+            - "upgradeconfigs"
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+          apiGroups:
+            - ""
+          resources:
+            - "nodes"
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "patch"
+          apiGroups:
+            - "operator.openshift.io"
+          resources:
+            - "etcds"
+        - verbs:
+            - "get"
+          apiGroups:
+            - "config.openshift.io"
+          resources:
+            - "clusteroperators"
+            - "clusterversions"
+envs:
+  - key: "MACHINE"
+    description: "the name of the machine to be replaced"
+    optional: false
+language: bash
