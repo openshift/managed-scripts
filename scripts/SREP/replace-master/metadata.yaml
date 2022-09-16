@@ -1,6 +1,6 @@
 file: script.sh
 name: replace-master
-description: Replace a master machine with a new one. Do backup the machine yaml before executing this script.
+description: Replace a master machine with a new one. Make sure to backup the machine YAML before executing this script.
 author: feichashao
 allowedGroups: 
   - SREP
@@ -77,7 +77,7 @@ rbac:
             - "clusteroperators"
             - "clusterversions"
 envs:
-  - key: "machine"
+  - key: "MACHINE"
     description: "the name of the machine to be replaced"
     optional: false
 language: bash
