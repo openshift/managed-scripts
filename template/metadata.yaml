@@ -1,0 +1,19 @@
+file: script.sh
+name: template
+description: A template for managed scripts which lists master machines of the logged in cluster.
+author: supreeth7
+allowedGroups:
+  - SREP
+rbac:
+  roles:
+    - namespace: "openshift-machine-api"
+      rules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+          apiGroups:
+            - "machine.openshift.io"
+          resources:
+            - "machines"
+language: bash
