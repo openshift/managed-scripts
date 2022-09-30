@@ -1,0 +1,86 @@
+file: get-rhoc-connector-info.sh
+name: get-rhoc-connector-info
+shortDescription: Collect information for the specific conenctor instance.
+description: |
+  Collect information for the specific conenctor instance.
+  Data is stored in a directory named "inspect.${connector_id}.${timestamp}"
+author: lburgazz
+allowedGroups:
+  - SREP
+  - CSSRE
+  - CEE
+rbac:
+  clusterRoleRules:
+    # connectors   
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "cos.bf2.org"
+      resources:
+        - "managedconnectors"
+    # camel-k   
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "camel.apache.org"
+      resources:
+        - "kameletbindings"
+        - "integrations"
+        - "integrationkits"
+    # kafkaconnect   
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "kafka.strimzi.io/"
+      resources:
+        - "kafkaconnectors"
+        - "kafkaconnects"
+    - verbs:
+        - "list"
+        - "get"
+      apiGroups:
+        - "policy"
+      resources:
+        - "poddisruptionbudgets"
+    - verbs:
+        - "list"
+        - "get"
+      apiGroups:
+        - "networking.k8s.io"
+      resources:
+        - "networkpolicies"
+    - verbs:
+        - "list"
+      apiGroups:
+        - "discovery.k8s.io"
+      resources:
+        - "endpointslice"
+    # common 
+    - verbs:
+        - "list"
+        - "get"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+        - "services"
+        - "configmaps"
+    - verbs:
+        - "list"
+        - "get"
+      apiGroups:
+        - "apps"
+      resources:
+        - "deployments"
+        - "replicasets"
+envs:
+  - key: "connector_id"
+    description: "The ID of the connector you want to query"
+    optional: false
+  - key: "nologs"
+    description: "This disable log collection"
+    optional: true
+language: bash
