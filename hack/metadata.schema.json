@@ -40,6 +40,26 @@
         "type": "string"
       }
     },
+    "labels": {
+      "type": "array",
+      "description": "Labels that apply to this script",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "description": "Key of the label",
+            "type": "string"
+          },
+          "values": {
+            "description": "Values for the label",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "envs": {
       "type": "array",
       "description": "The environment variables declared on the script",
