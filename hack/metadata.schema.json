@@ -50,6 +50,10 @@
             "description": "Key of the label",
             "type": "string"
           },
+          "description": {
+            "description": "A bried description of the label",
+            "type": "string"
+          },
           "values": {
             "description": "Values for the label",
             "type": "array",
