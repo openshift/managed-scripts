@@ -51,7 +51,7 @@
             "type": "string"
           },
           "description": {
-            "description": "A bried description of the label",
+            "description": "A brief description of the label",
             "type": "string"
           },
           "values": {
