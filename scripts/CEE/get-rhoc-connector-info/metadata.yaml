@@ -9,6 +9,7 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
+  - MTSRE
 rbac:
   clusterRoleRules:
     # connectors   
