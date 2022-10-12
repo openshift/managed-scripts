@@ -7,6 +7,12 @@ allowedGroups:
   - CSSRE
   - CEE
   - MTSRE
+labels:
+  - key: OSD_TYPES
+    description: Which cluster types to run this script on
+    values:
+      - OSD
+      - HyperShift
 rbac:
     roles:
       - namespace: "openshift-monitoring"
