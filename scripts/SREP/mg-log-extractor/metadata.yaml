@@ -9,6 +9,12 @@ description: |
 author: tfahlman
 allowedGroups: 
   - SREP
+labels:
+  - key: OSD_TYPES
+    description: Which cluster types to run this script on
+    values:
+      - OSD
+      - HyperShift
 rbac:
     clusterRoleRules:
         - verbs:
