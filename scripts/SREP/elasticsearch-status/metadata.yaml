@@ -6,6 +6,11 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
+labels:
+  - key: OSD_TYPES
+    description: Which cluster types to run this script on
+    values:
+      - OSD
 rbac:
     roles:
       - namespace: "openshift-monitoring"
