@@ -14,21 +14,21 @@ oc get \
     ManagedConnector,KameletBinding,Integration,IntegrationKit,KafkaConnect,KafkaConnector,Deployment,ReplicaSet,Pod,PodDisruptionBudget,NetworkPolicy,ConfigMap,Service,EndpointSlice \
     -l cos.bf2.org/connector.id="${connector_id}" \
     --all-namespaces \
-    -o yaml > ${outputDir}/resources.yaml
+    -o yaml > "${outputDir}/resources.yaml"
        
-PODS=$(oc get pods --selector=cos.bf2.org/connector.id="${connector_id}" --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{";"}{.metadata.name}{" "}{end}')
+NAMESPACED_NAMES=$(oc get pods --selector=cos.bf2.org/connector.id="${connector_id}" --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{";"}{.metadata.name}{" "}{end}')
 NAMESPACE=""
 
-for POD in $PODS; do
-    ITEMS=(${POD//;/ })
-    NAMESPACE="${ITEMS[0]}"
+for NAMESPACED_NAME in $NAMESPACED_NAMES; do
+    NAMESPACE=$(echo "${NAMESPACED_NAME}"| cut -d ";" -f 1)
+    POD=$(echo "${NAMESPACED_NAME}"| cut -d ";" -f 2)
 
-    if [ -z ${nologs+x} ]; then
-        echo "Collecting logs for pod ${ITEMS[1]} in namespace ${ITEMS[0]}"         
-        oc logs ${ITEMS[1]} --namespace ${ITEMS[0]} | sed -e 's/\x1b\[[0-9;]*m//g' > ${outputDir}/log-${ITEMS[0]}-${ITEMS[1]}.txt
+    if [ -z "${nologs+x}" ]; then
+        echo "Collecting logs for pod ${POD} in namespace ${NAMESPACE}"         
+        oc logs "${POD}" --namespace "${NAMESPACE}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${outputDir}/log-${NAMESPACE}-${POD}.txt"
     fi
 done
 
 echo "Collecting events for namespace ${NAMESPACE}"         
 
-oc get events --namespace ${NAMESPACE} -o yaml > ${outputDir}/events-${NAMESPACE}.yaml
+oc get events --namespace "${NAMESPACE}" -o yaml > "${outputDir}/events-${NAMESPACE}.yaml"
