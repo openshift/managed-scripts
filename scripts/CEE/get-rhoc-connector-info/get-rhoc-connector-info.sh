@@ -29,6 +29,9 @@ for NAMESPACED_NAME in $NAMESPACED_NAMES; do
     fi
 done
 
-echo "Collecting events for namespace ${NAMESPACE}"         
+echo "Collecting events for namespace ${NAMESPACE}" 
 
 oc get events --namespace "${NAMESPACE}" -o yaml > "${outputDir}/events-${NAMESPACE}.yaml"
+
+# collect events in text format as well
+oc get events --namespace "${NAMESPACE}" > "${outputDir}/events-${NAMESPACE}.txt"
