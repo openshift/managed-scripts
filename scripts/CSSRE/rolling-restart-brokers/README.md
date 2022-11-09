@@ -1,4 +1,4 @@
-# get-kafka-topics
+# rolling-restart-brokers
 
 This scripts runs the `rolling-restart-brokers.sh` script to manually roll the Kafka brokers. Up to Strimzi v0.32.x both Statefulsets and Strimzipodsets may be enabled. Beyond v0.32.x only Strimzipodsets will work. 
 
