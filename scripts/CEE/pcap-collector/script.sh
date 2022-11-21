@@ -2,8 +2,9 @@
 
 set -e
 
-#check the time is less than 900 (15 mins)
-if [ "$TIME" -gt 900 ];
+# Assume if a user does not specify a duration of the pcap-collector
+# session, it's 15 minutes (the maximum). Otherwise throw an error if it's more.
+if [ "${TIME:=900}" -gt 900 ];
 then
     echo -e "Time must be less than or equal to 900" >&2
     exit 1
@@ -63,7 +64,13 @@ spec:
 
       set -e
 
-      tcpdump -G ${TIME} -W 1 -w ${OUTPUTFILE} -i ${INTERFACE} -nn -s0 > /dev/null 2>&1
+      # Use tcpdump to exit and print any syntax errors in pcap filter expression,
+      # otherwise suppress output.
+      # See -d flag: https://www.tcpdump.org/manpages/tcpdump.1.html
+      # SO: https://stackoverflow.com/a/43211333
+      tcpdump -i ${INTERFACE} -d ${FILTERS} 1> /dev/null
+
+      tcpdump -G ${TIME} -W 1 -w ${OUTPUTFILE} -i ${INTERFACE} -nn -s0 ${FILTERS} > /dev/null 2>&1
       gzip ${OUTPUTFILE} --stdout
     securityContext:
       capabilities:
