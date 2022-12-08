@@ -48,6 +48,7 @@ esac
 oc -n $NS get secret "${SECRET_NAME}" 1>/dev/null
 
 #Create the capture pod
+# shellcheck disable=SC1039
 oc create -f -  >/dev/null 2>&1 <<EOF
 apiVersion: v1
 kind: Pod
@@ -115,11 +116,10 @@ spec:
 
       # upload file and detect any errors
       echo "Uploading ${SFTP_FILENAME}..."
-      sshpass -e sftp ${SFTP_OPTIONS} - \${username}@${FTP_HOST} << "
+      sshpass -e sftp ${SFTP_OPTIONS} - \${username}@${FTP_HOST} << EOF
           put /home/mustgather/${SFTP_FILENAME} \${REMOTE_FILENAME}
           bye
-      "
-
+      EOF
 
       if [[ \$? == 0 ]];
       then
