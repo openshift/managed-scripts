@@ -18,11 +18,11 @@ rbac:
             resources:
             - "serviceaccounts"
           - verbs:
-            - "get"
+            - "create"
             apiGroups:
             - ""
             resources:
-            - "secrets"
+            - "serviceaccounts/token"
     clusterRoleRules:
     - verbs:
       - "get"
