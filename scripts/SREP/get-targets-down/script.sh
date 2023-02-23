@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-TOKEN="$(oc -n openshift-monitoring sa get-token prometheus-k8s)"
+TOKEN="$(oc -n openshift-monitoring create token prometheus-k8s)"
 
 TARGETS_JSON="$(curl -G -s -k -H "Authorization: Bearer $TOKEN" "https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091/api/v1/targets")"
 TARGETS_DOWN="$(jq -r '.data.activeTargets[] | select(.health=="down") | .labels.pod' <<< "$TARGETS_JSON")"
