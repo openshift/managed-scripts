@@ -14,19 +14,22 @@ It supports 4 different modes for listing the nodes:
 
 ```bash
 usage: describe-nodes [--all | --master | --infra | --worker | --nodes <node>,<node>,...]
-  --all      : Describe all nodes in the cluster
-  --master   : Describe the master nodes in the cluster
-  --infra    : Describe the infra nodes in the cluster
-  --worker   : Describe the worker nodes in the cluster
-  --selector : A Label selector to pass to oc describe nodes
-  --nodes    : Describe the listed nodes in the cluster.  The list comprises of the node name separated by a comma with no spaces
-  --help
+  -a, --all             : Describe all nodes in the cluster
+  -m, --master          : Describe the master nodes in the cluster
+  -i, --infra           : Describe the infra nodes in the cluster
+  -w, --worker          : Describe the worker nodes in the cluster
+  -l, --selector        : A Label selector to pass to oc describe nodes
+  -n, --nodes, --node   : Specify the nodes to describe in the cluster separated by a ',' with no spaces
+  -d, --debug           : Enable debugging
+  -h, --help            : Print this help
 
 Argument precedence as only one mode can be used at a time: (the first available is used)
+  --help
   --nodes
   --selector
   --all
   --master and|or --worker --and|or infra
+  The --debug argument can be used at anytime"
 ```
 
 ### Usage with managed-scripts

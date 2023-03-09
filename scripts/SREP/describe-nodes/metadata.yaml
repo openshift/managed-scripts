@@ -9,78 +9,27 @@ allowedGroups:
   - MTSRE
 rbac:
     roles:
-      - namespace: "openshift-machine-api"
+      - namespace: "kube-node-lease"
         rules:
-          - verbs:
-            - "get"
-            - "list"
-            - "watch"
-            - "create"
-            - "delete"
-            apiGroups:
-            - "machine.openshift.io"
-            resources:
-            - "machines"
-      - namespace: "openshift-etcd"
-        rules:
-          - verbs:
-            - "get"
-            - "list"
-            - "watch"
-            - "create"
-            apiGroups:
-            - ""
-            resources:
-            - "pods"
-          - verbs:
-            - "create"
-            apiGroups:
-            - ""
-            resources:
-            - "pods/exec"
-          - verbs:
-            - "get"
-            - "list"
-            - "delete"
-            apiGroups:
-            - ""
-            resources:
-            - "secrets"
+          - apiGroups: ['coordination.k8s.io']
+            resources: ['leases']
+            verbs:     ['get', 'list']
     clusterRoleRules:
-        - verbs:
-            - "get"
-            - "list"
-            - "watch"
-          apiGroups:
-            - "upgrade.managed.openshift.io"
-          resources:
-            - "upgradeconfigs"
-        - verbs:
-            - "get"
-            - "list"
-            - "watch"
-          apiGroups:
-            - ""
-          resources:
-            - "nodes"
-        - verbs:
-            - "get"
-            - "list"
-            - "watch"
-            - "patch"
-          apiGroups:
-            - "operator.openshift.io"
-          resources:
-            - "etcds"
-        - verbs:
-            - "get"
-          apiGroups:
-            - "config.openshift.io"
-          resources:
-            - "clusteroperators"
-            - "clusterversions"
+        - apiGroups: ['']
+          resources: ['nodes']
+          verbs:     ['get', 'list']
+        - apiGroups: ['']
+          resources: ['pods']
+          verbs:     ['get', 'list']
 envs:
   - key: "SCRIPT_PARAMETERS"
     description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
     optional: true
 language: bash
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
+      
