@@ -126,7 +126,7 @@ do
       then
         error-out "The '--selector' argument must contain a node selector"
       fi
-      badChars="$(echo ${ARG_ARRAY[1]} | tr -d '[:alnum:]' | tr -d '-' | tr -d '.'  | tr -d '/'  \
+      badChars="$(echo "${ARG_ARRAY[1]}" | tr -d '[:alnum:]' | tr -d '-' | tr -d '.'  | tr -d '/'  \
           | tr -d ',' | tr -d ':' | tr -d ' ' | tr -d '(' | tr -d ')' | tr -d '!' | tr -d '=')"
       if [ -n "${badChars}" ] # retest
       then
@@ -152,24 +152,24 @@ if [ -z "${nodes}" ]
 then
   if [ -n "${selector}" ] # retest
   then
-    nodes=$(list-selector "${selector}")
+    nodes="$(list-selector "${selector}")"
   elif [ "${all}" = true ]
   then
-    add2nodes $(list-selector "node-role.kubernetes.io/master")
-    add2nodes $(list-selector "node-role.kubernetes.io=infra")
-    add2nodes $(list-selector "node-role.kubernetes.io!=infra,node-role.kubernetes.io/worker")
+    add2nodes "$(list-selector "node-role.kubernetes.io/master")"
+    add2nodes "$(list-selector "node-role.kubernetes.io=infra")"
+    add2nodes "$(list-selector "node-role.kubernetes.io!=infra,node-role.kubernetes.io/worker")"
   else
     if [ "${master}" = true ]
     then
-      add2nodes $(list-selector "node-role.kubernetes.io/master")
+      add2nodes "$(list-selector "node-role.kubernetes.io/master")"
     fi
     if [ "${infra}" = true ]
     then
-      add2nodes $(list-selector "node-role.kubernetes.io=infra")
+      add2nodes "$(list-selector "node-role.kubernetes.io=infra")"
     fi
     if [ "${worker}" = true ]
     then
-      add2nodes $(list-selector "node-role.kubernetes.io!=infra,node-role.kubernetes.io/worker")
+      add2nodes "$(list-selector "node-role.kubernetes.io!=infra,node-role.kubernetes.io/worker")"
     fi
   fi
 fi
@@ -182,5 +182,5 @@ then
 fi
 
 nodes=$(echo "${nodes}" | tr "," " ")
-oc describe nodes ${nodes}
+oc describe nodes "${nodes}"
 exit 0
