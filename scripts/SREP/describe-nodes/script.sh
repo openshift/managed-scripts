@@ -181,6 +181,6 @@ then
   error-out "No nodes selected"
 fi
 
-nodes=$(echo "${nodes}" | tr "," " ")
-oc describe nodes "${nodes}"
+IFS=',' read -r -a nodearray <<< "${nodes}"
+oc describe nodes "${nodearray[@]}"
 exit 0
