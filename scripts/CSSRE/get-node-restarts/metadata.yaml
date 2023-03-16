@@ -4,6 +4,7 @@ description: Lists of nodes that are restarted in the last X minutes
 author: vbommana
 allowedGroups: 
   - CSSRE
+  - LPSRE
 rbac:
   clusterRoleRules:
     - verbs:

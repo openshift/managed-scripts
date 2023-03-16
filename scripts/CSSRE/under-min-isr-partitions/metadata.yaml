@@ -5,6 +5,7 @@ description: |
 author: Rob Shelly
 allowedGroups:
   - CSSRE
+  - LPSRE
 rbac:
   clusterRoleRules:
     - verbs:

@@ -4,6 +4,7 @@ description: Debug under replicated partitions alert on a cluster and instruct w
 author: Rob Shelly
 allowedGroups:
   - CSSRE
+  - LPSRE
 rbac:
   clusterRoleRules:
     - verbs:

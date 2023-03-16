@@ -4,6 +4,7 @@ description: Manually roll the Kafka brokers
 author: Pat Cremin
 allowedGroups:
   - CSSRE
+  - LPSRE
 rbac:
   clusterRoleRules:
     - verbs:

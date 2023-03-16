@@ -12,6 +12,7 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
+  - LPSRE
 rbac:
   clusterRoleRules:
     - verbs:

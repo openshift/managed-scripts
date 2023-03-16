@@ -6,6 +6,7 @@ allowedGroups:
   - SREP
   - CSSRE
   - CEE
+  - LPSRE
 rbac:
     roles:
       - namespace: "openshift-monitoring"

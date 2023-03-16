@@ -4,6 +4,7 @@ description: Get topics and partitions details for a given Kafka
 author: Rob Shelly
 allowedGroups:
   - CSSRE
+  - LPSRE
 rbac:
   clusterRoleRules:
     - verbs:
