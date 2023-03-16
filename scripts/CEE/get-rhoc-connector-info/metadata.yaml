@@ -10,6 +10,7 @@ allowedGroups:
   - CSSRE
   - CEE
   - MTSRE
+  - LPSRE
 rbac:
   clusterRoleRules:
     # connectors   
