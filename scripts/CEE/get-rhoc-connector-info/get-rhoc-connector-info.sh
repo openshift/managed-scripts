@@ -15,7 +15,7 @@ oc get \
     --all-namespaces \
     -o yaml &> "${outputDir}/resources.yaml"
 
-NAMESPACED_NAMES=$(oc get pods --selector=cos.bf2.org/connector.id="${connector_id}" --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{";"}{.metadata.name}{" "}{end}' 2> ${outputDir}/collect-namespaces.log)
+NAMESPACED_NAMES=$(oc get pods --selector=cos.bf2.org/connector.id="${connector_id}" --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{";"}{.metadata.name}{" "}{end}' 2> "${outputDir}"/collect-namespaces.log)
 NAMESPACE=""
 
 for NAMESPACED_NAME in $NAMESPACED_NAMES; do
