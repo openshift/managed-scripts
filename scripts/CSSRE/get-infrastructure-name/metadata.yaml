@@ -1,0 +1,17 @@
+file: get-infrastructure-name.sh
+name: get-infrastructure-name
+description: Get the infrastructureName from the infrastructure api object
+author: Steven Tobin
+allowedGroups:
+  - CSSRE
+  - LPSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "config.openshift.io"
+      resources:
+        - "infrastructures"
+language: bash
