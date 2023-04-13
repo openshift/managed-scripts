@@ -1,0 +1,41 @@
+file: script.sh
+name: example # name should be the same as the subdir, eg: SRE/example in this case
+description: Example script
+author: qhua948
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+  - LPSRE
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
+rbac:
+    roles:
+      - namespace: "openshift-monitoring"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            apiGroups:
+            - ""
+            resources:
+            - "pods"
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+          apiGroups:
+            - ""
+          resources:
+            - "jobs"
+envs:
+  - key: "var1"
+    description: "variable 1"
+    optional: false
+language: go
