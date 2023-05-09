@@ -30,7 +30,8 @@
       "type": "string",
       "enum": [
         "python",
-        "bash"
+        "bash",
+        "go"
       ]
     },
     "allowedGroups": {

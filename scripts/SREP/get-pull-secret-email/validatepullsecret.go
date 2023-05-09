@@ -5,42 +5,17 @@ import (
 	"fmt"
 
 	v1 "github.com/openshift-online/ocm-sdk-go/accountsmgmt/v1"
-	"github.com/openshift/osdctl/cmd/servicelog"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
-
-func main() {
-	kubeCli = k8s.NewClient()
-	secret := &corev1.Secret{}
-	err := kubeCli.Get(context.TODO(), types.NamespacedName{Namespace: "openshift-config", Name: "pull-secret"}, secret)
-	if err != nil {
-		return err
-	}
-
-	clusterPullSecretEmail, err, done := getPullSecretEmail(clusterID, secret, true)
-	if done {
-		return err
-	}
-
-}
 
 func getPullSecretEmail(clusterID string, secret *corev1.Secret, sendServiceLog bool) (string, error, bool) {
 	dockerConfigJsonBytes, found := secret.Data[".dockerconfigjson"]
 	if !found {
 		// Indicates issue w/ pull-secret, so we can stop evaluating and specify a more direct course of action
 		fmt.Println("Secret does not contain expected key '.dockerconfigjson'.")
-		if sendServiceLog {
-			fmt.Println("Sending service log.")
-			postCmd := servicelog.PostCmdOptions{
-				Template:  "https://raw.githubusercontent.com/openshift/managed-notifications/master/osd/pull_secret_change_breaking_upgradesync.json",
-				ClusterId: clusterID,
-			}
-			if err := postCmd.Run(); err != nil {
-				return "", err, true
-			}
-		}
-
 		return "", nil, true
 	}
 
@@ -51,17 +26,6 @@ func getPullSecretEmail(clusterID string, secret *corev1.Secret, sendServiceLog 
 
 	cloudOpenshiftAuth, found := dockerConfigJson.Auths()["cloud.openshift.com"]
 	if !found {
-		fmt.Println("Secret does not contain entry for cloud.openshift.com")
-		if sendServiceLog {
-			fmt.Println("Sending service log")
-			postCmd := servicelog.PostCmdOptions{
-				Template:  "https://raw.githubusercontent.com/openshift/managed-notifications/master/osd/pull_secret_change_breaking_upgradesync.json",
-				ClusterId: clusterID,
-			}
-			if err = postCmd.Run(); err != nil {
-				return "", err, true
-			}
-		}
 		return "", nil, true
 	}
 
@@ -74,4 +38,28 @@ func getPullSecretEmail(clusterID string, secret *corev1.Secret, sendServiceLog 
 		return "", nil, true
 	}
 	return clusterPullSecretEmail, nil, false
+}
+
+func main() {
+	config, err := rest.InClusterConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+	// creates the clientset
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	secret := &corev1.Secret{}
+	err := clientset.Get(context.TODO(), types.NamespacedName{Namespace: "openshift-config", Name: "pull-secret"}, secret)
+	if err != nil {
+		return err
+	}
+
+	clusterPullSecretEmail, err, done := getPullSecretEmail(clusterID, secret, true)
+	if done {
+		return err
+	}
+
 }
