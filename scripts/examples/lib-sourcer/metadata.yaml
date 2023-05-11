@@ -1,0 +1,9 @@
+file: script.sh
+name: lib-sourcer
+shortDescription: Checks if the directory /foo/bar exists and prints that to the screen.
+description: |
+  A toy example showing how to import bash libraries from the `/libs` directory within a script.
+author: hkemp
+allowedGroups: 
+  - SREP
+language: bash
