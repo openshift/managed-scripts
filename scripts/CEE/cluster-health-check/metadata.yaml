@@ -1,0 +1,19 @@
+file: run-oc-hc.sh
+name: cluster-health-check
+description: Check the overall health of an OpenShift cluster
+author: Givaldo Lins
+allowedGroups:
+  - CEE
+  - SREP
+  - CSSRE
+  - LPSRE
+  - MTSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "*"
+      apiGroups:
+        - "*"
+      resources:
+        - "*"
+language: bash
