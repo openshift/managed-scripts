@@ -11,9 +11,85 @@ allowedGroups:
 rbac:
   clusterRoleRules:
     - verbs:
-        - "*"
+        - get
+        - list
+        - watch
       apiGroups:
-        - "*"
+        - ''
       resources:
-        - "*"
+        - namespaces
+    - verbs:
+        - get
+        - list
+        - watch
+        - patch
+      apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - alertmanagers
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - metrics.k8s.io
+      resources:
+        - nodes
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - machineconfiguration.openshift.io
+      resources:
+        - machineconfigpools
+        - machineconfig
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - config.openshift.io
+      resources:
+        - clusteroperators
+        - clusterversions
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - route.openshift.io
+      resources:
+        - routes
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - ''
+      resources:
+        - nodes
+        - events
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - certificates.k8s.io
+      resources:
+        - certificatesigningrequests
+    - verbs:
+        - get
+        - watch
+        - list
+        - create
+        - delete
+      apiGroups:
+        - ''
+      resources:
+        - pods
+        - pods/exec
+        - pods/log
+        - pods/attach
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - policy
+      resources:
+        - poddisruptionbudgets
 language: bash
