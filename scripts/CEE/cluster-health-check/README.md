@@ -10,7 +10,6 @@ This script runs many health check tasks against the cluster and prints out the 
 - MCP status
 - Pending CSRs
 - Nodes status
-- Network status
 - Capacity status 
 - Alerts in Firing state
 - Cluster version
