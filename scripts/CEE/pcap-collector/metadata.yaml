@@ -61,6 +61,7 @@ rbac:
     - verbs:
         - "get"
         - "delete"
+        - "create"
       apiGroups:
         - ""
       resources:
