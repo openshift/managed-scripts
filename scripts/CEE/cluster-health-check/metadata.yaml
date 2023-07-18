@@ -22,11 +22,18 @@ rbac:
         - get
         - list
         - watch
+      apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - alertmanagers
+    - verbs:
         - patch
       apiGroups:
         - monitoring.coreos.com
       resources:
         - alertmanagers
+      resourceNames:
+        - non-existant
     - verbs:
         - get
         - list
@@ -76,15 +83,11 @@ rbac:
         - get
         - watch
         - list
-        - create
-        - delete
       apiGroups:
         - ''
       resources:
         - pods
-        - pods/exec
         - pods/log
-        - pods/attach
     - verbs:
         - get
         - list
