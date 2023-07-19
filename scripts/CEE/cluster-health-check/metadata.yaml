@@ -1,0 +1,98 @@
+file: run-oc-hc.sh
+name: cluster-health-check
+description: Check the overall health of an OpenShift cluster
+author: Givaldo Lins
+allowedGroups:
+  - CEE
+  - SREP
+  - CSSRE
+  - LPSRE
+  - MTSRE
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - list
+        - watch
+      apiGroups:
+        - ''
+      resources:
+        - namespaces
+    - verbs:
+        - get
+        - list
+        - watch
+      apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - alertmanagers
+    - verbs:
+        - patch
+      apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - alertmanagers
+      resourceNames:
+        - non-existant
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - metrics.k8s.io
+      resources:
+        - nodes
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - machineconfiguration.openshift.io
+      resources:
+        - machineconfigpools
+        - machineconfig
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - config.openshift.io
+      resources:
+        - clusteroperators
+        - clusterversions
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - route.openshift.io
+      resources:
+        - routes
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - ''
+      resources:
+        - nodes
+        - events
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - certificates.k8s.io
+      resources:
+        - certificatesigningrequests
+    - verbs:
+        - get
+        - watch
+        - list
+      apiGroups:
+        - ''
+      resources:
+        - pods
+        - pods/log
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - policy
+      resources:
+        - poddisruptionbudgets
+language: bash
