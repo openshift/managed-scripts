@@ -29,6 +29,21 @@ RUN export OC_LINUX_X86_CLIENT=$(cat sha256sum.txt | grep openshift-client-linux
 RUN sha256sum --check --ignore-missing sha256sum.txt
 RUN tar --extract --gunzip --no-same-owner --directory /out oc --file *.tar.gz
 
+### Temporary solution to integrate the oc-hc
+ENV OC_HC_TAR_URL="https://github.com/givaldolins/openshift-cluster-health-check/releases/download/v0.1.2/oc-hc-v0.1.2-linux-amd64.tar.gz"
+ENV OC_HC_MD5="12d21a265fe6da4fa9e520e60386f051"
+RUN mkdir -p /oc-hc
+WORKDIR /oc-hc
+
+# Download the binary and md5
+RUN curl -sSLf -O $OC_HC_TAR_URL
+
+# Check md5sum for the downloaded tar
+RUN md5sum -b oc-hc-v0.1.2-linux-amd64.tar.gz | grep $OC_HC_MD5
+
+# Extract the binary
+RUN tar xzf oc-hc-v0.1.2-linux-amd64.tar.gz --directory /out
+
 # Install aws-cli
 RUN mkdir -p /aws/bin
 WORKDIR /aws
@@ -49,6 +64,7 @@ RUN  yum -y install --disableplugin=subscription-manager \
      python3 jq \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
+COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
 COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY scripts /managed-scripts
