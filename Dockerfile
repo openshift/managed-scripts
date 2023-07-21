@@ -30,8 +30,8 @@ RUN sha256sum --check --ignore-missing sha256sum.txt
 RUN tar --extract --gunzip --no-same-owner --directory /out oc --file *.tar.gz
 
 ### Temporary solution to integrate the oc-hc
-ENV OC_HC_TAR_URL="https://github.com/givaldolins/openshift-cluster-health-check/releases/download/v0.1.2/oc-hc-v0.1.2-linux-amd64.tar.gz"
-ENV OC_HC_MD5="12d21a265fe6da4fa9e520e60386f051"
+ENV OC_HC_TAR_URL="https://github.com/givaldolins/openshift-cluster-health-check/releases/download/v0.1.3/oc-hc-v0.1.3-linux-amd64.tar.gz"
+ENV OC_HC_MD5="e75e9a9801601e53d7ad555b498e7c08"
 RUN mkdir -p /oc-hc
 WORKDIR /oc-hc
 
