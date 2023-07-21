@@ -39,10 +39,10 @@ WORKDIR /oc-hc
 RUN curl -sSLf -O $OC_HC_TAR_URL
 
 # Check md5sum for the downloaded tar
-RUN md5sum -b oc-hc-v0.1.2-linux-amd64.tar.gz | grep $OC_HC_MD5
+RUN md5sum -b oc-hc-v0.1.3-linux-amd64.tar.gz | grep $OC_HC_MD5
 
 # Extract the binary
-RUN tar xzf oc-hc-v0.1.2-linux-amd64.tar.gz --directory /out
+RUN tar xzf oc-hc-v0.1.3-linux-amd64.tar.gz --directory /out
 
 # Install aws-cli
 RUN mkdir -p /aws/bin
