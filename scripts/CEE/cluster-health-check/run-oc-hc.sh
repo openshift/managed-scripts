@@ -1,4 +1,4 @@
 #!/bin/bash
 # Run check
-oc hc cluster
+oc hc cluster -d
 
