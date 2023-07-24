@@ -1,0 +1,48 @@
+file: script.sh
+name: example # name should be the same as the subdir, eg: SRE/example in this case
+description: Example script
+author: sjayasin
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/exec"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+    - verbs:
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "services"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "hostedclusters"    
+envs:
+  - key: "CLUSTER_NAME"
+    description: "Hosted cluster name"
+    optional: false
+language: bash
