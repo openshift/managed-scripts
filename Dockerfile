@@ -9,7 +9,7 @@ ARG AWSCLI_VERSION="awscli-exe-linux-x86_64.zip"
 ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
 
 # install tools needed for installation
-RUN yum install -y unzip
+RUN yum install -y unzip git make go
 
 # Directory for the extracted binary
 RUN mkdir -p /out
@@ -56,6 +56,16 @@ RUN unzip awscliv2.zip
 # Install the bins to the /aws/bin dir so the final image build copy is easier
 RUN ./aws/install -b /aws/bin
 
+# Attach hypershift binary into the image
+# TODO: Currently there is no pre-build hypershift bin yet, once
+# it is ready we need to update this to fetch the released bin directly
+# Fetch the source code
+RUN mkdir -p /hypershift
+WORKDIR /hypershift
+RUN git clone https://github.com/openshift/hypershift.git /hypershift
+# Build binary
+RUN OUT_DIR=/out make hypershift
+
 # Make binaries executable
 RUN chmod -R +x /out
 
@@ -67,6 +77,7 @@ COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
 COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
+COPY --from=build-stage0 /out/hypershift /usr/local/bin
 COPY scripts /managed-scripts
 
 # Install python packages
