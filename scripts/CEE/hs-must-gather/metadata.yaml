@@ -37,14 +37,67 @@ rbac:
         - "get"
         - "list"
       apiGroups:
+        - "hypershift.openshift.io"
+      resources:
+        - "awsendpointservices"
+        - "hostedclusters"
+        - "nodepools"
+        - "hostedcontrolplanes"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
         - ""
       resources:
-        - "hostedclusters"    
+        - "nodes"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "infrastructure.cluster.x-k8s.io"
+      resources:
+        - "awsclusters"
+        - "awsmachines"
+        - "awsmachinetemplates"
+        - "kubevirtclusters"
+        - "kubevirtmachinetemplates"
+        - "kubevirtmachines"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "capi-provider.agent-install.openshift.io"
+      resources:
+        - "agentclusters"
+        - "agentmachinetemplates"
+        - "agentmachines"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "cluster.x-k8s.io"
+      resources:
+        - "clusters"
+        - "machinedeployments"
+        - "machines"
+        - "machinesets"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "secrets"
+    - verbs:
+        - "get"
+        - "list"
+        - "create"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/portforward"
 envs:
   - key: "CLUSTER_NAME"
     description: "Hosted cluster name"
     optional: false
-  - key: "DUMP_DIR"
-    description: "Must gather directory"
-    optional: false  
 language: bash
