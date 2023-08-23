@@ -72,6 +72,28 @@ RUN unzip awscliv2.zip
 # Install the bins to the /aws/bin dir so the final image build copy is easier
 RUN ./aws/install -b /aws/bin
 
+## Attach ocm binary into the image
+# Setting ENV variables
+ENV OCM_URL="https://github.com/openshift-online/ocm-cli/releases/download/v0.1.67/ocm-linux-amd64"
+ENV OCM_SHA256_URL="https://github.com/openshift-online/ocm-cli/releases/download/v0.1.67/ocm-linux-amd64.sha256"
+
+# Creating a working directory
+RUN mkdir -p /ocm-cli
+WORKDIR /ocm-cli
+
+# Downloading the SHA-256 checksum
+RUN curl -sSLf ${OCM_SHA256_URL} -o sha256sum.txt
+
+# Downloading the ocm binary
+RUN curl -sSLf -O $OCM_URL
+
+# Checking the SHA-256 hash
+RUN sha256sum --check --ignore-missing sha256sum.txt
+
+# Moving the validated ocm binary to /out and make it executable
+RUN mv ocm-linux-amd64 /out/ocm
+RUN chmod +x /out/ocm
+
 # Attach hypershift binary into the image
 # TODO: Currently there is no pre-build hypershift bin yet, once
 # it is ready we need to update this to fetch the released bin directly
@@ -95,6 +117,7 @@ COPY --from=build-stage0 /out/yq_linux_amd64  /usr/local/bin/yq
 COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=build-stage0 /out/hypershift /usr/local/bin
+COPY --from=build-stage0 /out/ocm /usr/local/bin
 COPY scripts /managed-scripts
 
 # Install python packages
