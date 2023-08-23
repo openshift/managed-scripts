@@ -1,0 +1,36 @@
+file: script.sh
+name: update-upgrade-policy-state
+description: Update the state of a specific cluster's upgrade policy using its name and the desired state.
+author: sbai
+allowedGroups: 
+  - SREP
+  - CSSRE
+  - CEE
+  - MTSRE
+  - LPSRE
+rbac:
+    roles: []
+    clusterRoleRules:
+    - verbs:
+      - "get"
+      apiGroups:
+      - "config.openshift.io"
+      resources:
+      - clusterversions
+    - verbs:
+      - "get"
+      apiGroups:
+      - ""
+      resources:
+      - secrets
+envs:
+  - key: "OCM_AUTH_TOKEN"
+    description: "Authentication token to interact with the OpenShift Cluster Manager."
+    optional: false
+  - key: "CLUSTER_NAME"
+    description: "Name of the cluster whose upgrade policy state needs to be updated."
+    optional: false
+  - key: "DESIRED_STATE"
+    description: "The desired state to set for the upgrade policy."
+    optional: false
+language: bash
