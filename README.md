@@ -20,3 +20,17 @@ the supported languages.
 ## `metadata.yaml`
 
 All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
+
+## Release Cycle
+
+Managed Scripts follows the following release cycle :
+
+### Staging:
+
+The staging environment will use the latest main branch of the managed-scripts github repo.
+
+### Production:
+
+Every 3 weeks.
+
+For more information, please refer [Backplane Relase Cycles](https://source.redhat.com/groups/public/sre/wiki/backplane_user_documentation#isPasted5)
