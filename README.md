@@ -23,7 +23,7 @@ All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` se
 
 ## Release Cycle
 
-Managed Scripts follows the following release cycle :
+Managed Scripts has the following release cycle:
 
 ### Staging:
 
