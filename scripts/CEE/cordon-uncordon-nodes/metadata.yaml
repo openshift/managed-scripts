@@ -1,0 +1,25 @@
+file: script.sh
+name: cordon-uncordon-worker-nodes
+description: Cordon/Uncordon worker nodes
+author: Givaldo Lins
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - patch
+        - list
+      apiGroups:
+        - ''
+      resources:
+        - nodes
+envs:
+  - key: WORKER
+    description: The worker node name
+    optional: false
+  - key: ACTION
+    description: "Options: cordon or uncordon"
+    optional: false
+language: bash
