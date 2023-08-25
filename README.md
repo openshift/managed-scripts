@@ -27,7 +27,7 @@ Managed Scripts has the following release cycle:
 
 ### Staging:
 
-The staging environment will use the latest main branch of the managed-scripts github repo.
+The staging environment is pinned to consume the main branch of the managed-scripts repository.
 
 ### Production:
 
