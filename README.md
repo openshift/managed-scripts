@@ -31,6 +31,6 @@ The staging environment is pinned to consume the main branch of the managed-scri
 
 ### Production:
 
-Every 3 weeks.
+Once every 3 weeks.
 
 For more information, please refer [Backplane Release Cycles](https://source.redhat.com/groups/public/sre/wiki/backplane_user_documentation)
