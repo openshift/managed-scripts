@@ -21,5 +21,5 @@ ocm backplane managedjob create SREP/update-upgrade-policy-state
 
 ## Parameters
 
-- `CLUSTER_NAME`: The name of the cluster whose upgrade policy state you wish to update.
-- `DESIRED_STATE`: The state you wish to set for the cluster's upgrade policy. Valid values might include states like "started", "scheduled", "cancelled", etc. Ensure you're using a valid state for your specific OpenShift Cluster Manager instance.
+- **DESIRED_STATE**: This parameter determines the target state for the cluster's upgrade policy.
+- Possible values can include "started", "scheduled", "cancelled", among others. Ensure that you provide a state recognized by your OpenShift Cluster Manager instance.
