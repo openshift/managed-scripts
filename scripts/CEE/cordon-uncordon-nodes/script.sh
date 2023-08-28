@@ -21,7 +21,7 @@ fi
 check_worker(){
     echo "Checking if \"${WORKER}\" is a worker node..."
     
-    if (oc get nodes -l node-role.kubernetes.io/worker=,node-role.kubernetes.io/infra!= | grep "${WORKER}") &> /dev/null; then
+    if (oc get nodes -l node-role.kubernetes.io/worker=,node-role.kubernetes.io/infra!= -oname | grep "${WORKER}") &> /dev/null; then
        echo "[OK] \"${WORKER}\" is a worker node. Proceeding with \"${ACTION}\""
     else
         echo "[Error] \"${WORKER}\" is not a worker node. Exiting script"
