@@ -24,7 +24,7 @@ fi
 HCP_NS=$(oc get namespace -l api.openshift.com/id="$CLUSTER_ID" -o json | jq -r '.items[0].metadata.labels["kubernetes.io/metadata.name"]')
 
 echo "Executing hypershift dump on $HCP_NS for cluster $CLUSTER_ID"
-#hypershift dump cluster --dump-guest-cluster --namespace "$HCP_NS" --name "$CLUSTER_ID" --artifact-dir "$CLUSTER_ID"
+hypershift dump cluster --dump-guest-cluster --namespace "$HCP_NS" --name "$CLUSTER_ID" --artifact-dir "$CLUSTER_ID"
 
 echo "Hypershift dump has been saved in $PWD/$CLUSTER_ID"
 ls -alh "$PWD"/"$CLUSTER_ID"
