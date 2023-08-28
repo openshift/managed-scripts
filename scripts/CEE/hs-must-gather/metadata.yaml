@@ -97,7 +97,7 @@ rbac:
       resources:
         - "pods/portforward"
 envs:
-  - key: "CLUSTER_NAME"
-    description: "Hosted cluster name"
+  - key: "CLUSTER_ID"
+    description: "Hosted cluster internal ID"
     optional: false
 language: bash
