@@ -19,7 +19,7 @@ if [[ -z "${ACTION}" ]]; then
 fi
 
 check_worker(){
-    echo "Checking if ${WORKER} is a worker node..."
+    echo "Checking if "${WORKER}" is a worker node..."
     
     if (oc get nodes -l node-role.kubernetes.io/worker=,node-role.kubernetes.io/infra!= | grep "${WORKER}") &> /dev/null; then
        echo "[OK] ${WORKER} is a worker node. Proceeding with ${ACTION}"
@@ -50,14 +50,14 @@ uncordon_worker(){
 }
 
 check_cordon(){
-    if [[ $(oc get node ${WORKER} -o jsonpath='{.spec.taints[?(@.key == "node.kubernetes.io/unschedulable")]}') ]]; then
+    if [[ $(oc get node "${WORKER}" -o jsonpath='{.spec.taints[?(@.key == "node.kubernetes.io/unschedulable")]}') ]]; then
         echo "[ERROR] Node is already cordoned"
         exit 1
     fi
 }
 
 check_uncordon(){
-    if ! [[ $(oc get node ${WORKER} -o jsonpath='{.spec.taints[?(@.key == "node.kubernetes.io/unschedulable")]}') ]]; then
+    if ! [[ $(oc get node "${WORKER}" -o jsonpath='{.spec.taints[?(@.key == "node.kubernetes.io/unschedulable")]}') ]]; then
         echo "[ERROR] Node is already uncordoned"
         exit 1
     fi
