@@ -1,4 +1,4 @@
-# Hypershift mustgather
+# HyperShift mustgather
 This script runs hypershift dump command to fetch logs from management cluster HCP namespace and hosted cluster. 
 
 
