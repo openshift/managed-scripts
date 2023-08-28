@@ -19,19 +19,19 @@ if [[ -z "${ACTION}" ]]; then
 fi
 
 check_worker(){
-    echo "Checking if "${WORKER}" is a worker node..."
+    echo "Checking if \"${WORKER}\" is a worker node..."
     
     if (oc get nodes -l node-role.kubernetes.io/worker=,node-role.kubernetes.io/infra!= | grep "${WORKER}") &> /dev/null; then
-       echo "[OK] ${WORKER} is a worker node. Proceeding with ${ACTION}"
+       echo "[OK] \"${WORKER}\" is a worker node. Proceeding with \"${ACTION}\""
     else
-        echo "[Error] ${WORKER} is not a worker node. Exiting script"
+        echo "[Error] \"${WORKER}\" is not a worker node. Exiting script"
         exit 1
     fi
 }
 
 cordon_worker(){
     if oc adm cordon "${WORKER}"; then
-        echo "[OK] Node ${WORKER} cordoned successfully"
+        echo "[OK] Node \"${WORKER}\" cordoned successfully"
         exit 0
     else
         echo "[ERROR] Something went wrong"
@@ -41,7 +41,7 @@ cordon_worker(){
 
 uncordon_worker(){
     if oc adm uncordon "${WORKER}"; then
-        echo "[OK] Node ${WORKER} uncordoned successfully"
+        echo "[OK] Node \"${WORKER}\" uncordoned successfully"
         exit 0
     else
         echo "[ERROR] Something went wrong"
