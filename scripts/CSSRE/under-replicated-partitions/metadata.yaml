@@ -3,7 +3,6 @@ name: under-replicated-partitions
 description: Debug under replicated partitions alert on a cluster and instruct which brokers should and can be restarted.
 author: Rob Shelly
 allowedGroups:
-  - CSSRE
   - LPSRE
 rbac:
   clusterRoleRules:

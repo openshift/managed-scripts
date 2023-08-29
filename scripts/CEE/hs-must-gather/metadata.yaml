@@ -4,9 +4,8 @@ description: Hypershift must gather script
 author: sjayasin
 allowedGroups: 
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
+  - LPSRE
 labels:
   - key: OSD_TYPES
     description: Compatible cluster types for this script

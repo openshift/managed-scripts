@@ -5,9 +5,7 @@ author: Givaldo Lins
 allowedGroups:
   - CEE
   - SREP
-  - CSSRE
   - LPSRE
-  - MTSRE
 rbac:
   clusterRoleRules:
     - verbs:

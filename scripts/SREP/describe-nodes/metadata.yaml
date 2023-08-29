@@ -5,8 +5,6 @@ author: dsquirre
 allowedGroups: 
   - SREP
   - CEE
-  - CSSRE
-  - MTSRE
   - LPSRE
 rbac:
     roles:

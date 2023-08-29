@@ -5,7 +5,6 @@ description: Describe the specified transaction in the Kafka instance
 author: grdryn
 allowedGroups:
   - SREP
-  - CSSRE
   - CEE
   - LPSRE
 rbac:

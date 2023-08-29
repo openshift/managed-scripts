@@ -4,9 +4,7 @@ description: Prints out the etcd health info.
 author: feichashao
 allowedGroups: 
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
   - LPSRE
 rbac:
     roles:

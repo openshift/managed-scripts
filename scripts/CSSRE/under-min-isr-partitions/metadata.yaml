@@ -4,7 +4,6 @@ description: |
   Debug partitions under minimum in-sync replica alert on a cluster and instruct which brokers should and can be restarted.
 author: Rob Shelly
 allowedGroups:
-  - CSSRE
   - LPSRE
 rbac:
   clusterRoleRules:

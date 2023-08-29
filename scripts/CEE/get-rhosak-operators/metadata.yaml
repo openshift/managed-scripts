@@ -10,7 +10,6 @@ description: |
 author: Rachel Lawton
 allowedGroups:
   - SREP
-  - CSSRE
   - CEE
   - LPSRE
 envs:

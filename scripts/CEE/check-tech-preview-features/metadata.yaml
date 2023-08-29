@@ -6,8 +6,6 @@ author: supreeth7
 allowedGroups:
   - CEE
   - SREP
-  - CSSRE
-  - MTSRE
   - LPSRE                      
 rbac:
     clusterRoleRules:

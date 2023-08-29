@@ -4,7 +4,6 @@ description: Check status of elastic search on clusters
 author: lfalconm
 allowedGroups: 
   - SREP
-  - CSSRE
   - CEE
   - LPSRE
 rbac:

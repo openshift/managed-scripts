@@ -4,9 +4,7 @@ description: Retrieves status of the cluster's Cluster Operators
 author: mbargenq
 allowedGroups: 
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
   - LPSRE
 rbac:
     roles: []
