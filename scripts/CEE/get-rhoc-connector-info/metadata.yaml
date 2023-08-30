@@ -7,9 +7,7 @@ description: |
 author: lburgazz
 allowedGroups:
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
   - LPSRE
 rbac:
   clusterRoleRules:

@@ -5,9 +5,7 @@ author: mmazur
 language: bash
 allowedGroups:
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
   - LPSRE
 rbac:
     roles:

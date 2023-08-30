@@ -1,10 +1,8 @@
-file: under-min-isr-partitions.py
-name: under-min-isr-partitions
-description: |
-  Debug partitions under minimum in-sync replica alert on a cluster and instruct which brokers should and can be restarted.
+file: under-replicated-partitions.py
+name: under-replicated-partitions
+description: Debug under replicated partitions alert on a cluster and instruct which brokers should and can be restarted.
 author: Rob Shelly
 allowedGroups:
-  - CSSRE
   - LPSRE
 rbac:
   clusterRoleRules:

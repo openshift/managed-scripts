@@ -4,9 +4,7 @@ description: Read the node logs. Restrict specific logs of oc adm node-logs.
 author: feichashao
 allowedGroups:
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
   - LPSRE
 rbac:
     clusterRoleRules:

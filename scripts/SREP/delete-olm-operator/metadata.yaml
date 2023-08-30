@@ -4,7 +4,7 @@ description: Deletes all of the olm data in a given namespace (if syncsets are w
 author: gerogettica
 allowedGroups: 
   - SREP
-  - MTSRE
+  - LPSRE
 rbac:
     roles: []
     clusterRoleRules:

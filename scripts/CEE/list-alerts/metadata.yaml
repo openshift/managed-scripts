@@ -4,9 +4,7 @@ description: Lists the active/pending alerts in alertmanager. It also provide an
 author: bdematte
 allowedGroups: 
   - SREP
-  - CSSRE
   - CEE
-  - MTSRE
   - LPSRE
 rbac:
     roles:
