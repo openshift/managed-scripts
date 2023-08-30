@@ -2,24 +2,18 @@
 
 ## Description
 
-The managed script `update_upgrade_policy` provides the ability to update the state of a specific OpenShift cluster's upgrade policy. It fetches the current state and compares it to the desired state provided, updating it if necessary.
+The `update_upgrade_policy` managed script allows you to cancel the upgrade policy of the current OpenShift cluster. The script automates the following processes:
+
+1. Fetches the authentication token for accessing the OpenShift API.
+2. Obtains the UUID of the current OpenShift cluster.
+3. Uses the cluster's UUID to fetch its unique ID.
+4. Retrieves the UUID of the upgrade policy for the current cluster.
+5. Sets the upgrade policy state of the cluster to "cancelled".
 
 ## Usage
 
-The script expects two command-line arguments, the cluster name (-c) and the desired state (-s).
-If you want to target a specific cluster and state:
-
-```bash
-ocm backplane managedjob create SREP/update-upgrade-policy-state -p CLUSTER_NAME=my-cluster -p DESIRED_STATE=scheduled
-```
-
-or
+To cancel the upgrade policy of the current cluster, you can run the following command:
 
 ```bash
 ocm backplane managedjob create SREP/update-upgrade-policy-state
 ```
-
-## Parameters
-
-- **DESIRED_STATE**: This parameter determines the target state for the cluster's upgrade policy.
-- Possible values can include "started", "scheduled", "cancelled", among others. Ensure that you provide a state recognized by your OpenShift Cluster Manager instance.
