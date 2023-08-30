@@ -44,6 +44,22 @@ RUN md5sum -b oc-hc-v0.1.3-linux-amd64.tar.gz | grep $OC_HC_MD5
 # Extract the binary
 RUN tar xzf oc-hc-v0.1.3-linux-amd64.tar.gz --directory /out
 
+
+### Attach yq binary into the image
+ENV YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_amd64.tar.gz"
+ENV YQ_MD5="be32a02446da244ebe5b94c3834b2c97"
+RUN mkdir -p /yq
+WORKDIR /yq
+
+# Download the yq release
+RUN curl -sSLf -O $YQ_URL
+
+# Check md5sum for the downloaded tar
+RUN md5sum yq_linux_amd64.tar.gz | grep $YQ_MD5
+
+# Extract the yq binary
+RUN tar xzf yq_linux_amd64.tar.gz --directory /out
+
 # Install aws-cli
 RUN mkdir -p /aws/bin
 WORKDIR /aws
@@ -75,6 +91,7 @@ RUN  yum -y install --disableplugin=subscription-manager \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
+COPY --from=build-stage0 /out/yq_linux_amd64  /usr/local/bin/yq
 COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=build-stage0 /out/hypershift /usr/local/bin
