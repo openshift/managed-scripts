@@ -20,3 +20,18 @@ the supported languages.
 ## `metadata.yaml`
 
 All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
+
+## Release Cycle
+
+Managed Scripts has the following release cycle:
+
+### Staging:
+
+The staging environment is pinned to consume the main branch of the managed-scripts repository.
+
+### Production:
+
+Once every 3 weeks.
+
+In case you have changes that have immediate impact and would need an immediate promotion, please reach out to:
+Managed-scripts team (alias : @managed-scripts) in #sd-ims-backplane slack channel 
