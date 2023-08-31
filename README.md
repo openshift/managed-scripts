@@ -33,4 +33,5 @@ The staging environment is pinned to consume the main branch of the managed-scri
 
 Once every 3 weeks.
 
-For more information, please refer [Backplane Release Cycles](https://source.redhat.com/groups/public/sre/wiki/backplane_user_documentation)
+In case of you have changes that have immediate impact and would need an immediate promotion, please reach out to:
+Backplane team (alias : @backplane-team) in #sd-ims-backplane slack channel 
