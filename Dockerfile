@@ -75,20 +75,17 @@ RUN ./aws/install -b /aws/bin
 ## Attach ocm binary into the image
 # Setting ENV variables
 ENV OCM_URL="https://github.com/openshift-online/ocm-cli/releases/download/v0.1.67/ocm-linux-amd64"
-ENV OCM_SHA256_URL="https://github.com/openshift-online/ocm-cli/releases/download/v0.1.67/ocm-linux-amd64.sha256"
+ENV OCM_SHA256_CHECKSUM="2ac055237f0ca9b6e5ef7a03666c670bbbb778e9e6d96a41bf8f0968b1618265  ocm-linux-amd64"
 
 # Creating a working directory
 RUN mkdir -p /ocm-cli
 WORKDIR /ocm-cli
 
-# Downloading the SHA-256 checksum
-RUN curl -sSLf ${OCM_SHA256_URL} -o sha256sum.txt
-
 # Downloading the ocm binary
 RUN curl -sSLf -O $OCM_URL
 
 # Checking the SHA-256 hash
-RUN sha256sum --check --ignore-missing sha256sum.txt
+RUN echo $OCM_SHA256_CHECKSUM | sha256sum -c -
 
 # Moving the validated ocm binary to /out and make it executable
 RUN mv ocm-linux-amd64 /out/ocm

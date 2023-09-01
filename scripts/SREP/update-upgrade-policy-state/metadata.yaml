@@ -4,9 +4,6 @@ description: Cancel the upgrade policy of the current OpenShift cluster.
 author: sbai
 allowedGroups: 
   - SREP
-  - CEE
-  - MTSRE
-  - LPSRE
 rbac:
     roles: []
     clusterRoleRules:

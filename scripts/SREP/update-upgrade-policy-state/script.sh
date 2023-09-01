@@ -33,7 +33,13 @@ get_cluster_id() {
 # Params:
 #   - Cluster ID
 get_policy_uuid() {
-    ocm get "/api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/" | jq '.items[] | .id'
+    local policy_uuid
+    policy_uuid=$(ocm get "/api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/" | jq '.items[]? | .id' | tr -d '"')
+    if [[ -z "$policy_uuid" ]]; then
+        echo "No upgrade policy found for cluster ID ${1}" >&2
+        return 1
+    fi
+    echo "$policy_uuid"
 }
 
 # Update the state of the specified upgrade policy to "cancelled".
@@ -68,6 +74,10 @@ CLUSTER_ID=$(get_cluster_id "${CLUSTER_UUID}")
 
 # 4. Get the policy UUID.
 POLICY_UUID=$(get_policy_uuid "${CLUSTER_ID}")
+if [[ $? -ne 0 ]]; then
+    echo "Error fetching the policy UUID. Exiting."
+    exit 1
+fi
 
 # 5. Cancel the upgrade policy.
 update_upgrade_policy "${CLUSTER_ID}" "${POLICY_UUID}"
