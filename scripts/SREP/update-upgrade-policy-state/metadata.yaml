@@ -1,0 +1,24 @@
+file: script.sh
+name: update-upgrade-policy-state
+description: Cancel the upgrade policy of the current OpenShift cluster.
+author: sbai
+allowedGroups: 
+  - SREP
+rbac:
+    roles: []
+    clusterRoleRules:
+    - verbs:
+      - "get"
+      apiGroups:
+      - "config.openshift.io"
+      resources:
+      - clusterversions
+    - verbs:
+      - "get"
+      apiGroups:
+      - ""
+      resources:
+      - secrets
+      namespaces:
+      - "openshift-config"
+language: bash
