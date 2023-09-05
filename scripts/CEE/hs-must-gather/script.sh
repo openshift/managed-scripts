@@ -29,5 +29,38 @@ hypershift dump cluster --dump-guest-cluster --namespace "$HCP_NS" --name "$CLUS
 echo "Hypershift dump has been saved in $PWD/$CLUSTER_ID"
 ls -alh "$PWD"/"$CLUSTER_ID"
 
+
+# Define the directory containing the dumped files
+DUMP_DIR="$PWD/$CLUSTER_ID"
+cd "$DUMP_DIR"
+
+# Define the location of the tarball
+TARBALL_PATH="${CLUSTER_ID}_dump.tar.gz"
+
+# Check if the tarball already exists. If it does, exit the script.
+if [ -f "$TARBALL_PATH" ]; then
+  echo "Tarball $TARBALL_PATH already exists. Exiting."
+  exit 0
+fi
+
+# Remove the sensitive files containing Secrets
+find . -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
+    if yq e '.kind == "Secret"' "$file" &> /dev/null; then
+        rm -f "$file"
+    fi
+done
+
+# Remove files containing CERTIFICATE data (assuming that it's a field value)
+find . -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
+    if yq e '.data[] == "CERTIFICATE"' "$file" &> /dev/null; then
+        rm -f "$file"
+    fi
+done
+
+# Compress the remaining files in the dumped folder as a tarball
+tar -czvf "${CLUSTER_ID}_dump.tar.gz" ./*
+
+echo "Compressed hypershift dump is saved as ${CLUSTER_ID}_dump.tar.gz"
+
 # End
 exit 0
