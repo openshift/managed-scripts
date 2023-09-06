@@ -30,37 +30,43 @@ echo "Hypershift dump has been saved in $PWD/$CLUSTER_ID"
 ls -alh "$PWD"/"$CLUSTER_ID"
 
 
-# Define the directory containing the dumped files
+# Define the variable DUMP_DIR in global
 DUMP_DIR="$PWD/$CLUSTER_ID"
-cd "$DUMP_DIR"
 
-# Define the location of the tarball
-TARBALL_PATH="${CLUSTER_ID}_dump.tar.gz"
+# Function to remove files with Secrets and CERTIFICATE data
+remove_sensitive_files() {
+  cd "$DUMP_DIR"
 
-# Check if the tarball already exists. If it does, exit the script.
-if [ -f "$TARBALL_PATH" ]; then
-  echo "Tarball $TARBALL_PATH already exists. Exiting."
-  exit 0
-fi
-
-# Remove the sensitive files containing Secrets
-find . -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
+  find . -type f -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
     if yq e '.kind == "Secret"' "$file" &> /dev/null; then
+        echo "Removing $file because it contains a Secret"
+        rm -f "$file"
+    elif yq e '.data[] == "CERTIFICATE"' "$file" &> /dev/null; then
+        echo "Removing $file because it contains CERTIFICATE data"
         rm -f "$file"
     fi
-done
+  done
+}
 
-# Remove files containing CERTIFICATE data (assuming that it's a field value)
-find . -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
-    if yq e '.data[] == "CERTIFICATE"' "$file" &> /dev/null; then
-        rm -f "$file"
-    fi
-done
+# Function to compress the dump into a tarball
+create_tarball() {
+  cd "$DUMP_DIR"
+  TARBALL_PATH="${DUMP_DIR}/${CLUSTER_ID}_dump.tar.gz"
 
-# Compress the remaining files in the dumped folder as a tarball
-tar -czvf "${CLUSTER_ID}_dump.tar.gz" ./*
+  if [ -f "$TARBALL_PATH" ]; then
+    echo "Tarball $TARBALL_PATH already exists. Exiting."
+    exit 0
+  fi
 
-echo "Compressed hypershift dump is saved as ${CLUSTER_ID}_dump.tar.gz"
+  # Compress the dump directory
+  tar -czvf "$TARBALL_PATH" ./*
+
+  echo "Compressed hypershift dump is saved as $TARBALL_PATH"
+}
+
+# Calling functions to remove the sensitive files and make a compress tarball
+remove_sensitive_files
+create_tarball
 
 # End
 exit 0
