@@ -1,0 +1,146 @@
+file: script.sh
+name: hard-prune-image-registry
+shortDescription: Hard prune the image registry
+description: "Hard prunes orphaned blobs in the image registry; this causes the image registry to enter read-only mode during the pruning and should be used only when the customer acknowledges this. See: https://docs.openshift.com/container-platform/4.13/applications/pruning-objects.html#pruning-hard-pruning-registry_pruning-objects"
+author: chcollin
+allowedGroups: 
+  - SREP
+rbac:
+  roles:
+  - namespace: "openshift-image-registry"
+    rules:
+    - apiGroups:
+      - ""
+      resources:
+      - pods
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - ""
+      resources:
+      - pods/exec
+      verbs:
+      - get
+      - create
+    - apiGroups:
+      - apps
+      resources:
+      - deployments
+      verbs:
+      - get
+  clusterRoleRules:
+    - apiGroups:
+      - imageregistry.operator.openshift.io
+      resources:
+      - configs
+      verbs:
+      - get
+      - patch
+    - apiGroups:
+      - rbac.authorization.k8s.io
+      resources:
+      - clusterrolebindings
+      verbs:
+      - create
+      - delete
+      - list
+    ## Required for system:image-pruner
+    - apiGroups:                                                
+      - ""                                                     
+      resources:                                                
+      - pods                                                    
+      - replicationcontrollers                                  
+      verbs:                                                    
+      - get                                                     
+      - list                                                    
+    - apiGroups:                                                
+      - ""                                                      
+      resources:                                                
+      - limitranges                                             
+      verbs:                                                    
+      - list                                                    
+    - apiGroups:                                                
+      - ""   
+      - build.openshift.io
+      resources:
+      - buildconfigs
+      - builds
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - ""
+      - apps.openshift.io
+      resources:
+      - deploymentconfigs
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - batch
+      resources:
+      - jobs
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - batch
+      resources:
+      - cronjobs
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - apps
+      resources:
+      - daemonsets
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - apps
+      resources:
+      - deployments
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - apps
+      resources:
+      - replicasets
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - apps
+      resources:
+      - statefulsets
+      verbs:
+      - get
+      - list
+    - apiGroups:
+      - ""
+      - image.openshift.io
+      resources:
+      - images
+      verbs:
+      - delete
+    - apiGroups:
+      - ""
+      - image.openshift.io
+      resources:
+      - images
+      - imagestreams
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - ""
+      - image.openshift.io
+      resources:
+      - imagestreams/status
+      verbs:
+      - update
+language: bash
