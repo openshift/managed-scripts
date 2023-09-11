@@ -119,7 +119,7 @@ COPY scripts /managed-scripts
 
 # Install python packages
 RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install tabulate openshift-client --user
+RUN python3 -m pip install tabulate openshift-client check-jsonschema --user
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc
