@@ -21,11 +21,8 @@ jfiles=$(find . -name 'metadata.json')
 for f in $jfiles
 do
    echo "validating the jsonschema for $f"
-   if ! $CONTAINER_ENGINE run --rm -v $(pwd):/json quay.io/haowang/jsonschema:latest -i /json/$f /json/hack/metadata.schema.json; then
+   if ! $CONTAINER_ENGINE run --rm -v $(pwd):/json quay.io/app-sre/managed-scripts:latest /root/.local/bin/check-jsonschema --schemafile /json/hack/metadata.schema.json /json/$f; then
      echo "validation failed: $f"
      exit 1
-   else
-     echo "validation succeed"
    fi
 done
-
