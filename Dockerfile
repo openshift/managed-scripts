@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:latest AS build-stage0
+FROM registry.access.redhat.com/ubi9/ubi:latest AS build-stage0
 ARG OC_VERSION="stable"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
@@ -104,9 +104,9 @@ RUN OUT_DIR=/out make hypershift
 # Make binaries executable
 RUN chmod -R +x /out
 
-FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM registry.access.redhat.com/ubi9/ubi:latest
 RUN  yum -y install --disableplugin=subscription-manager \
-     python3 jq \
+     python3 python3-pip jq \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
