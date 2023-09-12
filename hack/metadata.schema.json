@@ -122,22 +122,19 @@
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "required": true
+          }
         },
         "apiGroups": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "required": true
+          }
         },
         "resources": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "required": true
+          }
         },
         "resourceNames": {
           "type": "array",
@@ -145,23 +142,23 @@
             "type": "string"
           }
         }
-      }
+      },
+      "required": [ "verbs", "apiGroups", "resources" ]
     },
     "roleRule": {
       "type": "object",
       "properties": {
         "namespace": {
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         "rules": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/rules"
-          },
-          "required": true
+          }
         }
-      }
+      },
+      "required": [ "namespace", "rules" ]
     }
   }
 }
