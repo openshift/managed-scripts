@@ -19,18 +19,18 @@ check_worker_node(){
     if(oc get nodes --selector='!node-role.kubernetes.io/master,!node-role.kubernetes.io/infra' | grep "${NODE}") &> /dev/null; then
         echo "[OK] \"${NODE}\" is not a master nor a infra node. Proceeding with next check"
     else
-        echo "[Error] \"${NODE}\" is a master or a infra node so it cannot be deleted. Exiting script"
+        echo "[Error] \"${NODE}\" is a master or a infra node or the node it's not present so it cannot be deleted. Exiting script"
         exit 1
     fi
 
 }
 
 check_node(){
-    echo "Checking if the is a machine present on the cluster..."
+    echo "Checking if the \"${MACHINE}\" is a machine present on the cluster..."
     if(oc get machines -n openshift-machine-api | grep "${MACHINE}") &> /dev/null; then
         echo "[OK] \"${MACHINE}\" is present on the cluster. Proceeding with next check"
     else
-        echo "[Error] \"${MACHINE}\" is NOOOT present on the cluster. Exiting script"
+        echo "[Error] \"${MACHINE}\" is not present on the cluster. Exiting script"
         exit 1
     fi
 }
