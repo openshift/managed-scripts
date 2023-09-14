@@ -22,6 +22,8 @@ rbac:
     - verbs:
         - "get"
         - "list"
+        - "delete"
+        - "create"
       apiGroups:
         - ""
       resources:
@@ -95,6 +97,27 @@ rbac:
         - ""
       resources:
         - "pods/portforward"
+    - verbs:
+        - "get"
+      apiGroups:
+        - ""
+      resources:
+        - "pods/log"
+    - verbs:
+        - "get"
+        - "delete"
+      apiGroups:
+        - ""
+      resources:
+        - "secrets"
+      resourceNames:
+        - "hs-mg-creds"
+    - verbs:
+        - "*"
+      apiGroups:
+        - "security.openshift.io"
+      resources:
+        - "securitycontextconstraints"
 envs:
   - key: "CLUSTER_ID"
     description: "Hosted cluster internal ID"
