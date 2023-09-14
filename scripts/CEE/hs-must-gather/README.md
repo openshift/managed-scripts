@@ -8,8 +8,8 @@ sensitive information to ensure safer sharing and archiving.
 ## Usage
 
 Parameters:
-- CLUSTER_NAME: hosted cluster name.
+- CLUSTER_NAME: hosted cluster id.
 
 ```bash
-ocm backplane managedjob create CEE/hs-must-gather -p CLUSTER_NAME=my-hs-cluster-name 
+ocm backplane managedjob create CEE/hs-must-gather -p CLUSTER_ID=my-hs-cluster-id
 ```
