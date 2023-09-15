@@ -1,5 +1,6 @@
 # Delete-worker-node script 
 
+
 ## Purpose
 
 The script is used to delete a worker node that might be stuck for some reason and the customer is experiencing any business lost so the fastest solution is to delete the node and let the cluster create a new healthy one.
