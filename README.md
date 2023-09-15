@@ -6,7 +6,7 @@ This is a repository storing OpenShift Dedicated managed scripts.
 
 `scripts` folder contains various scripts used by different teams.
 
-`hack` contains various helper script for CI/CD tooling and building
+`hack` contains various helper script for CI/CD tooling and building.
 
 Each Red Hat managed role has a dedicated directory under root and each of the contains any number
 of scripts.
@@ -19,7 +19,7 @@ the supported languages.
 
 ## `metadata.yaml`
 
-All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
+All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details.
 
 ### Validation methods:
 
