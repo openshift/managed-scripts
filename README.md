@@ -21,6 +21,21 @@ the supported languages.
 
 All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details
 
+### Validation methods:
+
+    1. In order to check all `metadata.yaml` from all scripts, you can run the command below from your managed-scripts root directory:
+
+    `make validation`
+
+    2. To run the validation just for specifics scripts, you can use the command below parsing the scripts as arguments:
+
+    `make validation SCRIPTS="<script1> <scriptN>"`
+
+    example:
+
+    `make validation SCRIPTS="under-replicated-partition rolling-restart-broker"`
+
+
 ## Release Cycle
 
 Managed Scripts has the following release cycle:

@@ -1,28 +1,115 @@
 #!/bin/bash
+###############################################################################
+#                                                                             #
+#      Check Managed Scripts metadata.yaml files against the JSON Schema      #
+#                                                                             #
+###############################################################################
+#
+# release: v2.0
+# description: Script responsible for listing the metadata.yaml files in the
+#              managed scripts directory and for running the validation 
+#              against the Json Schema.
+# team: SREP
+# author: Fabio Aldana
+# email: faldana@redhat.com
+#
 
 #set -ex
 
-cd $(dirname $0)/..
+# define variables
 CONTAINER_ENGINE=$(which docker 2>/dev/null || which podman)
-#convert all metadata.yaml to json first
-yfiles=$(find . -name 'metadata.yaml')
-for f in $yfiles
+CONTAINER_PATH=/json
+
+# change to the managed-scripts directory on your repository
+cd $(dirname $0)/..
+
+# funtion to present the help
+usage() {
+cat <<EOF >&2
+Usage: $0 <options> [script1] [scriptN]
+
+  Check Managed Scripts metadata.yaml files against the JSON Schema.
+
+  The script can be run with no arguments, which runs against all files found 
+  in the managed-scripts directory, or it can be specified the scripts to be
+  validated.
+
+  Options:
+
+    -h, --help        Shows the script usage.
+
+EOF
+  exit -1
+}
+
+# funtion which validates the list of scripts and adds the container path to each file found
+yamlList() {
+
+if [ ! -z "$listYamlFiles" ]; then
+  for i in $listYamlFiles
+  do
+    yamlFiles+="$CONTAINER_PATH$i "
+  done
+  # calls check_validation function to run the validation on the scripts
+  check_validation
+else
+  echo "error: no file was found."
+  exit 1
+fi
+
+}
+
+# funtion to validate the Yaml files
+check_validation() {
+
+echo "validating the jsonschema for $yamlFiles"
+$CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest /root/.local/bin/check-jsonschema --schemafile $CONTAINER_PATH/hack/metadata.schema.json $yamlFiles
+
+}
+
+# funtion that list all files in the manage-scripts directory
+all() {
+
+# list all yaml files
+listYamlFiles="$(find . -name 'metadata.yaml' | cut -c 2- ) "
+
+# calls yamList function to prepare the scripts to be validated
+yamlList
+
+}
+
+# funtion that list the scripts passed as arguments
+partial() {
+
+# list the number of arguments
+for ((i = 1; i <= $#; i++ ));
 do
-   echo "convert $f to json"
-   if ! python3 hack/yamltojson.py $f; then
-     echo "convert failed"
-     exit 1
-   else
-     echo "convert succeed"
-   fi
+  # list the yaml files based on the arguments
+  listYamlFiles+="$(find ./scripts/*/${!i} -name 'metadata.yaml' | cut -c 2- ) "
 done
-#Verify the metadata.json are valid
-jfiles=$(find . -name 'metadata.json')
-for f in $jfiles
-do
-   echo "validating the jsonschema for $f"
-   if ! $CONTAINER_ENGINE run --rm -v $(pwd):/json quay.io/app-sre/managed-scripts:latest /root/.local/bin/check-jsonschema --schemafile /json/hack/metadata.schema.json /json/$f; then
-     echo "validation failed: $f"
-     exit 1
-   fi
+
+# calls yamList function to prepare the scripts to be validated
+yamlList
+
+}
+
+# get the options
+while getopts ":h" option; do
+   case $option in
+      h) # display Help
+        usage
+        exit;;
+      *) 
+        echo "error: invalid option."
+        echo
+        usage
+        exit 1;;
+   esac
 done
+
+# if no arguments, it calls all function, or with arguments, calls partial function parsing the arguments
+if [ -z "$1" ]; then
+  all
+else
+  partial $@
+fi
