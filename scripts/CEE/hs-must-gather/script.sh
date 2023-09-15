@@ -61,7 +61,7 @@ spec:
       fi
 
       # Sanity check to make sure desired cluster namespace exists
-      HCP_NS_LIST_LENGTH=$(oc get namespace -l api.openshift.com/id=${CLUSTER_ID} -o json | jq -r '.items | length')
+      HCP_NS_LIST_LENGTH=$(oc get namespace -l api.openshift.com/id="${CLUSTER_ID}" -o json | jq -r '.items | length')
       if [ "\${HCP_NS_LIST_LENGTH}" -ne 1 ]; then
         echo "Number of HCP namespaces matching ${CLUSTER_ID} must be 1, \${HCP_NS_LIST_LENGTH} found"
         exit 1
