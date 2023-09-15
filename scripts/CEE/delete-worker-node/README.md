@@ -1,4 +1,4 @@
-# Delete-worker-node script
+# Delete-worker-node script 
 
 ## Purpose
 
