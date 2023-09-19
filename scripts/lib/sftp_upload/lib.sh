@@ -1,5 +1,9 @@
 #!/bin/bash
 # Description: provide the sftp_upload function for script to call
+#
+# To import the sftp_upload function,
+# include in your script with
+# source /managed-scripts/lib/sftp_upload/lib.sh
 
 # Fail fast and be aware of exit codes
 set -euo pipefail
