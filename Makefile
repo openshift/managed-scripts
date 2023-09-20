@@ -26,7 +26,7 @@ build: isclean validation shellcheck pyflakes
 
 .PHONY: validation
 validation:
-	./hack/schema_validation.sh
+	./hack/schema_validation.sh $(SCRIPTS)
 
 .PHONY: shellcheck
 shellcheck:
