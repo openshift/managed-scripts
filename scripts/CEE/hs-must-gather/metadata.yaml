@@ -99,4 +99,7 @@ envs:
   - key: "CLUSTER_ID"
     description: "Hosted cluster internal ID"
     optional: false
+  - key: "DUMP_GUEST_CLUSTER"
+    description: "Include the guest cluster the must gather"
+    optional: false 
 language: bash

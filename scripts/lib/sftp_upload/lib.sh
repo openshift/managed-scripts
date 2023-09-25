@@ -40,8 +40,10 @@ function sftp_upload() {
         put $1 $2
         bye
 EOSSHPASS
+    # convert the username to lowercase for ease of copy / paste
+    lower_case_username=$(tr '[:upper:]' '[:lower:]' <<< "${username}")
 
-    echo "Uploaded file $1 to ${FTP_HOST}, Anonymous username: ${username}, filename: $2"
+    echo "Uploaded file $1 to ${FTP_HOST}, Anonymous username: ${lower_case_username}, filename: $2"
     echo "For more information about SFTP: https://access.redhat.com/articles/5594481"
     return 0
 }
