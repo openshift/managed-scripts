@@ -12,6 +12,8 @@ DUMP_DIR="${PWD}/${CLUSTER_ID}"
 TODAY=$(date -u +%Y%m%d)
 TARBALL_NAME="${TODAY}_${CLUSTER_ID}_dump.tar.gz"
 TARBALL_PATH="${DUMP_DIR}/${TARBALL_NAME}"
+HC_DUMP_DIR=""
+CP_DUMP_DIR=""
 
 # Function to run a hypershift dump on the HCP namespace
 collect_must_gather() {
@@ -34,8 +36,16 @@ collect_must_gather() {
   # Fetch the HostedCluster name
   hc_name=$(oc get HostedCluster.hypershift.openshift.io -l api.openshift.com/id="${CLUSTER_ID}" -n "${hcp_ns}" -o json | jq -r '.items[0].metadata.name')
 
-  echo "Executing hypershift dump on ${hcp_ns} for cluster ${hc_name}"
-  hypershift dump cluster --dump-guest-cluster --namespace "${hcp_ns}" --name "${hc_name}" --artifact-dir "${DUMP_DIR}" --archive-dump=false
+  HC_DUMP_DIR="hostedcluster-${hc_name}"
+  CP_DUMP_DIR="controlplane-${hc_name}"
+
+  if [ "${DUMP_GUEST_CLUSTER}" = "true" ]; then
+    echo "Executing hypershift dump on ${hcp_ns} for cluster ${hc_name}, including guest cluster"
+    hypershift dump cluster --dump-guest-cluster --namespace "${hcp_ns}" --name "${hc_name}" --artifact-dir "${DUMP_DIR}" --archive-dump=false
+  else
+    echo "Executing hypershift dump on ${hcp_ns} for cluster ${hc_name}, excluding guest cluster"
+    hypershift dump cluster --namespace "${hcp_ns}" --name "${hc_name}" --artifact-dir "${DUMP_DIR}" --archive-dump=false
+  fi
 
   echo "Hypershift dump has been saved in ${DUMP_DIR}"
   ls -alh "${DUMP_DIR}"
@@ -56,6 +66,29 @@ remove_sensitive_files() {
         rm -f "${file}"
     fi
   done
+
+  return 0
+}
+
+# HyperShift dump nests the hosted cluster log inside the HCP logs
+# This is hard to use so we arrange them here
+arrange_files() {
+  cd "${DUMP_DIR}"
+
+  echo "Arranging gathered logs"
+
+  # create directory to store control plane logs 
+  mkdir "${CP_DUMP_DIR}"
+
+  # move all files to control plane logs directory
+  echo "Moving control plane logs into ${CP_DUMP_DIR}"
+  find . -maxdepth 1 -mindepth 1 ! -name "${CP_DUMP_DIR}" -exec mv {} -t "${CP_DUMP_DIR}" \;
+
+  # move the hostedcluster logs out from the control plane logs dirctory
+  if [ "${DUMP_GUEST_CLUSTER}" = "true" ]; then 
+    echo "Moving hosted cluster logs into ${HC_DUMP_DIR}"
+    mv "${CP_DUMP_DIR}/${HC_DUMP_DIR}" "${DUMP_DIR}"
+  fi
 
   return 0
 }
@@ -95,6 +128,7 @@ upload_tarball() {
 # Calling functions to gather must-gather, remove sensitive data and upload.
 collect_must_gather
 remove_sensitive_files
+arrange_files
 create_tarball
 upload_tarball
 
