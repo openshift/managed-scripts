@@ -7,11 +7,11 @@ for usage with managed-scripts, the last min to check should be passed through t
 Example:
 
 ```
-ocm backplane managedjob create CSSRE/get-node-restarts -p LAST_MIN=120 # 120 minutes
+ocm backplane managedjob create LPSRE/get-node-restarts -p LAST_MIN=120 # 120 minutes
 
 # for setting log_level
-ocm backplane managedjob create CSSRE/get-node-restarts -p LAST_MIN=120 -p LOG_LEVEL="debug"
+ocm backplane managedjob create LPSRE/get-node-restarts -p LAST_MIN=120 -p LOG_LEVEL="debug"
 
 # this will just take lastmin as 60 minutes if not specified
-ocm backplane managedjob create CSSRE/get-node-restarts
+ocm backplane managedjob create LPSRE/get-node-restarts
 ```

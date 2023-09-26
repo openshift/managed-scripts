@@ -9,7 +9,7 @@ import json
 import datetime
 import sys
 
-LIB_PATH = "/managed-scripts/CSSRE/lib"
+LIB_PATH = "/managed-scripts/LPSRE/lib"
 # Use sys.path.insert because PYTHONPATH's support is unclear
 sys.path.insert(0, LIB_PATH)
 

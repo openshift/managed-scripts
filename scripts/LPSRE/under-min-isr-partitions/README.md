@@ -19,9 +19,9 @@ KAFKA_NAMESPACE=my-kafka python under-min-isr-partitions.py --log-level=debug
 
 
 ```bash
-ocm backplane managedjob create CSSRE/under-min-isr-partitions -p kafka_namespace=<KAFKA_NAMESPACE> [LOG_LEVEL=<LOG_LEVEL>]
+ocm backplane managedjob create LPSRE/under-min-isr-partitions -p kafka_namespace=<KAFKA_NAMESPACE> [LOG_LEVEL=<LOG_LEVEL>]
 
 # Examples
-ocm backplane managedjob create CSSRE/under-min-isr-partitions -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE>
-ocm backplane managedjob create CSSRE/under-min-isr-partitions -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE> -p LOG_LEVEL=debug
+ocm backplane managedjob create LPSRE/under-min-isr-partitions -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE>
+ocm backplane managedjob create LPSRE/under-min-isr-partitions -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE> -p LOG_LEVEL=debug
 ```

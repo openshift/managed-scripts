@@ -20,12 +20,12 @@ Usage: ./rolling-restart-brokers.sh -n KAFKA_NAMESPACE [-s STATEFULSET|STRIMZIPO
 For use as a managed script, parameters are passed as environment variables.
 
 ```bash
-ocm backplane managedjob create CSSRE/rolling-restart-brokers -p kafka_namespace=<KAFKA_NAMESPACE> [s_set=STATEFULSET|STRIMZIPODSET | pod=POD]
+ocm backplane managedjob create LPSRE/rolling-restart-brokers -p kafka_namespace=<KAFKA_NAMESPACE> [s_set=STATEFULSET|STRIMZIPODSET | pod=POD]
 
 # Examples
-ocm backplane managedjob create CSSRE/rolling-restart-brokers -p kafka_namespace=my-kafka
-ocm backplane managedjob create CSSRE/rolling-restart-brokers -p kafka_namespace=my-kafka s_set=kafka
-ocm backplane managedjob create CSSRE/rolling-restart-brokers -p kafka_namespace=my-kafka pod=pod-zookeeper-0 
+ocm backplane managedjob create LPSRE/rolling-restart-brokers -p kafka_namespace=my-kafka
+ocm backplane managedjob create LPSRE/rolling-restart-brokers -p kafka_namespace=my-kafka s_set=kafka
+ocm backplane managedjob create LPSRE/rolling-restart-brokers -p kafka_namespace=my-kafka pod=pod-zookeeper-0 
 ```
 
 

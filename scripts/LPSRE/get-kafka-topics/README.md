@@ -21,11 +21,11 @@ KAFKA_NAMESPACE=my-kafka FILTER=under-replicated-partitions python get-kafka-top
 ### Running as managed script
 
 ```bash
-ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE> [TOPIC=<TOPIC>] [FILTER=<under-replicated-partitions|under-min-isr-partitions|unavailable-partitions>] [LOG_LEVEL=<LOG_LEVEL>]
+ocm backplane managedjob create LPSRE/get-kafka-topics -p KAFKA_NAMESPACE=<KAFKA_NAMESPACE> [TOPIC=<TOPIC>] [FILTER=<under-replicated-partitions|under-min-isr-partitions|unavailable-partitions>] [LOG_LEVEL=<LOG_LEVEL>]
 
 # Examples
-ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka
-ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka -p TOPIC=canary
-ocm backplane managedjob create CSSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka -p TOPIC=canary -p FILTER=unavailable-partitions
+ocm backplane managedjob create LPSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka
+ocm backplane managedjob create LPSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka -p TOPIC=canary
+ocm backplane managedjob create LPSRE/get-kafka-topics -p KAFKA_NAMESPACE=my-kafka -p TOPIC=canary -p FILTER=unavailable-partitions
 ```
 
