@@ -58,12 +58,18 @@ remove_sensitive_files() {
   cd "${DUMP_DIR}"
 
   find . -type f -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
-    if yq e '.kind == "Secret"' "${file}" &> /dev/null; then
-        echo "Removing ${file} because it contains a Secret"
-        rm -f "${file}"
-    elif yq e '.data[] == "CERTIFICATE"' "${file}" &> /dev/null; then
-        echo "Removing ${file} because it contains CERTIFICATE data"
-        rm -f "${file}"
+    if [ "$(yq e '.kind == "Secret"' "${file}" 2> /dev/null)" = "true" ]; then
+      echo "Removing ${file} because it contains a Secret"
+      rm -f "${file}"
+    elif [ "$(yq e '.kind == "SecretList"' "${file}" 2> /dev/null)" = "true" ]; then
+      echo "Removing ${file} because it contains a SecretList"
+      rm -f "${file}"
+    elif [ "$(yq e 'select(.data[] | contains("CERTIFICATE")) | [.] | length > 0' "${file}" 2> /dev/null)" = "true" ]; then
+      echo "Removing ${file} because it contains CERTIFICATE data"
+      rm -f "${file}"
+    elif [ "$(yq e 'select(.items[].data[] | contains("CERTIFICATE")) | [.] | length > 0' "${file}" 2> /dev/null)" = "true" ]; then
+      echo "Removing ${file} because it contains CERTIFICATE data"
+      rm -f "${file}"
     fi
   done
 
