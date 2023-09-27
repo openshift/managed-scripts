@@ -106,7 +106,7 @@ RUN chmod -R +x /out
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
 RUN  yum -y install --disableplugin=subscription-manager \
-     python3 jq openssh-clients sshpass \
+     python3.11 python3.11-pip jq openssh-clients sshpass \
      && yum --disableplugin=subscription-manager clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
