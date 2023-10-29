@@ -1,0 +1,26 @@
+file: script.sh
+name: fix-pruning-cron-job-error
+description: Retry the failed jobs in openshift-sre-pruning namespace
+author: Dee-6777
+allowedGroups:
+  - SREP
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+rbac:
+    roles:
+      - namespace: "openshift-sre-pruning"
+        rules:
+          - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "delete"
+            - "create"
+            apiGroups:
+            - "batch"
+            resources:
+            - "jobs"
+language: bash
