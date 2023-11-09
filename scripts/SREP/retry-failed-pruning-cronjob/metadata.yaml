@@ -1,5 +1,5 @@
 file: script.sh
-name: fix-pruning-cron-job-error
+name: retry-failed-pruning-cronjob
 description: Retry the failed jobs in openshift-sre-pruning namespace
 author: Dee-6777
 allowedGroups:
