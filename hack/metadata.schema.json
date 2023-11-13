@@ -103,6 +103,15 @@
           }
         }
       }
+    },
+    "clusterVersions": {
+      "type": "array",
+      "description": "List of required cluster versions, supporting 'major.minor.patch' format and wildcards",
+      "additionalProperties": false,
+      "items": {
+        "type": "string",
+        "pattern": "^\\d+\\.\\d+\\.\\d+$|^\\d+\\.\\d+\\.\\*$"
+      }
     }
   },
   "additionalProperties": false,
