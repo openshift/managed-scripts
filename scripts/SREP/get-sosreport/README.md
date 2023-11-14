@@ -10,21 +10,11 @@
 - Run chroot /host
 - Run toolbox
 - Run sosreport in non interative mode
-```bash
-sos report -k crio.all=on -k crio.logs=on --batch
-```
+
 3. Capture last compacted file fenerated in `/host/var/tmp` 
-```
-ls -tA /host/var/tmp/*.tar.xz | head -1
-```
 4. Exit debug session [DONE]
 5. Open new debug sesion, and copy the file to inside the backplane managedscript container [DONE]
-```
-oc debug node/my-cluster-node -- bash -c 'cat /host/var/tmp/sosreport-my-cluster-node-01234567-2020-05-28-eyjknxt.tar.xz' > /tmp/sosreport-my-cluster-node-01234567-2020-05-28-eyjknxt.tar.xz
-```
-
 6. Copy file to a SFTP server [DONE]
-
 7. Provide instructions in how to use. [DONE]
 
 ## How to pull the collected sosreport from the SFTP Server.
