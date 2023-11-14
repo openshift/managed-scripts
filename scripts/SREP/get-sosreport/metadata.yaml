@@ -30,4 +30,8 @@ rbac:
             - ""
           resources:
             - "nodes"
+envs:
+  - key: "NODE"
+    description: "node name"
+    optional: false
 language: bash
