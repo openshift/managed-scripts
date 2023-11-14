@@ -4,33 +4,44 @@
 
 1. Choose a worker node
 - Set env var $nodename
-- Capture node name through script argument given
-2. Open a debug session with $nodename
+- Capture node name through script argument given [WIP]
+
+2. Open a debug session with $nodename [DONE]
 - Run chroot /host
 - Run toolbox
 - Run sosreport in non interative mode
 ```bash
 sos report -k crio.all=on -k crio.logs=on --batch
 ```
-3. Capture last compacted file fenerated in `/host/var/tmp`
+3. Capture last compacted file fenerated in `/host/var/tmp` 
 ```
 ls -tA /host/var/tmp/*.tar.xz | head -1
 ```
-4. Exit debug session
-5. Open new debug sesion, and copy the file to inside the backplane managedscript container
+4. Exit debug session [DONE]
+5. Open new debug sesion, and copy the file to inside the backplane managedscript container [DONE]
 ```
 oc debug node/my-cluster-node -- bash -c 'cat /host/var/tmp/sosreport-my-cluster-node-01234567-2020-05-28-eyjknxt.tar.xz' > /tmp/sosreport-my-cluster-node-01234567-2020-05-28-eyjknxt.tar.xz
 ```
 
-6. Copy file to a bucket and extract from there?
+6. Copy file to a SFTP server [DONE]
 
-### Commands
+7. Provide instructions in how to use. [DONE]
 
+## How to pull the collected sosreport from the SFTP Server.
+
+1. Take note of the `Anonymous username` and `filename` from the the job output.
+
+2. Access the [SFTP Token Portal](https://access.redhat.com/sftp-token/#/external).
+- Use your Red Hat username. Eg. (rhn-support-hgomes)
+- Click **Generate Token**
+
+3. Open a local terminal and access SFTP server, as **password** use the generated token from step 2.
 ```
---- Choosing the worker node
-oc get nodes -l node-role.kubernetes.io/worker="" --no-headers | awk '{print $1}' | sed 1q
---- 1st Debug session command
-oc -n default debug node\/"$node" -- sh -c 'chroot /host toolbox sos report -k crio.all=on -k crio.logs=on --batch'
---- 2nd Debug session command
-oc -n default debug node\/"$node" -- bash -c 'cat $(ls -tA /host/var/tmp/*.tar.xz | head -1)' > sosreport.tar.xz ;
+❯ sftp rhn-support-hgomes@sftp.access.redhat.com
+rhn-support-hgomes@sftp.access.redhat.com's password:
+```
+
+4. Using the `anonymous username` and `filename` fetch the file. It will be saved in the local directory.
+```
+sftp> get anonymous/users/yqjqoccq/20231114AM-ip-10-0-178-83.eu-west-1.compute.internal-sosreport.tar.xz
 ```
