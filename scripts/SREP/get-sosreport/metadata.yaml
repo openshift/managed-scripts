@@ -1,0 +1,33 @@
+file: script.sh
+name: get-sosreport
+description: Collect a sosreport from a specific node
+author: Hevellyn Gomes 
+allowedGroups:
+  - SREP
+  - LPSRE
+  - CEE
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+rbac:
+    roles:
+      - namespace: "default"
+        rules:
+          - verbs:
+            - "create"
+            - "delete"
+            apiGroups:
+            - ""
+            resources:
+            - "pods"
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+          apiGroups:
+            - ""
+          resources:
+            - "nodes"
+language: bash
