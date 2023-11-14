@@ -51,7 +51,7 @@ validate_file() {
 
 copy_sosreport() {
 # 2nd Debug session - Fetch sosreport .tar.xz file and save inside the container volume.
-    oc -n default debug node/"${NODE}" -- bash -c "cat $(find /host/var/tmp/sosreport-$HOSTNAME-*.tar.xz | head -1)" > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
+    oc -n default debug node/"${NODE}" -- bash -c "cat $(find /host/var/tmp/sosreport-"$HOSTNAME"-*.tar.xz | head -1)" > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
 
     echo "==== Check if file exists inside container ===="
 
