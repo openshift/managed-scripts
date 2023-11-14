@@ -51,7 +51,7 @@ validate_file() {
 
 copy_sosreport() {
 # 2nd Debug session - Fetch sosreport .tar.xz file and save inside the container volume.
-    oc -n default debug node/"${NODE}" -- bash -c "cat $(find /host/var/tmp/sosreport-"$HOSTNAME"-*.tar.xz | head -1)" > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
+    oc -n default debug node/"${NODE}" -- bash -c "cat $(find /host/var/tmp/sosreport-$HOSTNAME-*.tar.xz | head -1)" > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
 
     echo "==== Check if file exists inside container ===="
 
@@ -66,7 +66,7 @@ delete_sosreport_from_node() {
 # Deleting any sosreport from the /host/var/tmp inside node
 
     echo "==== Deleting file from the node ===="
-    oc -n default debug node/"${NODE}" -- sh -c "rm /host/var/tmp/sosreport-"$HOSTNAME"-* && ls -l /host/var/tmp/"
+    oc -n default debug node/"${NODE}" -- sh -c "rm /host/var/tmp/sosreport-$HOSTNAME-* && ls -l /host/var/tmp/"
 
     echo "==== SOSREPORT file should be now not showing in the list ===="
 
