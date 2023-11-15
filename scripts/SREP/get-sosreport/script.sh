@@ -44,29 +44,29 @@ generate_sosreport() {
 
 validate_file() {
     echo "==== Check if the sosreport is created inside the node ===="
-    oc -n default debug node/"${NODE}" -- bash -c "ls -l /host/var/tmp/*.tar.xz" | tee;
-
-    return 0
+    if ! oc -n default debug node\/ip-10-0-178-83.eu-west-1.compute.internal -- bash -c "ls -l /host/var/tmp/*.tar.xz" | tee;
+        then echo "Error: sosreport file not found on node"
+        exit 1
+        else echo "SOSREPORT file generated and found!"
+    fi
 }
 
 copy_sosreport() {
-# 2nd Debug session - Fetch sosreport .tar.xz file and save inside the container volume.
+# 2nd Debug session - Fetch sosreport .tar.xz file and save in the container volume.
     oc -n default debug node/"${NODE}" -- bash -c "cat $(find /host/var/tmp/sosreport-"$HOSTNAME"-*.tar.xz | head -1)" > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
 
-    echo "==== Check if file exists inside container ===="
-
-    ls -la "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz
-
-    echo "======================="
-
-    return 0
+    if ! ls -la "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz;
+        then echo "Error: Sosreport file not found in backplane container"
+        exit 1
+        else echo "SOSREPORT found in backplane container!"
+    fi
 }
 
 delete_sosreport_from_node() {
 # Deleting any sosreport from the /host/var/tmp inside node
 
     echo "==== Deleting file from the node ===="
-    oc -n default debug node/"${NODE}" -- sh -c "rm /host/var/tmp/sosreport-$HOSTNAME-* && ls -l /host/var/tmp/"
+    oc -n default debug node/"${NODE}" -- sh -c "rm /host/var/tmp/sosreport-"$HOSTNAME"-*.tar.xz && ls -l /host/var/tmp/"
 
     echo "==== SOSREPORT file should be now not showing in the list ===="
 
@@ -88,21 +88,13 @@ upload_sosreport() {
   return 0
 }
 
-main() {
-    check_node
-    generate_sosreport
-    validate_file
-    copy_sosreport
-    delete_sosreport_from_node
-    upload_sosreport
-    
-    echo "sosreport process completed successfully"
-  }
-    
-# Execute main function
-main
+main () {
+check_node
 generate_sosreport
 validate_file
 copy_sosreport
 delete_sosreport_from_node
-upload_sosreport
+#upload_sosreport
+}
+
+main
