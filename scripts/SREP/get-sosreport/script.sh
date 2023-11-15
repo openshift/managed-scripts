@@ -25,7 +25,7 @@ SOSREPORT_FILEPATH="${DUMP_DIR}/sosreport-${NODE}.tar.xz"
 check_node(){
     echo "Checking if \"${NODE}\" is an existing node..."
     
-    if (oc get nodes -l node-role.kubernetes.io/worker= -oname | grep "${NODE}") &> /dev/null; then
+    if (oc get nodes --no-headers -oname | grep "${NODE}") &> /dev/null; then
        echo "[OK] \"${NODE}\" is a node."
     else
         echo "[Error] \"${NODE}\" is not a node. Exiting script"
