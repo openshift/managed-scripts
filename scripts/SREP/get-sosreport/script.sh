@@ -88,7 +88,19 @@ upload_sosreport() {
   return 0
 }
 
-check_node
+main() {
+    check_node
+    generate_sosreport
+    validate_file
+    copy_sosreport
+    delete_sosreport_from_node
+    upload_sosreport
+    
+    echo "sosreport process completed successfully"
+  }
+    
+# Execute main function
+main
 generate_sosreport
 validate_file
 copy_sosreport
