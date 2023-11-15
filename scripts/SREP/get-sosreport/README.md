@@ -10,7 +10,7 @@ ocm backplane managedjob create SREP/get-sosreport -p NODE="ip-10-0-178-83.eu-we
 
 ## How to pull the collected sosreport from Red Hat SFTP Server.
 
-1. Take note of the `Anonymous username` and `filename` from the the job output.
+1. Take note of the `Anonymous username` and `filename` from the job output.
 
 2. Access the [SFTP Token Portal](https://access.redhat.com/sftp-token/#/external).
 - Use your Red Hat username. Eg. (rhn-support-hgomes)
