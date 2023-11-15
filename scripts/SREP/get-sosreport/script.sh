@@ -36,39 +36,38 @@ generate_sosreport() {
 
     echo " ==== Generating SOSREPORT ===="
     oc -n default debug node/"${NODE}" -- sh -c "chroot /host toolbox sos report -k crio.all=on -k crio.logs=on --batch"
-
     return 0
 }
 
 validate_file() {
-    echo "==== Check if the sosreport is created inside the node ===="
-    if ! oc -n default debug node/"${NODE}" -- bash -c "ls -l /host/var/tmp/*.tar.xz" | tee;
-        then printf "========\n [Error] Sosreport file not found in node directory /host/var/tmp dir \n========"
+    printf "==== Check if the sosreport is created inside the node ===="
+    if ! oc -n default debug node/"${NODE}" -- bash -c "ls -lh /host/var/tmp/sosreport-*.tar.xz" | tee;
+        then printf "========\n [Error] Sosreport file not found in node directory /host/var/tmp dir \n========\n"
         exit 1
         else printf "========\n [Success] Sosreport file generated\n========\n"
     fi
 }
-
 copy_sosreport() {
 # 2nd Debug session - Fetch sosreport .tar.xz file and save in the container volume.
-    oc -n default debug node/"${NODE}" -- bash -c 'cat $(ls /host/var/tmp/sosreport-"$(echo "${NODE}" |cut -d '.' -f 1)"-*.tar.xz |head -1)' > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
+    printf "\n==== Copying file from node to container volume ====\n"
+    oc -n default debug node/"${NODE}" -- bash -c 'cat $(ls -tA /host/var/tmp/sosreport-*.tar.xz | head -1)' > "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz ;
 
-    if ! ls -la "${DUMP_DIR}"/sosreport-"${NODE}"-*.tar.xz;
-        then printf "========\n [Error] Sosreport file not found in backplane container\n========"
+    if ! ls -la "${DUMP_DIR}"/sosreport-"${NODE}".tar.xz;
+        then printf "========\n [Error] Sosreport file not copied to backplane container\n========\n"
         exit 1
-        else printf "========\n [Success] Sosreport copied to backplane container\n========"
+        else printf "========\n [Success] Sosreport copied to backplane container\n========\n"
     fi
 
-    ls -la "${DUMP_DIR}"
+    ls -lh "${DUMP_DIR}"
 }
 
 delete_sosreport_from_node() {
 # Deleting any sosreport from the /host/var/tmp inside node
 
-    printf "\n========\n Deleting file from the node \n========"
-    oc -n default debug node/"${NODE}" -- sh -c "rm /host/var/tmp/sosreport-"$(echo ${NODE} |cut -d '.' -f 1)"-*.tar.*"
+    printf "\n========\n Deleting file from the node \n========\n"
+    oc -n default debug node/"${NODE}" -- sh -c "rm /host/var/tmp/sosreport-*.tar.*"
 
-    if oc -n default debug node/"${NODE}" -- bash -c "ls -l /host/var/tmp/sosreport-"$(echo ${NODE} |cut -d '.' -f 1)"-*.tar.*" | tee;
+    if oc -n default debug node/"${NODE}" -- bash -c "ls -l /host/var/tmp/sosreport-*.tar.*" | tee;
         then echo "Error: sosreport file not deleted - Please check with SRE for manual removal in directory /host/var/tmp/"
         exit 1
         else printf "========\n [Success] Sosreport file deleted from the node \n========"
@@ -91,12 +90,12 @@ upload_sosreport() {
 }
 
 main () {
-#check_node
-#generate_sosreport
+check_node
+generate_sosreport
 validate_file
 copy_sosreport
-#delete_sosreport_from_node
-#upload_sosreport
+delete_sosreport_from_node
+upload_sosreport
 }
 
 main
