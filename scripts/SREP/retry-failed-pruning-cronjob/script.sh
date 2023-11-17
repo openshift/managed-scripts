@@ -19,7 +19,7 @@ DEPLOYMENTS_PRUNER+=($(oc get jobs -n "$PRUNING_NS" -o=jsonpath='{.items[?(@.met
 
 detect_job() {
   echo "INFO: finding jobs producing error"
-  FAILED_JOBS+=($(oc get jobs -n "$PRUNING_NS" -o=jsonpath='{.items[?(@.status.failed>1)].metadata.name}'))
+  FAILED_JOBS+=($(oc get jobs -n "$PRUNING_NS" -o=jsonpath='{.items[?(@.status.failed>0)].metadata.name}'))
 }
 
 delete_job() {
