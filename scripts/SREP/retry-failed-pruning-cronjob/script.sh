@@ -14,12 +14,12 @@ FAILED_JOBS=()
 BUILDS_PRUNER_FAILED=()
 DEPLOYMENTS_PRUNER_FAILED=()
 
-BUILDS_PRUNER+=($(oc get jobs -n "$PRUNING_NS" -o=jsonpath='{.items[?(@.metadata.ownerReferences[*].name=="builds-pruner")].metadata.name}'))
-DEPLOYMENTS_PRUNER+=($(oc get jobs -n "$PRUNING_NS" -o=jsonpath='{.items[?(@.metadata.ownerReferences[*].name=="deployments-pruner")].metadata.name}'))
+BUILDS_PRUNER+=($(oc get jobs -n "$PRUNING_NS" -o json | jq -r '.items[] | select(.metadata.ownerReferences[].name=="builds-pruner") | .metadata.name'))
+DEPLOYMENTS_PRUNER+=($(oc get jobs -n "$PRUNING_NS" -o json | jq -r '.items[] | select(.metadata.ownerReferences[].name=="deployments-pruner") | .metadata.name'))
 
 detect_job() {
   echo "INFO: finding jobs producing error"
-  FAILED_JOBS+=($(oc get jobs -n "$PRUNING_NS" -o=jsonpath='{.items[?(@.status.failed>0)].metadata.name}'))
+  FAILED_JOBS+=($(oc get jobs -n "$PRUNING_NS" -o json | jq -r '.items[] | select(.status.succeeded != 1) | .metadata.name'))
 }
 
 delete_job() {
@@ -53,6 +53,7 @@ rerun_job() {
     oc create job --from=cronjob/deployments-pruner "${DEPLOYMENTS_PRUNER_FAILED[0]}" -n "$PRUNING_NS"
   fi
 }
+
 
 main() {
   detect_job
