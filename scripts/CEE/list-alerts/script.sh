@@ -112,7 +112,7 @@ function list_alerts(){
     for host in "${!hostarray[@]}" ; do
 	    echo "Retrieving alerts from the ${hostarray[$host]} Prometheus instance in the ${host} namespace:"
 	    PROM_HOST=$(_get_host ${host} ${hostarray[$host]})
-	    PROM_TOKEN=$(oc -n ${host} sa get-token ${hostarray[$host]})
+	    PROM_TOKEN=$(oc -n ${host} create token ${hostarray[$host]} --duration 10m)
 	    # The alertmanager route name differs for each namespace, so we need to retrieve it dynamically
 	    AM_HOST=$(_get_host "${host}" "$(oc get routes -n ${host} -o custom-columns=NAME:.metadata.name | grep alertmanager)")
 
