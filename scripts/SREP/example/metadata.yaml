@@ -6,8 +6,6 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
-clusterVersions:
-  - 4.13.*
 labels:
   - key: OSD_TYPES
     description: Compatible cluster types for this script
