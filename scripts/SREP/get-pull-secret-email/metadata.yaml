@@ -1,0 +1,25 @@
+file: script.sh
+name: get-pull-secret-email
+description: Get the email of the pull-secret in the cluster.
+author: feichashao
+allowedGroups:
+  - SREP
+  - CEE
+  - LPSRE
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
+rbac:
+    roles:
+      - namespace: "openshift-config"
+        rules:
+          - verbs:
+            - "get"
+            apiGroups:
+            - ""
+            resources:
+            - "secrets"
+language: bash
