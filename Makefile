@@ -21,7 +21,7 @@ isclean:
 
 .PHONY: build
 build: isclean validation shellcheck pyflakes
-	$(CONTAINER_ENGINE) build -t $(IMAGE_URI_VERSION) .
+	$(CONTAINER_ENGINE) build --platform=linux/amd64 -t $(IMAGE_URI_VERSION) .
 	$(CONTAINER_ENGINE) tag $(IMAGE_URI_VERSION) $(IMAGE_URI_LATEST)
 
 .PHONY: validation
@@ -30,13 +30,13 @@ validation:
 
 .PHONY: shellcheck
 shellcheck:
-	$(CONTAINER_ENGINE) pull $(SHELL_CHECK_IMAGE)
-	$(CONTAINER_ENGINE) run -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(SHELL_CHECK_IMAGE) -c "yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && yum install -y ShellCheck && find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
+	$(CONTAINER_ENGINE) pull --platform=linux/amd64 $(SHELL_CHECK_IMAGE)
+	$(CONTAINER_ENGINE) run --platform=linux/amd64 -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(SHELL_CHECK_IMAGE) -c "yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && yum install -y ShellCheck && find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
 
 .PHONY: pyflakes
 pyflakes:
-	$(CONTAINER_ENGINE) pull $(PYTHON_IMAGE)
-	$(CONTAINER_ENGINE) run -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(PYTHON_IMAGE) -c "pip3 install pyflakes && find . -name '*.py' -print0 | xargs -0 -n1 pyflakes "
+	$(CONTAINER_ENGINE) pull --platform=linux/amd64 $(PYTHON_IMAGE)
+	$(CONTAINER_ENGINE) run --platform=linux/amd64 -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(PYTHON_IMAGE) -c "pip3 install pyflakes && find . -name '*.py' -print0 | xargs -0 -n1 pyflakes "
 
 .PHONY: push
 push:
