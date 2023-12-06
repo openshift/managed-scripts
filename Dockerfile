@@ -127,4 +127,6 @@ RUN aws --version
 
 # Cleanup Home Dir
 RUN rm /root/anaconda* /root/original-ks.cfg
-WORKDIR /root
+
+USER 1001
+WORKDIR /managed-scripts
