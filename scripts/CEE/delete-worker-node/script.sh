@@ -47,17 +47,33 @@ check_machine(){
     fi
 }
 
+check_deleting_machine()(
+    echo "Checking if there is any other machine in non-ready state"
+
+    output=$(oc get machine -n openshift-machine-api -ojson | jq '[.items[]?.status.phase!="Running"] | any')
+
+    if [ "$output" == "false" ]; then
+        echo "[OK], the rest of the machines are up and running"
+    else
+        echo "[KO], there are machines in non ready state, please, check them before deleting a new one"
+        exit 1
+    fi
+)
+
+
+
 delete_machine(){
     echo "Deleting the machine to be recreated"
-    oc delete machine -n openshift-machine-api $MACHINE
+    oc delete machine -n openshift-machine-api "$MACHINE"
 }
 
 main(){
+
     check_worker_node
     check_node
     check_machine
+    check_deleting_machine
     delete_machine
 }
 
 main
-
