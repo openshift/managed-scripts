@@ -1,8 +1,8 @@
-# Cordon / Uncordon worker nodes
+# Drain / Reboot worker nodes
 
 ## Description
 
-This script cordons/uncordons nodes (workers only)
+This script is responsible for draining and rebooting nodes (workers only)
 
 ## Usage
 
@@ -11,9 +11,6 @@ This script cordons/uncordons nodes (workers only)
 - The usage of this script is audited.
 
 ```bash
-ocm backplane managedjob create CEE/cordon-uncordon-nodes -p WORKER="<node_name>" -p ACTION="[cordon|uncordon]"
+ocm backplane managedjob create CEE/drain-reboot-nodes -p WORKER="<node_name>"
 ```
-It will fail when:
-- Trying to cordon/uncordon non-workers
-- Trying to cordon a worker that is already cordoned
-- Trying to uncordon a worker that is already uncordoned
+
