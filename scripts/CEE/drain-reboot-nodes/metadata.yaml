@@ -1,0 +1,26 @@
+file: script.sh
+name: drain-reboot-worker-node
+description: Drain and Reboot worke node
+author: Fabio Aldana
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "patch"
+        - "list"
+        - "watch"
+        - "create"
+        - "delete"
+      apiGroups:
+        - ''
+      resources:
+        - "nodes"
+        - "pods"
+envs:
+  - key: WORKER
+    description: The worker node name
+    optional: false
+language: bash
