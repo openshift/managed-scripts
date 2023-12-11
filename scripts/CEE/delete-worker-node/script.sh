@@ -39,7 +39,10 @@ check_node(){
 check_machine(){
     echo "Checking if the \"${MACHINE}\" is the machine associated to the correct node..."
 
-    if (oc get nodes -o jsonpath='{range .items..metadata}{.name}{" "}{.annotations.machine\.openshift\.io/machine}{"\n"}{end}' | grep "${MACHINE}" | awk '{print $(NF)}') &> /dev/null; then
+    check=$(oc get nodes -o jsonpath='{range .items..metadata}{.name}{" "}{.annotations.machine\.openshift\.io/machine}{"\n"}{end}' | grep "${MACHINE}" | awk '{print $1}')
+
+
+    if [ "$check" == "$NODE" ] ; then
         echo "[OK] \"${MACHINE}\" is the correct one Proceeding with next check"
     else
         echo "[Error] \"${MACHINE}\" is not correct, please, check that you have provided the correct values. Exiting script"
@@ -55,7 +58,7 @@ check_deleting_machine()(
     if [ "$output" == "false" ]; then
         echo "[OK], the rest of the machines are up and running"
     else
-        echo "[KO], there are machines in non ready state, please, check them before deleting a new one"
+        echo "[Error], there are machines in non running state, please, check them before deleting a new one"
         exit 1
     fi
 )
@@ -77,3 +80,4 @@ main(){
 }
 
 main
+

@@ -9,15 +9,22 @@ rbac:
   clusterRoleRules:
     - verbs:
         - get
-        - patch
         - list
-        - delete
       apiGroups:
         - ''
-        - 'machine.openshift.io'
       resources:
         - nodes
-        - machines
+  roles:
+    - namespace: "openshift-machine-api"
+      rules:
+        - verbs:
+            - get
+            - list
+            - delete
+          apiGroups:
+            - "machine.openshift.io"
+          resources:
+            - "machines"
 envs:
   - key: NODE
     description: The node name
