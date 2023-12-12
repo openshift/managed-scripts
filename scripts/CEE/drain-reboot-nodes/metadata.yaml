@@ -6,19 +6,31 @@ allowedGroups:
   - CEE
   - SREP
 rbac:
+  roles:
+    - namespace: "default"
+      rules:
+        - verbs:
+          - "get"
+          - "patch"
+          - "list"
+          - "watch"
+          - "create"
+          - "delete"
+          apiGroups:
+          - ""
+          resources:
+          - "pods"
+          - "pods/attach"
   clusterRoleRules:
-    - verbs:
+      - verbs:
         - "get"
         - "patch"
         - "list"
         - "watch"
-        - "create"
-        - "delete"
-      apiGroups:
-        - ''
-      resources:
+        apiGroups:
+        - ""
+        resources:
         - "nodes"
-        - "pods"
 envs:
   - key: WORKER
     description: The worker node name
