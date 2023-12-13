@@ -31,6 +31,15 @@ rbac:
         - ""
         resources:
         - "nodes"
+      - verbs:
+        - "get"
+        - "list"
+        - "watch"
+        - "delete"
+        apiGroups:
+        - ""
+        resources:
+        - "pods"
 envs:
   - key: WORKER
     description: The worker node name
