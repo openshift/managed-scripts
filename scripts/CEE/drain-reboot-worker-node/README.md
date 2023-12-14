@@ -19,6 +19,6 @@ This script is responsible for draining and rebooting nodes (workers only).
 - The usage of this script is audited.
 
 ```bash
-ocm backplane managedjob create CEE/drain-reboot-nodes -p WORKER="<node_name>"
+ocm backplane managedjob create CEE/drain-reboot-worker-node -p WORKER="<node_name>"
 ```
 

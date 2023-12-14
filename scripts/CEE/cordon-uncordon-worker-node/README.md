@@ -11,7 +11,7 @@ This script cordons/uncordons nodes (workers only)
 - The usage of this script is audited.
 
 ```bash
-ocm backplane managedjob create CEE/cordon-uncordon-nodes -p WORKER="<node_name>" -p ACTION="[cordon|uncordon]"
+ocm backplane managedjob create CEE/cordon-uncordon-worker-node -p WORKER="<node_name>" -p ACTION="[cordon|uncordon]"
 ```
 It will fail when:
 - Trying to cordon/uncordon non-workers

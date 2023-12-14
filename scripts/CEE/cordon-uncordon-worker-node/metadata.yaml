@@ -1,6 +1,6 @@
 file: script.sh
-name: cordon-uncordon-worker-nodes
-description: Cordon/Uncordon worker nodes
+name: cordon-uncordon-worker-node
+description: Script responsible for cordoning/uncordoning worker nodes.
 author: Givaldo Lins
 allowedGroups:
   - CEE
