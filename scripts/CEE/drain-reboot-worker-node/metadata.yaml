@@ -1,6 +1,6 @@
 file: script.sh
 name: drain-reboot-worker-node
-description: Drain and Reboot worke node
+description: Script responsible for draining and rebooting worker nodes.
 author: Fabio Aldana
 allowedGroups:
   - CEE
