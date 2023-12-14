@@ -1,0 +1,37 @@
+file: script.sh
+name: delete-worker-node
+description: Delete/Replace worker nodes
+author: Nelson Paez
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - ''
+      resources:
+        - nodes
+  roles:
+    - namespace: "openshift-machine-api"
+      rules:
+        - verbs:
+            - get
+            - list
+            - delete
+          apiGroups:
+            - "machine.openshift.io"
+          resources:
+            - "machines"
+envs:
+  - key: NODE
+    description: The node name
+    optional: false
+
+  - key: MACHINE
+    description: The machine name associated with the node
+    optional: false
+
+language: bash
