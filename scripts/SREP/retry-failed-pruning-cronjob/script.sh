@@ -24,7 +24,7 @@ detect_job() {
 delete_job() {
   if [[ ${#FAILED_JOBS[*]} == 0 ]]; then
     echo "INFO: no failed jobs found exiting.."
-    return 1
+    exit 0
   else
     echo "INFO: deleting jobs producing error"
     for jobs in "${FAILED_JOBS[@]}"; do
