@@ -14,7 +14,7 @@
 # Fetch authentication token.
 # Output: Returns the authentication token as a string.
 fetch_auth_token() {
-    oc -n openshift-config get secret pull-secret -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com".auth'
+    oc -n openshift-config get secret pull-secret -o json --as backplane-cluster-admin | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com".auth'
 }
 
 # Fetch UUID of the current OpenShift cluster.
@@ -51,7 +51,7 @@ update_upgrade_policy() {
     curl -XPATCH \
         -H "Content-Type: application/json" \
         -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
-        "https://api.openshift.com/${ocm_slug}" -d '{
+        "https://api.stage.openshift.com/${ocm_slug}" -d '{
         "value": "cancelled",
         "description": "Manually cancelled by SRE"
     }'
