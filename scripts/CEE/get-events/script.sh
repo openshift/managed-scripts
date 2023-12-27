@@ -40,7 +40,9 @@ else
     echo "Using provided 'namespace': ${namespace}"
     # Split the 'namespace' variable into an array using ',' as the delimiter
     IFS=',' read -ra namespaces <<< "${namespace}"
-    NAMESPACE_DEFAULT="${namespaces[@]}"
+    # To avoid the SC2034
+    export NAMESPACE_DEFAULT=""
+    NAMESPACE_DEFAULT="${namespaces[*]}"
 
     # Loop through each provided namespace and display events
     for namespace in "${namespaces[@]}"; do
