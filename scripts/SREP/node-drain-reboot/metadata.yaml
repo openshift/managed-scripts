@@ -1,0 +1,35 @@
+file: script.sh
+name: node-drain-reboot
+description: Drain and Reboot Node
+author: Dee-6777
+allowedGroups:
+  - SREP
+rbac:
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "delete"
+            - "patch"
+          apiGroups:
+            - ""
+          resources:
+            - "nodes"
+            - "nodes/proxy"
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "delete"
+            - "create"
+          apiGroups:
+            - ""
+          resources:
+            - "pods"
+            - "pods/eviction"
+envs:
+  - key: "node"
+    description: "node name"
+    optional: false
+language: bash
