@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script provides a rich summary of information concerning the status of 
+# This script provides a rich summary of information concerning the status of
 # degraded/unavailable OpenShift cluster operators.
 #
 # The script can specifically target a cluster operator through
@@ -10,7 +10,7 @@
 # additional options supplied to 'oc logs' when gathering pod logs.
 #
 # The script can also filter what logging is retrieved through the
-# use of the LOG_PATTERN parameter. This parameter defines an 
+# use of the LOG_PATTERN parameter. This parameter defines an
 # extended regular expression passed to grep to filter logs
 # after being returned from 'oc logs'
 #
@@ -44,7 +44,7 @@ get_summary() {
     echo -e "\n"
 }
 
-# get_description prints a detailed status description for the given cluster 
+# get_description prints a detailed status description for the given cluster
 # operator parameter
 get_description() {
     clusteroperator=$1
@@ -74,7 +74,7 @@ get_logs() {
                 if [[ -n "${LOG_PATTERN}" ]]; then
                     # shellcheck disable=SC2046
                     deploymentlogs=$(grep -iE "${LOG_PATTERN}" <<< $(oc logs "${deployment}" -n "${ns}" --all-containers "${OC_LOGS_SINCE}") || true)
-                else 
+                else
                     deploymentlogs=$(oc logs "${deployment}" -n "${ns}" --all-containers "${OC_LOGS_SINCE}")
                 fi
                 print_header "${clusteroperator}" "DEPLOYMENT LOGS: ${deployment}"
@@ -84,7 +84,7 @@ get_logs() {
     done <<< "${relatedns}"
 }
 
-# inspect_namespace prints the status of pods running in each namespace 
+# inspect_namespace prints the status of pods running in each namespace
 # that the cluster operator is concerned with
 inspect_namespace() {
     clusteroperator=$1
@@ -93,7 +93,7 @@ inspect_namespace() {
     # shellcheck disable=SC2016
     relatedns=$(jq -r --arg CLUSTER_OPERATOR "${clusteroperator}" '.items[] | select(.metadata.name == $CLUSTER_OPERATOR) | .status.relatedObjects[] | select(.resource == "namespaces") | .name' <<< "$OPERATOR_REPORT")
     while IFS= read -r ns; do
-        ns_report=$(oc get pod --ignore-not-found -n "$ns")
+        ns_report=$(oc get pod --ignore-not-found -n "$ns" -o wide)
         if [[ -n "${ns_report}" ]]; then
             print_header "$clusteroperator" "NAMESPACE: ${ns}"
             echo -e "${ns_report}\n\n"
@@ -111,7 +111,7 @@ fi
 LOG_PATTERN="${LOG_PATTERN:-}"
 
 # Retrieve the full ClusterOperator status report
-if ! OPERATOR_REPORT=$(oc get clusteroperator -o json); then 
+if ! OPERATOR_REPORT=$(oc get clusteroperator -o json); then
     echo "An error was returned when reading ClusterOperator status: ${OPERATOR_REPORT}"
     exit 1
 fi
