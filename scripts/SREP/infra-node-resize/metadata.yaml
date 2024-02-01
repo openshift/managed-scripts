@@ -1,0 +1,28 @@
+file: script.sh
+name: infra-node-resize
+description: Resize infra node without elevation.
+author: dee-6777
+allowedGroups: 
+  - SREP
+rbac:
+    clusterRoleRules:
+        - verbs:
+            - "get"
+            - "list"
+            - "watch"
+            - "create"
+            - "delete"
+            - "patch"
+          apiGroups:
+            - "hive.openshift.io"
+          resources:
+            - "machinepools"
+            - "machinepools/scale"
+envs:
+  - key: "CLUSTER_ID"
+    description: "requires internal cluster ID"
+    optional: false
+  - key: "INSTANCE_SIZE"
+    description: "desired size"
+    optional: false
+language: bash
