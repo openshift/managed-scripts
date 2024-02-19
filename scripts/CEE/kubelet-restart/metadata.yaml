@@ -1,6 +1,6 @@
 file: script.sh
 name: restart-kubelet
-description: Restart kubelet for a specific master node
+description: Restart kubelet for a specific node
 author: Madhusudan Upadhyay
 allowedGroups:
   - SREP
@@ -42,7 +42,7 @@ rbac:
         resources:
         - "pods"
 envs:
-  - key: MASTER
-    description: The master node name
+  - key: NODE
+    description: The node name
     optional: false
 language: bash
