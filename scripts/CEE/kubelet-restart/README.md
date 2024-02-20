@@ -1,6 +1,6 @@
 # Restart Kubelet on Node
 
-This will script will restart kubelet on Node. Scenarios where a restart might be required:
+This script will restart kubelet on Node. Scenarios where a restart might be required:
 - OpenShift related pod stuck in containerUnknown Status
 - Certain bugs require container restart on Master Nodes. [Eg. https://access.redhat.com/solutions/6976343 ] 
 
