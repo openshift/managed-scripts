@@ -32,16 +32,7 @@ rbac:
         - ""
         resources:
         - "nodes"
-      - verbs:
-        - "get"
-        - "list"
-        - "watch"
-        - "delete"
-        apiGroups:
-        - ""
-        resources:
-        - "pods"
-envs:
+envs:          
   - key: NODE
     description: The node name
     optional: false
