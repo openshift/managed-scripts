@@ -1,0 +1,39 @@
+file: script.sh
+name: restart-kubelet
+description: Restart kubelet for a specific node
+author: Madhusudan Upadhyay
+allowedGroups:
+  - SREP
+  - LPSRE
+  - CEE
+rbac:
+  roles:
+    - namespace: "default"
+      rules:
+        - verbs:
+          - "get"
+          - "patch"
+          - "list"
+          - "watch"
+          - "create"
+          - "delete"
+          apiGroups:
+          - ""
+          resources:
+          - "pods"
+          - "pods/attach"
+  clusterRoleRules:
+      - verbs:
+        - "get"
+        - "patch"
+        - "list"
+        - "watch"
+        apiGroups:
+        - ""
+        resources:
+        - "nodes"
+envs:          
+  - key: NODE
+    description: The node name
+    optional: false
+language: bash
