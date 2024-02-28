@@ -1,0 +1,24 @@
+file: script.sh
+name: get-events
+description: Retrieve events for the specified namespace(s).
+author: Daniel Fernandez
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - ''
+      resources:
+        - namespaces
+        - events
+
+envs:
+  - key: namespace
+    description: Namespace(s) from which to retrieve and display the PDBs.
+    optional: true
+
+language: bash
