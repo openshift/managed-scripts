@@ -19,4 +19,4 @@ This guide provides in broad strokes a set of Bash best practices that are expec
 
 ### Good references
 
-- Google's Bash styleguide [http://google-styleguide.googlecode.com/svn/trunk/shell.xml](http://google-styleguide.googlecode.com/svn/trunk/shell.xml)
+- Google's Bash styleguide [https://google.github.io/styleguide/shellguide.html](https://google.github.io/styleguide/shellguide.html)
