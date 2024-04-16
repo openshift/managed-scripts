@@ -2,7 +2,7 @@
 
 ## Desctiption
  
-This script will trigger a rollout of deamonset, controlling dns default pods. Such action might be required when a customer is not able to perform it themself due to not having enough permissions etc, but dns-default pods need to be restarted.  
+This script will trigger a rollout of daemonset, controlling dns default pods. Such action might be required when a customer is not able to perform it themself due to not having enough permissions etc, but dns-default pods need to be restarted.  
 
 ## Usage
 
