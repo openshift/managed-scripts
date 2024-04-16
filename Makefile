@@ -53,3 +53,10 @@ skopeo-push: build
 		--dest-creds "${QUAY_USER}:${QUAY_TOKEN}" \
 		"docker-daemon:${IMAGE_URI_LATEST}" \
 		"docker://${IMAGE_URI_LATEST}"
+
+.PHONY: build-and-push
+build-and-push: build
+	@test "${QUAY_USER}" != "" && test "${QUAY_TOKEN}" != "" || (echo "QUAY_USER and QUAY_TOKEN must be defined" && exit 1)
+	@${CONTAINER_ENGINE} login -u="${QUAY_USER}" -p="${QUAY_TOKEN}" "$(IMAGE_REGISTRY)"
+	${CONTAINER_ENGINE} push ${IMAGE_URI_VERSION}
+	${CONTAINER_ENGINE} push ${IMAGE_URI_LATEST}
