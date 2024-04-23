@@ -20,8 +20,4 @@ rbac:
          resources:
          - "daemonsets"
          - "pods"
-envs:          
-  - key: NAMESPACE
-    description: The openshift-dns namespace 
-    optional: false
 language: bash

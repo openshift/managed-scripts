@@ -5,6 +5,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+NAMESPACE=openshift-dns
+
 CURRENTDATE=$(date +"%Y-%m-%d %T")
 
 ## validate input
@@ -63,17 +65,16 @@ verify_dns_pods_are_ready(){
 
 echo -e "\nVerifying that pods are in Running state..."
 
-sleep 30
+pod_status=$(oc get pod -l dns.operator.openshift.io/daemonset-dns=default -ojson | jq '[.items[]?.status.phase!="Running"] | any ')
 
-if [[ $(oc wait pods -n openshift-dns -l dns.operator.openshift.io/daemonset-dns=default --for=condition=Ready) ]]; then
-        
-        sleep 30	
-	echo -e "\nAll pods are in the Running state\n";
-	oc get pods -n openshift-dns -l dns.operator.openshift.io/daemonset-dns=default
-	exit 1
-fi
-
-
+    if [ "$pod_status" == "false" ]; then
+        echo -e "\n[SUCCESS] the rest of the pods are in Running state\n"
+        oc get pods -n openshift-dns -l dns.operator.openshift.io/daemonset-dns=default
+    else
+        sleep 5
+        echo -e "\n[Error], there are pods are in not Running state, please, check them \n"
+        oc get pods -n openshift-dns -l dns.operator.openshift.io/daemonset-dns=default
+    fi
 }
 
 
