@@ -1,0 +1,41 @@
+file: script.sh
+name: increasing-observability-operator-pvc-size # name should be the same as the subdir, eg: SRE/example in this case
+description: Increase the size of the PVCs used by the Observability Operator running in rhacs-observability namespace
+author: bseref
+allowedGroups: 
+  - LPSRE
+rbac:
+    roles: []
+    clusterRoleRules:
+    - verbs:
+      - "get"
+      - "list"
+      - "patch"
+      - "watch"
+      apiGroups:
+      - "apps"
+      resources:
+      - deployments
+      - statefulsets
+    - verbs:
+      - "get"
+      - "list"
+      apiGroups:
+      - ""
+      resources:
+      - pods
+      - pods/log
+    - verbs:
+      - "get"
+      - "list"
+      - "patch"
+      apiGroups:
+      - ""
+      resources:
+      - "persistentvolumeclaim"
+      
+envs:
+  - key: "NEW_SIZE"
+    description: "The new size of the PVCs that will be set. Example: 250Gi"
+    optional: false
+language: bash
