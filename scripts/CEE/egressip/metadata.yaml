@@ -1,0 +1,19 @@
+file: script.sh
+name: get-egressip
+description: Retrieve config and status of egressip object
+author: Yuri Diakov
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - 'k8s.ovn.org'
+        - ''
+      resources:
+        - egressips
+        - nodes
+language: bash
