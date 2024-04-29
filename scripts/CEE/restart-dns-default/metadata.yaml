@@ -1,0 +1,23 @@
+file: script.sh
+name: restart-dns-default
+description: Restart dns pods in openshift-dns namespace
+author: Yuri Diakov
+allowedGroups:
+  - SREP
+  - LPSRE
+  - CEE
+rbac:
+ roles:
+   - namespace: "openshift-dns"
+     rules:
+       - verbs:
+         - "get"
+         - "patch"
+         - "list"
+         - "watch"
+         apiGroups:
+         - "apps"
+         resources:
+         - "daemonsets"
+         - "pods"
+language: bash
