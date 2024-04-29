@@ -4,8 +4,6 @@ set -e
 set -o nounset
 set -o pipefail
 
-NAMESPACE=default
-
 CURRENTDATE=$(date +"%Y-%m-%d %T")
 
 if [[ -z "${SERVICE_ACCOUNT}" ]]; then
