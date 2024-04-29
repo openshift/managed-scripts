@@ -4,9 +4,44 @@
 set -euxo pipefail
 
 if [[ -z "${NEW_SIZE}" ]]; then
-    echo 'Variable NEW_SIZE cannot be blank'
+    echo 'Env Variable NEW_SIZE cannot be blank'
     exit 1
 fi
+
+# Function to check if a string is a valid size format
+function validate_size_format() {
+    # Regex pattern for validating size format (e.g., 100Mi or 1G)
+    local pattern='^[0-9]+[KMGTPE]?i?$'
+    if [[ $1 =~ $pattern ]]; then
+        echo "Valid size format"
+    else
+        echo "Invalid size format"
+        exit 1
+    fi
+}
+
+# Validate the format of NEW_SIZE
+if ! validate_size_format "$NEW_SIZE"; then
+    echo "Error: Invalid format for NEW_SIZE."
+    exit 1
+fi
+
+# Function to convert size with suffix to bytes
+# It supports both Kilo, Mega, Giga, Tera, Peta, and Exa sizes and Kibi, Mebi, Gibi, Tebi, Pebi, and Exbi sizes
+function size_to_bytes() {
+    local size_with_suffix="$1"
+    local size="${size_with_suffix//[a-zA-Z]/}"  # Remove suffix
+    local suffix="${size_with_suffix//[0-9.]}"  # Extract suffix
+    case $suffix in
+        K|KB|Ki) echo "$((size * 1024))" ;;
+        M|MB|Mi) echo "$((size * 1024 * 1024))" ;;
+        G|GB|Gi) echo "$((size * 1024 * 1024 * 1024))" ;;
+        T|TB|Ti) echo "$((size * 1024 * 1024 * 1024 * 1024))" ;;
+        P|PB|Pi) echo "$((size * 1024 * 1024 * 1024 * 1024 * 1024))" ;;
+        E|EB|Ei) echo "$((size * 1024 * 1024 * 1024 * 1024 * 1024 * 1024))" ;;
+        *) echo "$size" ;;
+    esac
+}
 
 function get-observability-logs() {
     oc logs statefulset/prometheus-obs-prometheus --namespace rhacs-observability > logs.txt
@@ -17,10 +52,14 @@ function get-pvc() {
 }
 
 function edit-pvc-size() {
-    # check if new size is greater than the current size
+    # Convert sizes to bytes for comparison
+    new_size_bytes=$(size_to_bytes "$NEW_SIZE")
     current_size=$(oc get pvc "$PVC" --namespace rhacs-observability -o json | jq '.spec.resources.requests.storage')
-    if [[ $NEW_SIZE -lt $current_size ]]; then
-        echo "New size is less than the current size"
+    current_size_bytes=$(size_to_bytes "$current_size")
+
+    # Check if NEW_SIZE is larger than the current size
+    if (( new_size_bytes <= current_size_bytes )); then
+        echo "Error: NEW_SIZE should be strictly larger than the current size of the PVC."
         exit 1
     fi
 
