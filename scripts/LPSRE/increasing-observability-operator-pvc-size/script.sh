@@ -17,16 +17,24 @@ function get-pvc() {
 }
 
 function edit-pvc-size() {
-    oc patch pvc $PVC --namespace rhacs-observability --type merge --patch "{\"spec\":{\"resources\":{\"requests\":{\"storage\":\"${NEW_SIZE}\"}}}}"
+    # check if new size is greater than the current size
+    current_size=$(oc get pvc "$PVC" --namespace rhacs-observability -o json | jq '.spec.resources.requests.storage')
+    if [[ $NEW_SIZE -lt $current_size ]]; then
+        echo "New size is less than the current size"
+        exit 1
+    fi
+
+    oc patch pvc "$PVC" --namespace rhacs-observability --type merge --patch "{\"spec\":{\"resources\":{\"requests\":{\"storage\":\"${NEW_SIZE}\"}}}}"
 }
 
 # Verify the new PVC size is NEW_SIZE
 function verify-resize() {
-    size=$(oc get pvc $PVC --namespace rhacs-observability -o json | jq '.spec.resources.requests.storage')
-    if [[ $size == $NEW_SIZE ]]; then
+    size=$(oc get pvc "$PVC" --namespace rhacs-observability -o json | jq '.spec.resources.requests.storage')
+    if [[ $size == "$NEW_SIZE" ]]; then
         echo "PVC size has been successfully updated to $NEW_SIZE"
     else
         echo "PVC size has not been updated"
+        exit 1
     fi
 }
 
