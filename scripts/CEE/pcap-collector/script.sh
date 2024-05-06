@@ -32,17 +32,19 @@ then
     exit 1
 fi
 
-NETWORKTYPE=$(oc get network cluster -o jsonpath='{.spec.networkType}')
+if [[ -z "$INTERFACE" ]]; then 
+  NETWORKTYPE=$(oc get network cluster -o jsonpath='{.spec.networkType}')
 
-case "${NETWORKTYPE}" in
-    "OpenShiftSDN") INTERFACE="vxlan_sys_4789"
-    ;;
-    "OVNKubernetes") INTERFACE="genev_sys_6081"
-    ;;
-    *) echo "NetworkType is not OpenShiftSDN or OVNKubernetes"
-    exit 1
-    ;;
-esac
+  case "${NETWORKTYPE}" in
+      "OpenShiftSDN") INTERFACE="vxlan_sys_4789"
+      ;;
+      "OVNKubernetes") INTERFACE="genev_sys_6081"
+      ;;
+      *) echo "NetworkType is not OpenShiftSDN or OVNKubernetes"
+      exit 1
+      ;;
+  esac
+fi
 
 # Smoke test to check that the secret exists before creating the pod
 oc -n $NS get secret "${SECRET_NAME}" 1>/dev/null

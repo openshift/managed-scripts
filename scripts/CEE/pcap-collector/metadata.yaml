@@ -77,4 +77,7 @@ envs:
   - key: "FILTERS"
     description: "A valid set of PCAP filters for use in tcpdump"
     optional: true
+  - key: "INTERFACE"
+    description: "Added network interface as parameter"
+    optional: true
 language: bash
