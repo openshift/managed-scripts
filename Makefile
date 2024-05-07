@@ -8,7 +8,7 @@ IMAGE_VERSION=$(shell git rev-parse --short=7 HEAD)
 IMAGE_URI=$(IMAGE_REGISTRY)/$(IMAGE_REPOSITORY)/$(IMAGE_NAME)
 IMAGE_URI_VERSION=$(IMAGE_URI):$(IMAGE_VERSION)
 IMAGE_URI_LATEST=$(IMAGE_URI):latest
-SHELL_CHECK_IMAGE="registry.access.redhat.com/ubi7/ubi:latest"
+SHELL_CHECK_IMAGE="registry.access.redhat.com/ubi8/ubi:8.9"
 PYTHON_IMAGE="registry.access.redhat.com/ubi8/python-36:latest"
 
 CONTAINER_ENGINE=$(shell command -v podman 2>/dev/null || command -v docker 2>/dev/null)

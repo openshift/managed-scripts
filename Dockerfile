@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:latest AS build-stage0
+FROM registry.access.redhat.com/ubi8/ubi:8.9 AS build-stage0
 ARG OC_VERSION="stable"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
@@ -46,8 +46,8 @@ RUN tar xzf oc-hc-v0.1.3-linux-amd64.tar.gz --directory /out
 
 
 ### Attach yq binary into the image
-ENV YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_amd64.tar.gz"
-ENV YQ_MD5="be32a02446da244ebe5b94c3834b2c97"
+ENV YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64.tar.gz"
+ENV YQ_MD5="7e8bff5d0342f0090e866825cc75d2fc"
 RUN mkdir -p /yq
 WORKDIR /yq
 
@@ -104,7 +104,7 @@ RUN OUT_DIR=/out make hypershift
 # Make binaries executable
 RUN chmod -R +x /out
 
-FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM registry.access.redhat.com/ubi8/ubi:8.9
 RUN  yum -y install --disableplugin=subscription-manager \
      python3.11 python3.11-pip jq openssh-clients sshpass \
      && yum --disableplugin=subscription-manager clean all
