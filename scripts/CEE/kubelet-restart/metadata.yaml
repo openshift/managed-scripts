@@ -1,5 +1,5 @@
 file: script.sh
-name: restart-kubelet
+name: kubelet-restart
 description: Restart kubelet for a specific node
 author: Madhusudan Upadhyay
 allowedGroups:
