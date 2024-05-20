@@ -21,6 +21,8 @@ the supported languages.
 
 All `metadata.yaml` shall pass validation against `hack/metadata.schema.json` see [here](https://json-schema.org/) for more details.
 
+Note: The `name` in the `metadata.yaml` must be the same as the directory name where the `metadata.yaml` file resides.
+
 ### Validation methods:
 
 1. In order to check all `metadata.yaml` from all scripts, you can run the command below from your managed-scripts root directory:
