@@ -9,7 +9,12 @@ ARG AWSCLI_VERSION="awscli-exe-linux-x86_64.zip"
 ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
 
 # install tools needed for installation
-RUN yum install -y unzip git make go
+RUN yum install -y unzip git make gcc
+
+# Install golang with specific version
+RUN curl -sSLf https://go.dev/dl/go1.22.3.linux-amd64.tar.gz -o go1.22.3.linux-amd64.tar.gz
+RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
+ENV PATH=$PATH:/usr/local/go/bin
 
 # Directory for the extracted binary
 RUN mkdir -p /out
