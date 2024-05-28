@@ -45,7 +45,7 @@ echo "---------------------"
 echo "LOG COLLECTION: START"
 echo "---------------------"
 echo
-CA_LOGS=$(oc logs -n $NAMESPACE $CA_POD --since=6m)
+CA_LOGS=$(oc logs -n $NAMESPACE "$CA_POD" --since=6m)
 
 #Collect the list of nodes from the cluster
 node_names=$(oc get nodes -o jsonpath='{.items[*].metadata.name}')
