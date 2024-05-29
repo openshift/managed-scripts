@@ -1,0 +1,53 @@
+file: script.sh
+name: cordon-drain-reboot-worker-node
+description: Script responsible for draining and rebooting worker nodes.
+author: Fabio Aldana
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  roles:
+    - namespace: "default"
+      rules:
+        - verbs:
+          - "get"
+          - "patch"
+          - "list"
+          - "watch"
+          - "create"
+          - "delete"
+          apiGroups:
+          - ""
+          resources:
+          - "pods"
+          - "pods/attach"
+  clusterRoleRules:
+      - verbs:
+        - "get"
+        - "patch"
+        - "list"
+        - "watch"
+        apiGroups:
+        - ""
+        resources:
+        - "nodes"
+      - verbs:
+        - "get"
+        - "list"
+        - "watch"
+        - "delete"
+        apiGroups:
+        - ""
+        resources:
+        - "pods"
+envs:
+  - key: WORKER
+    description: The worker node name
+    optional: false
+  - key: ACTION
+    description: Available tasks like Cordon/Uncordon, Drain and/or Reboot
+    optional: false
+  - key: DRAINMODE
+    description: The list of options for draining
+    optional: false
+language: bash
