@@ -31,15 +31,18 @@ rbac:
         - ""
         resources:
         - "nodes"
+        - "nodes/proxy"
       - verbs:
         - "get"
         - "list"
         - "watch"
         - "delete"
+        - "create"
         apiGroups:
         - ""
         resources:
         - "pods"
+        - "pods/eviction"
 envs:
   - key: WORKER
     description: The worker node name
