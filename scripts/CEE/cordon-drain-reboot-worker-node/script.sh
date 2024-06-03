@@ -15,28 +15,6 @@ set -o pipefail
 
 CURRENTDATE=$(date +"%Y-%m-%d %T")
 
-if [[ -z "${WORKER}" ]]; then
-    echo "[Error] The WORKER node name has not been provided."
-    echo "Usage:"
-    echo "ocm backplane managedjob create CEE/cordon-drain-reboot-worker-node -p WORKER='<node_name>' -p ACTION='<action>' [-p DRAINMODE='<drain parameters>']"
-    echo
-    echo "List of Actions:"
-    echo "- cordon"
-    echo "- uncordon"
-    echo "- drain"
-    echo "- reboot"
-    exit 1
-fi
-
-if [[ -z "${ACTION}" ]]; then
-    echo "[Error] Please inform which ACTION you want to perfom on the worker node ${WORKER} from the list below:"
-    echo "- cordon"
-    echo "- uncordon"
-    echo "- drain"
-    echo "- reboot"
-    exit 1
-fi
-
 start_job(){
     echo "Job started at $CURRENTDATE"
     echo ".................................."
@@ -58,7 +36,7 @@ check_worker(){
         echo "[OK] ${WORKER} is a worker node."
         echo
     else
-        echo "[Error] ${WORKER} is not a worker node. Please ensure you are providing the correct name"
+        echo "[Error] ${WORKER} is not a worker node. Please ensure you are providing the correct name."
         exit 1
     fi
 
@@ -102,12 +80,27 @@ uncordon_worker(){
     fi
 }
 
-## Function which drains the node bypassing the PDB check
+## Function which drains the node
 drain_worker(){
+    
+    DRAIN_CMD="oc adm drain ${WORKER}"
 
-    echo "Draining node ${WORKER} with drain mode '${DRAINMODE}'"
-    oc adm drain "${WORKER}" "${DRAINMODE}"
-
+    if [ -z ${1} ]; then
+        if ! declare -p DRAINMODE &>/dev/null || [ -z "${DRAINMODE}" ]; then
+            echo "Draining node ${WORKER} with no options."
+            echo
+            ${DRAIN_CMD}
+        else 
+            echo "Draining node ${WORKER} with drain mode '${DRAINMODE}'"
+            echo
+            ${DRAIN_CMD} ${DRAINMODE}
+        fi
+    else
+        echo "Draining node ${WORKER} for rebooting."
+        echo
+        ${DRAIN_CMD} ${1}
+    fi
+    
     if [ $? -eq 0 ]; then 
         echo "[OK] Node ${WORKER} drained successfully."
         echo
@@ -121,8 +114,10 @@ drain_worker(){
 ## Function which reboot the node
 reboot_worker(){
 
-    echo "Rebooting node ${WORKER}..."
+    FORCEDRAINMODE="--ignore-daemonsets --delete-emptydir-data --force --disable-eviction"
+    drain_worker ${FORCEDRAINMODE}
 
+    echo "Rebooting node ${WORKER}..."
     cat <<EOF | oc -n default debug node/$WORKER
     chroot /host
     reboot
@@ -132,6 +127,7 @@ EOF
 
 check_reboot(){
 
+    sleep 2
     echo
     echo "Checking node reboot..."
 
@@ -174,7 +170,6 @@ main(){
     elif [[ "${ACTION}" == "drain" ]]; then
         drain_worker
     elif [[ "${ACTION}" == "reboot" ]]; then
-        drain_worker
         reboot_worker
         check_reboot
     else

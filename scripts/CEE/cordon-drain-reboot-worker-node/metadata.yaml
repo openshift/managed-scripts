@@ -1,6 +1,6 @@
 file: script.sh
 name: cordon-drain-reboot-worker-node
-description: Script responsible for draining and rebooting worker nodes.
+description: Script responsible for cordoning/uncordoning, draining and/or rebooting worker nodes.
 author: Fabio Aldana
 allowedGroups:
   - CEE
@@ -31,15 +31,18 @@ rbac:
         - ""
         resources:
         - "nodes"
+        - "nodes/proxy"
       - verbs:
         - "get"
         - "list"
         - "watch"
         - "delete"
+        - "create"
         apiGroups:
         - ""
         resources:
         - "pods"
+        - "pods/eviction"
 envs:
   - key: WORKER
     description: The worker node name
@@ -49,5 +52,5 @@ envs:
     optional: false
   - key: DRAINMODE
     description: The list of options for draining
-    optional: false
+    optional: true
 language: bash
