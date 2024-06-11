@@ -1,4 +1,4 @@
-# Cordon/Uncordon / Drain / Reboot worker nodes
+# Worker Node Operations (Cordon/Uncordon / Drain / Reboot)
 
 ## Description
 

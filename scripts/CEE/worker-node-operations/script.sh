@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# Drain and Reboot a worker node.
+# Cordon/Uncordon, Drain and/or Reboot a Worker node.
 # Input:
 #  (Env) WORKER
 #    name of the worker node
 #  (Env) ACTION
 #    action to execute on the worker node
-#  (Env) DRAINMODE
+#  (Env) DRAINMODE - Optional
 #    drain options to execute on the worker node
 
 set -e

@@ -1,5 +1,5 @@
 file: script.sh
-name: cordon-drain-reboot-worker-node
+name: worker-node-operations
 description: Script responsible for cordoning/uncordoning, draining and/or rebooting worker nodes.
 author: Fabio Aldana
 allowedGroups:
