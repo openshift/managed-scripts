@@ -29,7 +29,7 @@ rbac:
         - "get"
         - "list"
         apiGroups:
-        - "metrics.k8s.io"
+        - ""
         resources:
         - "nodes"
       - verbs:
