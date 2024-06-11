@@ -29,7 +29,27 @@ echo
 
 # Wait for the update to take effect
 echo "Waiting for the log verbosity to update..."
-sleep 30
+
+# Sleep for 5 seconds so that the new pod name gets reflected
+sleep 5
+
+CA_POD=$(oc get pods -n openshift-machine-api | grep cluster-autoscaler-default | awk '{print $1}')
+echo "POD Name: $CA_POD"
+
+while true; do
+  # Get the name and status of the cluster-autoscaler pod
+  POD_STATUS=$(oc get pod "$CA_POD" -n $NAMESPACE -o jsonpath='{.status.phase}')
+
+  # Check if the pod status is "Running"
+  if [ "$POD_STATUS" == "Running" ]; then
+    echo "The cluster-autoscaler pod is now 'Running'."
+    break
+  fi
+
+  # Print the current status and wait before rechecking
+  echo "Current status: $POD_STATUS. Waiting..."
+  sleep 5
+done
 
 # Get the name of the Cluster Autoscaler pod
 CA_POD=$(oc get pods -n openshift-machine-api | grep cluster-autoscaler-default | awk '{print $1}')
@@ -39,6 +59,7 @@ echo
 echo "Collecting logs for the next 6 minutes..."
 echo
 
+# Sleep for 6 minutes to let CA pod generate logs
 sleep 360
 
 echo "---------------------"
@@ -47,7 +68,7 @@ echo "---------------------"
 echo
 CA_LOGS=$(oc logs -n $NAMESPACE "$CA_POD" --since=6m)
 
-#Collect the list of nodes from the cluster
+# Collect the list of nodes from the cluster
 node_names=$(oc get nodes -o jsonpath='{.items[*].metadata.name}')
 
 for node in $node_names; 
@@ -73,7 +94,26 @@ echo
 echo "Waiting for the log verbosity to be reverted back..."
 echo
 
-sleep 30
+# Sleep for 5 seconds so that the new pod name gets reflected
+sleep 5
+
+CA_POD=$(oc get pods -n openshift-machine-api | grep cluster-autoscaler-default | awk '{print $1}')
+echo "POD Name: $CA_POD"
+
+while true; do
+  # Get the name and status of the cluster-autoscaler pod
+  POD_STATUS=$(oc get pod "$CA_POD" -n $NAMESPACE -o jsonpath='{.status.phase}')
+
+  # Check if the pod status is "Running"
+  if [ "$POD_STATUS" == "Running" ]; then
+    echo "The cluster-autoscaler pod is now 'Running'."
+    break
+  fi
+
+  # Print the current status and wait before rechecking
+  echo "Current status: $POD_STATUS. Waiting..."
+  sleep 5
+done
 
 current_log_verbosity=$(oc get ca $CA_NAME -o jsonpath='{.spec.logVerbosity}')
 echo "REVERTED LOG VERBOSITY = $current_log_verbosity"
