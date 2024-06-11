@@ -83,24 +83,29 @@ uncordon_worker(){
 ## Function which drains the node
 drain_worker(){
     
-    DRAIN_CMD="oc adm drain ${WORKER}"
-
-    if [ -z ${1} ]; then
+    local DRAIN_CMD="oc adm drain ${WORKER}"
+    
+    if [ $# -gt 0 ]; then
+    
+        echo "Draining node ${WORKER} for rebooting."
+        echo
+        IFS=' ' read -r -a drainparams <<< "${1}"
+        ${DRAIN_CMD} "${drainparams[@]}"
+    
+    else
+    
         if ! declare -p DRAINMODE &>/dev/null || [ -z "${DRAINMODE}" ]; then
             echo "Draining node ${WORKER} with no options."
             echo
             ${DRAIN_CMD}
-        else 
+        else
             echo "Draining node ${WORKER} with drain mode '${DRAINMODE}'"
             echo
-            ${DRAIN_CMD} ${DRAINMODE}
+            IFS=' ' read -r -a drainparams <<< "${DRAINMODE}"
+            ${DRAIN_CMD} "${drainparams[@]}"
         fi
-    else
-        echo "Draining node ${WORKER} for rebooting."
-        echo
-        ${DRAIN_CMD} ${1}
     fi
-    
+
     if [ $? -eq 0 ]; then 
         echo "[OK] Node ${WORKER} drained successfully."
         echo
@@ -114,8 +119,9 @@ drain_worker(){
 ## Function which reboot the node
 reboot_worker(){
 
-    FORCEDRAINMODE="--ignore-daemonsets --delete-emptydir-data --force --disable-eviction"
-    drain_worker ${FORCEDRAINMODE}
+    local FORCEDRAINMODE="--ignore-daemonsets --delete-emptydir-data --force --disable-eviction"
+
+    drain_worker "${FORCEDRAINMODE}"
 
     echo "Rebooting node ${WORKER}..."
     cat <<EOF | oc -n default debug node/$WORKER
