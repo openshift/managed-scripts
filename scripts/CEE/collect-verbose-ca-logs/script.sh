@@ -11,7 +11,7 @@ NAMESPACE="openshift-machine-api"
 CA_NAME="default"
 
 # Get current logVerbosity value
-current_log_verbosity=$(oc get ca $CA_NAME -o jsonpath='{.spec.logVerbosity}')
+current_log_verbosity=$(oc get clusterautoscalers $CA_NAME -o jsonpath='{.spec.logVerbosity}')
 
 # Check if current_log_verbosity is empty
 if [ -z "$current_log_verbosity" ]; then
@@ -24,9 +24,9 @@ echo "CURRENT LOG VERBOSITY = $current_log_verbosity"
 echo
 
 # Update logVerbosity to 6
-oc patch ca $CA_NAME --type='json' -p='[{"op": "replace", "path": "/spec/logVerbosity", "value": 6}]'
+oc patch clusterautoscalers $CA_NAME --type='json' -p='[{"op": "replace", "path": "/spec/logVerbosity", "value": 6}]'
 
-updated_log_verbosity=$(oc get ca $CA_NAME -o jsonpath='{.spec.logVerbosity}')
+updated_log_verbosity=$(oc get clusterautoscalers $CA_NAME -o jsonpath='{.spec.logVerbosity}')
 echo
 echo "UPDATED LOG VERBOSITY = $updated_log_verbosity"
 echo
@@ -54,9 +54,6 @@ while true; do
   echo "Current status: $POD_STATUS. Waiting..."
   sleep 5
 done
-
-# Get the name of the Cluster Autoscaler pod
-CA_POD=$(oc get pods -n openshift-machine-api | grep cluster-autoscaler-default | awk '{print $1}')
 
 # Collect logs for the next 6 minutes
 echo
@@ -91,7 +88,7 @@ echo "---------------------"
 echo
 
 # Revert logVerbosity to previous value
-oc patch ca $CA_NAME --type='json' -p="[{'op': 'replace', 'path': '/spec/logVerbosity', 'value': $current_log_verbosity}]"
+oc patch clusterautoscalers $CA_NAME --type='json' -p="[{'op': 'replace', 'path': '/spec/logVerbosity', 'value': $current_log_verbosity}]"
 
 # Wait for the update to take effect
 echo
@@ -119,6 +116,6 @@ while true; do
   sleep 5
 done
 
-current_log_verbosity=$(oc get ca $CA_NAME -o jsonpath='{.spec.logVerbosity}')
+current_log_verbosity=$(oc get clusterautoscalers $CA_NAME -o jsonpath='{.spec.logVerbosity}')
 echo "REVERTED LOG VERBOSITY = $current_log_verbosity"
 echo
