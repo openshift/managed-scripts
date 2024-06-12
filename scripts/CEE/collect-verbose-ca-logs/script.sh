@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -e
+set -o nounset
+set -o pipefail
+
 # Set variables
 GREEN="\033[32m"
 RESET="\033[0m"
