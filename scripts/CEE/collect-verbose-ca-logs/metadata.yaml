@@ -32,11 +32,4 @@ rbac:
         - ""
         resources:
         - "nodes"
-      - verbs:
-        - "get"
-        - "list"
-        apiGroups:
-        - ''
-        resources:
-        - "nodes"
 language: bash
