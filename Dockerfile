@@ -1,4 +1,5 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.9 AS build-stage0
+
 ARG OC_VERSION="stable"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
@@ -10,11 +11,6 @@ ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
 
 # install tools needed for installation
 RUN yum install -y unzip git make gcc
-
-# Install golang with specific version
-RUN curl -sSLf https://go.dev/dl/go1.22.3.linux-amd64.tar.gz -o go1.22.3.linux-amd64.tar.gz
-RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
-ENV PATH=$PATH:/usr/local/go/bin
 
 # Directory for the extracted binary
 RUN mkdir -p /out
@@ -51,16 +47,24 @@ RUN tar xzf oc-hc-v0.1.3-linux-amd64.tar.gz --directory /out
 
 
 ### Attach yq binary into the image
-ENV YQ_URL="https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64.tar.gz"
-ENV YQ_MD5="7e8bff5d0342f0090e866825cc75d2fc"
+ENV YQ_URL="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64.tar.gz"
+ENV YQ_CHECKSUMS="https://github.com/mikefarah/yq/releases/latest/download/checksums"
+ENV YQ_CHECKSUM_TOOL="https://github.com/mikefarah/yq/releases/latest/download/extract-checksum.sh"
+ENV YQ_CHECKSUMS_HASHES_ORDER="https://github.com/mikefarah/yq/releases/latest/download/checksums_hashes_order"
+# ENV YQ_MD5="7e8bff5d0342f0090e866825cc75d2fc"
 RUN mkdir -p /yq
 WORKDIR /yq
 
 # Download the yq release
 RUN curl -sSLf -O $YQ_URL
 
+# Extract the md5sum for the release
+RUN curl -sSLf -O $YQ_CHECKSUM_TOOL
+RUN curl -sSLf -O $YQ_CHECKSUMS
+RUN curl -sSLf -O $YQ_CHECKSUMS_HASHES_ORDER
+
 # Check md5sum for the downloaded tar
-RUN md5sum yq_linux_amd64.tar.gz | grep $YQ_MD5
+RUN sh extract-checksum.sh MD5 yq_linux_amd64.tar.gz | awk '{ print $2 " " $1}' | md5sum -c -
 
 # Extract the yq binary
 RUN tar xzf yq_linux_amd64.tar.gz --directory /out
@@ -79,8 +83,8 @@ RUN ./aws/install -b /aws/bin
 
 ## Attach ocm binary into the image
 # Setting ENV variables
-ENV OCM_URL="https://github.com/openshift-online/ocm-cli/releases/download/v0.1.67/ocm-linux-amd64"
-ENV OCM_SHA256_CHECKSUM="2ac055237f0ca9b6e5ef7a03666c670bbbb778e9e6d96a41bf8f0968b1618265  ocm-linux-amd64"
+ENV OCM_URL="https://github.com/openshift-online/ocm-cli/releases/latest/download/ocm-linux-amd64"
+ENV OCM_SHA256_CHECKSUM_URL="https://github.com/openshift-online/ocm-cli/releases/latest/download/ocm-linux-amd64.sha256"
 
 # Creating a working directory
 RUN mkdir -p /ocm-cli
@@ -90,11 +94,20 @@ WORKDIR /ocm-cli
 RUN curl -sSLf -O $OCM_URL
 
 # Checking the SHA-256 hash
-RUN echo $OCM_SHA256_CHECKSUM | sha256sum -c -
+RUN curl -sSLf $OCM_SHA256_CHECKSUM_URL | sha256sum -c -
 
 # Moving the validated ocm binary to /out and make it executable
 RUN mv ocm-linux-amd64 /out/ocm
 RUN chmod +x /out/ocm
+
+# Install golang with specific version
+# The go is used to build the hypershift binary, so make it match with the one in hypershift repo
+ENV HYPERSHIFT_GO_MOD="https://raw.githubusercontent.com/openshift/hypershift/main/go.mod"
+RUN echo "export GO_VERSION=$(curl -sSLf $HYPERSHIFT_GO_MOD | grep -E "go\s+[0-9]+\.[0-9]+\.[0-9]+" | awk -F ' ' '{print $2}')" > /out/envfile
+RUN . /out/envfile ; curl -sSLf https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz -o go$GO_VERSION.linux-amd64.tar.gz
+RUN . /out/envfile ; rm -rf /usr/local/go && tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz
+ENV PATH=$PATH:/usr/local/go/bin
+RUN go version
 
 # Attach hypershift binary into the image
 # TODO: Currently there is no pre-build hypershift bin yet, once
