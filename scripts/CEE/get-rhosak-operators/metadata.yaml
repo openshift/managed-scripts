@@ -20,3 +20,4 @@ envs:
     description: "The --since-time flag is used by the oc adm inspect command. Only return logs after a specific date. Date is in RFC 3339 format. Either since can be added or since_time can be added but not both."
     optional: true
 language: bash
+customerDataAccess: true

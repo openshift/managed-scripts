@@ -31,3 +31,4 @@ rbac:
       resources:
       - "pods"
 language: bash
+customerDataAccess: true

@@ -31,3 +31,4 @@ envs:
   - key: "TARGET_LOG_DIR"
     description: "Target directory in the bucket for the logs"
     optional: false
+customerDataAccess: false

@@ -24,3 +24,4 @@ rbac:
             resources:
             - "jobs"
 language: bash
+customerDataAccess: false

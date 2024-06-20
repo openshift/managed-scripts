@@ -26,3 +26,4 @@ rbac:
         resources:
         - configs
 language: bash
+customerDataAccess: false

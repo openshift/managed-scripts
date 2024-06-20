@@ -86,3 +86,4 @@ envs:
     description: "Max transaction timeout in minutes to use when querying for hanging transactions"
     optional: true
 language: bash
+customerDataAccess: true

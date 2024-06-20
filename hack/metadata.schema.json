@@ -112,7 +112,11 @@
         "type": "string",
         "pattern": "^\\d+\\.\\d+\\.\\d+$|^\\d+\\.\\d+\\.\\*$"
       }
-    }
+    },
+    "customerDataAccess": {
+      "type": "boolean",
+      "description": "Wether or not this script has access to customer data"
+  }
   },
   "additionalProperties": false,
   "required": [
@@ -121,7 +125,8 @@
     "description",
     "author",
     "language",
-    "allowedGroups"
+    "allowedGroups",
+    "customerDataAccess"
   ],
   "$defs": {
     "rules": {

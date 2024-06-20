@@ -31,4 +31,5 @@ labels:
     values:
       - OSD
       - HyperShift
+customerDataAccess: true
       

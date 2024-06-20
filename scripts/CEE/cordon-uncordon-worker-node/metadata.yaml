@@ -23,3 +23,4 @@ envs:
     description: "Options: cordon or uncordon"
     optional: false
 language: bash
+customerDataAccess: false

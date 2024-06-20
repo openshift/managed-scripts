@@ -21,3 +21,4 @@ rbac:
          - "daemonsets"
          - "pods"
 language: bash
+customerDataAccess: false

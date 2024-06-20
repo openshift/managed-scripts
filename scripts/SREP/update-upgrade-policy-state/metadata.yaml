@@ -22,3 +22,4 @@ rbac:
       namespaces:
       - "openshift-config"
 language: bash
+customerDataAccess: false

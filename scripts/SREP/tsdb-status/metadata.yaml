@@ -20,4 +20,5 @@ rbac:
             verbs: ["get"]
             resources: 
             - "routes"
+customerDataAccess: false
 

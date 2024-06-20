@@ -84,3 +84,4 @@ envs:
     description: "This disable log collection"
     optional: true
 language: bash
+customerDataAccess: true

@@ -39,3 +39,4 @@ envs:
     description: "The new size of the PVCs that will be set. Example: 250Gi"
     optional: false
 language: bash
+customerDataAccess: false

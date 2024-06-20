@@ -41,3 +41,4 @@ envs:
     description: "Extended regular expression pattern used for log filtering."
     optional: true
 language: bash
+customerDataAccess: true
