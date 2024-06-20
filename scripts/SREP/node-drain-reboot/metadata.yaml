@@ -33,3 +33,4 @@ envs:
     description: "node name"
     optional: false
 language: bash
+customerDataAccess: true

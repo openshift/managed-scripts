@@ -37,3 +37,4 @@ rbac:
             resources:
             - "subscriptions"
 language: bash
+customerDataAccess: false

@@ -52,3 +52,4 @@ envs:
     description: Transaction ID
     optional: false
 language: bash
+customerDataAccess: true

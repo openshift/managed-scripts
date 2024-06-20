@@ -53,3 +53,4 @@ rbac:
           resources:
             - "etcds"
 language: bash
+customerDataAccess: true

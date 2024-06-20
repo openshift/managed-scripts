@@ -37,3 +37,4 @@ envs:
     description: The node name
     optional: false
 language: bash
+customerDataAccess: true

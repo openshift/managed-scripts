@@ -81,3 +81,4 @@ envs:
     description: "Added network interface as parameter"
     optional: true
 language: bash
+customerDataAccess: true

@@ -23,3 +23,4 @@ rbac:
             resources:
             - "secrets"
 language: bash
+customerDataAccess: false

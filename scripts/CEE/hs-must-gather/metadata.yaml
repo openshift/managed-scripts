@@ -103,3 +103,4 @@ envs:
     description: "Include the guest cluster the must gather"
     optional: false 
 language: bash
+customerDataAccess: true

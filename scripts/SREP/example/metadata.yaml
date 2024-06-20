@@ -37,3 +37,4 @@ envs:
     description: "variable 1"
     optional: false
 language: bash
+customerDataAccess: false

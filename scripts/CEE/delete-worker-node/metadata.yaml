@@ -35,3 +35,4 @@ envs:
     optional: false
 
 language: bash
+customerDataAccess: false

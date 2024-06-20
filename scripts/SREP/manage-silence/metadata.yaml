@@ -29,3 +29,4 @@ envs:
     description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
     optional: true
 language: bash
+customerDataAccess: false

@@ -54,3 +54,4 @@ rbac:
       resourceNames:
       - system:image-pruner
 language: bash
+customerDataAccess: true
