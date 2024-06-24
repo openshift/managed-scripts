@@ -1,0 +1,36 @@
+file: script.sh
+name: collect-verbose-ca-logs
+description: Script responsible for collecting verbose logs from cluster-autoscaler
+author: Kushagra Kulshreshtha
+allowedGroups:
+  - CEE
+  - SREP
+rbac:
+  roles:
+    - namespace: "openshift-machine-api"
+      rules:
+        - verbs:
+          - "get"
+          - "logs"
+          apiGroups:
+          - "clusterautoscaler.autoscaling.openshift.io"
+          resources:
+          - "pods"
+          - "pods/attach"
+  clusterRoleRules:
+      - verbs:
+        - "get"
+        - "patch"
+        apiGroups:
+        - "autoscaling.openshift.io"
+        resources:
+        - "clusterautoscalers"
+      - verbs:
+        - "get"
+        - "list"
+        apiGroups:
+        - ""
+        resources:
+        - "nodes"
+language: bash
+customerDataAccess: false
