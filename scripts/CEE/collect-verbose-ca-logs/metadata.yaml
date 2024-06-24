@@ -33,3 +33,4 @@ rbac:
         resources:
         - "nodes"
 language: bash
+customerDataAccess: false
