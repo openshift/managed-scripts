@@ -54,7 +54,4 @@ envs:
     description: The list of options for draining
     optional: true
 language: bash
-<<<<<<< HEAD
 customerDataAccess: true
-=======
->>>>>>> e5c512d (osd23682: changed script name and the related files)
