@@ -1,6 +1,6 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.9 AS build-stage0
+FROM registry.access.redhat.com/ubi8/ubi:8.10-1020 AS build-stage0
 
-ARG OC_VERSION="stable"
+ARG OC_VERSION="stable-4.15"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
 # AWS cli args and env variables
@@ -122,7 +122,7 @@ RUN OUT_DIR=/out make hypershift
 # Make binaries executable
 RUN chmod -R +x /out
 
-FROM registry.access.redhat.com/ubi8/ubi:8.9
+FROM registry.access.redhat.com/ubi8/ubi:10-1020
 RUN  yum -y install --disableplugin=subscription-manager \
      python3.11 python3.11-pip jq openssh-clients sshpass \
      && yum --disableplugin=subscription-manager clean all

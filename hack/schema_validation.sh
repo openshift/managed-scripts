@@ -18,7 +18,7 @@
 
 # define variables
 CONTAINER_ENGINE=$(which docker 2>/dev/null || which podman)
-CONTAINER_PATH=/json
+CONTAINER_PATH=/tmp/json
 
 # change to the managed-scripts directory on your repository
 cd $(dirname $0)/..
