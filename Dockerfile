@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.9 AS build-stage0
 
-ARG OC_VERSION="stable"
+ARG OC_VERSION="stable-4.15"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
 
 # AWS cli args and env variables
