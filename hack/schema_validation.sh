@@ -63,13 +63,14 @@ check_validation() {
 #  echo "validating the jsonschema for $yamlFiles"
   echo "CI-DEBUG-BEFORE-CONTAINER"
   whoami
-  ls -ld $(pwd)
-  ls -l $(pwd)
+  getenforce
+  ls -ldZ $(pwd)
+  ls -lZ $(pwd)
 
   echo "CI-DEBUG-IN-CONTAINER"
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest whoami
-  $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ld /
-  $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ld /json
+  $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ldZ /
+  $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ldZ /json
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -l /json/
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -l /json/scripts
 }
