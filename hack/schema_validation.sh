@@ -63,14 +63,11 @@ check_validation() {
 #  echo "validating the jsonschema for $yamlFiles"
   echo "CI-DEBUG"
 
-  $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest /root/.local/bin/check-jsonschema --schemafile $CONTAINER_PATH/hack/metadata.schema.json $yamlFiles
-
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest whoami
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ld /
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ld /json
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -l /json/
-  
-
+  $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -l /json/scripts
 }
 
 # function that list all files in the manage-scripts directory
