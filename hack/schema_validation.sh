@@ -61,8 +61,12 @@ yamlList() {
 check_validation() {
 
 #  echo "validating the jsonschema for $yamlFiles"
-  echo "CI-DEBUG"
+  echo "CI-DEBUG-BEFORE-CONTAINER"
+  whoami
+  ls -ld $(pwd)
+  ls -l $(pwd)
 
+  echo "CI-DEBUG-IN-CONTAINER"
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest whoami
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ld /
   $CONTAINER_ENGINE run --rm -v $(pwd):$CONTAINER_PATH quay.io/app-sre/managed-scripts:latest ls -ld /json
