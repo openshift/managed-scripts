@@ -50,7 +50,7 @@ function fill_silence_info {
 EOJ
 }
 
-ARG_ARRAY=( $SCRIPT_PARAMETERS )
+IFS=' ' read -r -a ARG_ARRAY <<< "${SCRIPT_PARAMETERS}"
 
 for ARG in "${ARG_ARRAY[@]}" ; do
     if [[ $INIT_COMMENT == 1 ]] ; then
@@ -74,7 +74,7 @@ for ARG in "${ARG_ARRAY[@]}" ; do
         else
             COMMENT+=" $ARG"
         fi
-    elif [ ! -z "$EXPECT_DURATION" ] ; then
+    elif [ -n "$EXPECT_DURATION" ] ; then
         if ! [[ $ARG =~ ^[1-9][0-9]* ]] ; then
             echo "Invalid duration: must be a positive integer. Aborting."
             exit 1
@@ -82,7 +82,7 @@ for ARG in "${ARG_ARRAY[@]}" ; do
             SILENCE_DURATION=$ARG
             unset EXPECT_DURATION
         fi
-    elif [ ! -z "$EXPECT_USERNAME" ] ; then
+    elif [ -n "$EXPECT_USERNAME" ] ; then
         if [[ $ARG =~ ^[-][-]* ]] ; then
             echo "Invalid username: must not start with --. Aborting."
             exit 1
@@ -165,10 +165,9 @@ fi
 
 if [ $CLEAR_SILENCE == 1 ] ; then
     ALL_SILENCES=$(curl -s -k -H "Authorization: Bearer $PROM_TOKEN"  "https://$AM_HOST/api/v1/silences" | jq -r '.data[] | select(.status.state == "active")')
-    if [ ! -z "$ALL_SILENCES" ] ; then
+    if [ -n "$ALL_SILENCES" ] ; then
         for SILENCE_ID in $(echo "$ALL_SILENCES" | jq -r .id) ; do
-            RESPONSE=$(curl -s -k -X DELETE -H "Authorization: Bearer $PROM_TOKEN"  "https://$AM_HOST/api/v1/silence/${SILENCE_ID}")
-            if [ $? == 0 ] ; then
+            if RESPONSE=$(curl -s -k -X DELETE -H "Authorization: Bearer $PROM_TOKEN"  "https://$AM_HOST/api/v1/silence/${SILENCE_ID}"); then
                 echo "Deleted silence with ID ${SILENCE_ID}"
             else
                 echo "Error deleting silence with ID ${SILENCE_ID}: ${RESPONSE}"

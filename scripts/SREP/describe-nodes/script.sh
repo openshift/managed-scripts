@@ -66,7 +66,7 @@ if [ -z "${SCRIPT_PARAMETERS+x}" ]
 then
   error-out "The 'SCRIPT_PARAMETERS' argument has not been provided: via Backplane script parameter; Or via export if running on the command line"
 fi
-ARG_ARRAY=( ${SCRIPT_PARAMETERS} )
+IFS=' ' read -r -a ARG_ARRAY <<< "${SCRIPT_PARAMETERS}"
 while [[ ${#ARG_ARRAY[@]} -gt 0 ]]
 do
   case "${ARG_ARRAY[0]}" in
@@ -94,52 +94,38 @@ do
       ARG_ARRAY=("${ARG_ARRAY[@]:1}")  # shift past argument
       ;;
     -n|--node|--nodes)
-      if [ -n "${nodes}" ]
-      then
+      if [ -n "${nodes}" ]; then
         error-out "Only 1 '--nodes' argument can be provided"
       fi
       # Check for unset or empty arguments and values that look like a flag/switch
-      if [ ${#ARG_ARRAY[@]} -le 1 ] \
-        || [ -z "${ARG_ARRAY[1]}" ] \
-        || [[ "${ARG_ARRAY[1]}" =~ ^-.* ]]
-      then
+      if [ ${#ARG_ARRAY[@]} -le 1 ] || [ -z "${ARG_ARRAY[1]}" ] || [[ "${ARG_ARRAY[1]}" =~ ^-.* ]]; then
         error-out "The '--nodes' argument requires a list of nodes to be provided"
       fi
       # Check for illegal characters in the list of nodes
       badChars="$(echo "${ARG_ARRAY[1]}" | tr -d '[:alnum:]' | tr -d '-' | tr -d '.' | tr -d ',')"
-      if [ -n "${badChars}" ]
-      then  
+      if [ -n "${badChars}" ]; then
         error-out "The '--nodes' argument can only contain '.|-|,|<alphaNumeric>' characters.  These characters '${badChars}' are illegal"
       fi
       nodes="${ARG_ARRAY[1]}"
       ARG_ARRAY=("${ARG_ARRAY[@]:2}")  # shift past argument and value
       ;;
     -l|--selector)
-      if [ -n "${selector}" ] # retest
-      then
+      if [ -n "${selector}" ]; then
         error-out "Only 1 '--selector' argument can be provided"
       fi
       # Check for unset or empty arguments and values that look like a flag/switch
-      if [ ${#ARG_ARRAY[@]} -le 1 ] \
-        || [ -z "${ARG_ARRAY[1]}" ] \
-        || [[ "${ARG_ARRAY[1]}" =~ ^-.* ]]
-      then
+      if [ ${#ARG_ARRAY[@]} -le 1 ] || [ -z "${ARG_ARRAY[1]}" ] || [[ "${ARG_ARRAY[1]}" =~ ^-.* ]]; then
         error-out "The '--selector' argument must contain a node selector"
       fi
-      badChars="$(echo "${ARG_ARRAY[1]}" | tr -d '[:alnum:]' | tr -d '-' | tr -d '.'  | tr -d '/'  \
-          | tr -d ',' | tr -d ':' | tr -d ' ' | tr -d '(' | tr -d ')' | tr -d '!' | tr -d '=')"
-      if [ -n "${badChars}" ] # retest
-      then
+      badChars="$(echo "${ARG_ARRAY[1]}" | tr -d '[:alnum:]' | tr -d '-' | tr -d '.'  | tr -d '/' | tr -d ',' | tr -d ':' | tr -d ' ' | tr -d '(' | tr -d ')' | tr -d '!' | tr -d '=')"
+      if [ -n "${badChars}" ]; then
         error-out "The '--selector' argument must not contain illegal characters.  These characters '${badChars}' are illegal"
       fi
       selector="${ARG_ARRAY[1]}"
       ARG_ARRAY=("${ARG_ARRAY[@]:2}")  # shift past argument and value
       ;;
-    -*|--*)
-      error-out "Unknown option '${ARG_ARRAY[0]}'"
-      ;;
     *)
-      error-out "Unknown argument"
+      error-out "Unknown option or argument '${ARG_ARRAY[0]}'"
       ;;
   esac
 done

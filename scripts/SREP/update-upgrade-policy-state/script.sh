@@ -74,7 +74,7 @@ CLUSTER_ID=$(get_cluster_id "${CLUSTER_UUID}")
 
 # 4. Get the policy UUID.
 POLICY_UUID=$(get_policy_uuid "${CLUSTER_ID}")
-if [[ $? -ne 0 ]]; then
+if [ -z "$POLICY_UUID" ]; then
     echo "Error fetching the policy UUID. Exiting."
     exit 1
 fi

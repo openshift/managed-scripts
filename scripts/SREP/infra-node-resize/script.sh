@@ -28,7 +28,7 @@ update_cluster_infra_yaml() {
 create_temp_machinepool() {
     echo 'CREATING TEMPORARY MACHINEPOOL...'
     oc -n "$NAMESPACE" create -f /tmp/cluster-infra.yaml
-    while [[ ! -z "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
+    while [[ -n "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
     do
         echo 'MACHINES ARE STILL NOT CORRECTLY PROVISIONED...'
         timeout 10
@@ -41,7 +41,7 @@ delete_original_machinepool() {
     echo 'DELETING THE ORIGINAL MACHINEPOOL...'
     oc scale --replicas 0 machinepool "$INFRA_MACHINEPOOL" -n "$NAMESPACE"
     oc -n "$NAMESPACE" get machinepool
-    while [[ ! -z "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
+    while [[ -n "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
     do
         echo 'MACHINES ARE STILL NOT PROPERL DELETED...'
         timeout 10
@@ -62,7 +62,7 @@ update_new_infra_yaml() {
 create_new_machinepool() {
     echo 'CREATING NEW MACHINEPOOL...'
     oc -n "$NAMESPACE" create -f /tmp/cluster-infra.yaml
-    while [[ ! -z "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
+    while [[ -n "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
     do
         echo 'MACHINES ARE STILL NOT CORRECTLY PROVISIONED...'
         timeout 10
@@ -74,7 +74,7 @@ delete_temp_machinepool() {
     echo 'DELETING TEMPORARY MACHINEPOOL...'
     oc scale --replicas 0 machinepool "${INFRA_MACHINEPOOL}"2 -n "$NAMESPACE"
     oc -n "$NAMESPACE" get machinepool
-    while [[ ! -z "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
+    while [[ -n "$(oc get machinepool -n "$NAMESPACE" "$INFRA_MACHINEPOOL" -o=jsonpath='{.status.machineSets[0].errorMessage}')" ]];
     do
         echo 'MACHINES ARE STILL NOT PROPERLY DELETED...'
         timeout 10

@@ -23,7 +23,6 @@ rbac:
 envs:
   - key: "SCRIPT_PARAMETERS"
     description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
-    optional: true
 language: bash
 labels:
   - key: OSD_TYPES
@@ -31,5 +30,6 @@ labels:
     values:
       - OSD
       - HyperShift
+    optional: true
 customerDataAccess: true
       

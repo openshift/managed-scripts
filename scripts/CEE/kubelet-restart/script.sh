@@ -24,28 +24,17 @@ finish_job(){
     echo "Job finished at $CURRENTDATE"
 }
 
-
-
 ## Function for kubelet restart
 restart_kubelet(){
-
     echo "Restarting Kubelet on \"${NODE}\"..."
-    cat <<EOF | oc -n default debug node/${NODE}
-    chroot /host 
-    systemctl restart kubelet
-EOF
-
-    if [ $? -eq 0 ]; then 
-        echo "[SUCCESS] Kubelet successfully restarted on \"${NODE}\" ."
+    if oc -n default debug node/"${NODE}" -- chroot /host systemctl restart kubelet; then
+        echo "[SUCCESS] Kubelet successfully restarted on \"${NODE}\"."
         echo
     else
         echo "[Error] Something is fishy."
         exit 1
     fi
-
 }
-
-
 
 main(){
     start_job
