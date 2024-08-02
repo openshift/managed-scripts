@@ -23,7 +23,7 @@ getFeatureGates() {
 }
 
 getAdditionalFeatureGates() {
-arg=(${1})
+arg=("${1}")
 for i in "${arg[@]}"
 	do
 		if [[ ! ${DEFAULT_FEATURE_GATES[*]}  =~ ${i} ]]; then

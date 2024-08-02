@@ -21,7 +21,7 @@ get_and_display_events() {
 # Check if the 'namespace' variable is provided
 if [ -z "${namespace:-}" ]; then
     echo "No 'namespace' provided. Retrieving events from all openshift namespaces."
-    openshift_namespaces=( $(get_openshift_namespaces) )
+    openshift_namespaces=( "$(get_openshift_namespaces)" )
 
     # Loop through each openshift namespace and display events
     for namespace in "${openshift_namespaces[@]}"; do

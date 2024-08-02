@@ -4,6 +4,7 @@ set -e
 set -o nounset
 set -o pipefail
 
+# shellcheck source=/dev/null
 source /managed-scripts/lib/sftp_upload/lib.sh
 
 # Define expected values

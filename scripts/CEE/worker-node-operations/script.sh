@@ -106,11 +106,11 @@ drain_worker(){
         fi
     fi
 
-    if [ $? -eq 0 ]; then 
-        echo "[OK] Node ${WORKER} drained successfully."
-        echo
+    if oc adm cordon "${WORKER}"; then
+        echo "[OK] Node ${WORKER} cordoned successfully"
+        exit 0
     else
-        echo "[Error] Something went wrong."
+        echo "[Error] Something went wrong"
         exit 1
     fi
 
@@ -123,8 +123,8 @@ reboot_worker(){
 
     drain_worker "${FORCEDRAINMODE}"
 
-    echo "Rebooting node ${WORKER}..."
-    cat <<EOF | oc -n default debug node/$WORKER
+    echo "Rebooting node \"${WORKER}\"..."
+    cat <<EOF | oc -n default debug node/"$WORKER"
     chroot /host
     reboot
 EOF
