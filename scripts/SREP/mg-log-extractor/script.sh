@@ -13,43 +13,43 @@ if [ -z "$hiveconfig" ] ; then
 fi
 
 bucket=$(echo "$hiveconfig" | jq -r '.spec.failedProvisionConfig.aws.bucket')
-if [ -z "$bucket" -o "$bucket" == "null" ] ; then
+if [ -z "$bucket" ] || [ "$bucket" == "null" ] ; then
   echo "Error: Unable to determine S3 bucket from hiveconfig."
   exit 10
 fi
 
 region=$(echo "$hiveconfig" | jq -r '.spec.failedProvisionConfig.aws.region')
-if [ -z "$region" -o "$region" == "null" ] ; then
+if [ -z "$region" ] || [ "$region" == "null" ] ; then
   echo "Error: Unable to determine AWS region from hiveconfig."
   exit 10
 fi
 
 secret_name=$(echo "$hiveconfig" | jq -r '.spec.failedProvisionConfig.aws.credentialsSecretRef.name')
-if [ -z "$secret_name" -o "$secret_name" == "null" ] ; then
+if [ -z "$secret_name" ] || [ "$secret_name" == "null" ] ; then
   echo "Error: Unable to determine AWS credentials secret name from hiveconfig."
   exit 10
 fi
 
 credentials_secret=$(oc get secret -n hive -o json "$secret_name")
-if [ -z "$credentials_secret" -o "$credentials_secret" == "null" ] ; then
+if [ -z "$credentials_secret" ] || [ "$credentials_secret" == "null" ] ; then
   echo "Error: Unable to retrieve credentials secret [$secret_name]."
   exit 10
 fi
 
 AWS_ACCESS_KEY_ID=$(echo "$credentials_secret" | jq -r '.data.aws_access_key_id' | base64 -d)
-if [ -z "$AWS_ACCESS_KEY_ID" -o "$AWS_ACCESS_KEY_ID" == "null" ] || [[ "$AWS_ACCESS_KEY_ID" != AKIA* ]] ; then
+if [ -z "$AWS_ACCESS_KEY_ID" ] || [ "$AWS_ACCESS_KEY_ID" == "null" ] || [[ "$AWS_ACCESS_KEY_ID" != AKIA* ]] ; then
   echo "Error: Unable to retrieve aws_access_key_id from secret [$secret_name] in the hive namespace."
   exit 10
 fi
 
 AWS_SECRET_ACCESS_KEY=$(echo "$credentials_secret" | jq -r '.data.aws_secret_access_key' | base64 -d)
-if [ -z "$AWS_SECRET_ACCESS_KEY" -o "$AWS_SECRET_ACCESS_KEY" == "null" ]; then
+if [ -z "$AWS_SECRET_ACCESS_KEY" ] || [ "$AWS_SECRET_ACCESS_KEY" == "null" ]; then
   echo "Error: Unable to retrieve aws_secret_access_key from secret [$secret_name] in the hive namespace."
   exit 10
 fi
 
 s3_log_dir="$TARGET_LOG_DIR"
-if [ -z "s3_log_dir" ]; then
+if [ -z "$s3_log_dir" ]; then
   echo "Error: s3_log_dir unspecified."
   exit 10
 fi
