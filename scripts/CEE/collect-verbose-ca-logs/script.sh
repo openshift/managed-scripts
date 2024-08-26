@@ -15,10 +15,10 @@ current_log_verbosity=$(oc get clusterautoscalers $CA_NAME -o jsonpath='{.spec.l
 
 # Check if current_log_verbosity is empty
 if [ -z "$current_log_verbosity" ]; then
-  echo "Failed to retrieve current logVerbosity value. \n\
-Kindly verify if the cluster autoscaling is enabled. To verify it, search the cluster on OCM (https://console.redhat.com/openshift/) and on the overview page, check if the cluster autoscaling section is \"Enabled\". If it is \"Disabled\", enable the cluster-autoscaling by following: \n\
-1. Search the cluster on OCM (https://console.redhat.com/openshift/) \n\
-2. Navigate to Machine Pools tab -> Click on \"Edit cluster autoscaling\" -> Save the desired settings."
+  printf "Failed to retrieve current logVerbosity value.\n\
+Kindly verify if the cluster autoscaling is enabled. To verify it, search the cluster on OCM (https://console.redhat.com/openshift/) and on the overview page, check if the cluster autoscaling section is \"Enabled\". If it is \"Disabled\", enable the cluster-autoscaling by following:\n\
+1. Search the cluster on OCM (https://console.redhat.com/openshift/)\n\
+2. Navigate to Machine Pools tab -> Click on \"Edit cluster autoscaling\" -> Save the desired settings.\n"
   exit 1
 fi
 
