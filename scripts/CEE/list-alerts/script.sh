@@ -31,7 +31,7 @@ done
 # Sets the types of alerts to retrieve (warning, critical, firing-only, pending, all-states)
 function set_alert_list(){
 	# List of alert states
-	ALERT_OPTIONS_ARRAY=($SCRIPT_PARAMETERS)
+	IFS=' ' read -r -a ALERT_OPTIONS_ARRAY <<< "$SCRIPT_PARAMETERS"
 
 	for ARG in "${ALERT_OPTIONS_ARRAY[@]}" ; do
 		if [ "$ARG" == "--warning-only" ] ; then

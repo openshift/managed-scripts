@@ -90,28 +90,37 @@ drain_worker(){
         echo "Draining node ${WORKER} for rebooting."
         echo
         IFS=' ' read -r -a drainparams <<< "${1}"
-        ${DRAIN_CMD} "${drainparams[@]}"
+        if ${DRAIN_CMD} "${drainparams[@]}"; then
+            echo "[OK] Node ${WORKER} drained successfully."
+            exit 0
+        else
+            echo "[Error] Something went wrong."
+            exit 1
+        fi
     
     else
     
         if ! declare -p DRAINMODE &>/dev/null || [ -z "${DRAINMODE}" ]; then
             echo "Draining node ${WORKER} with no options."
-            echo
-            ${DRAIN_CMD}
+            if ${DRAIN_CMD} ; then
+                echo "[OK] Node ${WORKER} drained successfully."
+                exit 0
+            else
+                echo "[Error] Something went wrong."
+                exit 1
+            fi
         else
             echo "Draining node ${WORKER} with drain mode '${DRAINMODE}'"
             echo
             IFS=' ' read -r -a drainparams <<< "${DRAINMODE}"
-            ${DRAIN_CMD} "${drainparams[@]}"
+            if ${DRAIN_CMD} "${drainparams[@]}"; then
+                echo "[OK] Node ${WORKER} drained successfully."
+                exit 0
+            else
+                echo "[Error] Something went wrong."
+                exit 1
+            fi
         fi
-    fi
-
-    if [ $? -eq 0 ]; then 
-        echo "[OK] Node ${WORKER} drained successfully."
-        echo
-    else
-        echo "[Error] Something went wrong."
-        exit 1
     fi
 
 }
@@ -123,8 +132,8 @@ reboot_worker(){
 
     drain_worker "${FORCEDRAINMODE}"
 
-    echo "Rebooting node ${WORKER}..."
-    cat <<EOF | oc -n default debug node/$WORKER
+    echo "Rebooting node \"${WORKER}\"..."
+    cat <<EOF | oc -n default debug node/"$WORKER"
     chroot /host
     reboot
 EOF
