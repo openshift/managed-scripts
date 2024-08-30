@@ -21,10 +21,11 @@ readonly KNOWN_HOST='sftp.access.redhat.com,35.80.245.1 ssh-rsa AAAAB3NzaC1yc2EA
 ## Example: sftp_upload ${PWD}/must-gather.tar.gz must-gather.tar.gz
 ## The <destination-filename> should be a filename not a path.
 function sftp_upload() {
-    ## Set up known hosts file
-    mkdir -p "${HOME}/.ssh"
-    chmod 700 "${HOME}/.ssh"
-    echo "${KNOWN_HOST}" > "${HOME}/.ssh/known_hosts"
+    ## Set up a temporary known hosts file
+    TEMP_DIR=$(mktemp -d)
+    mkdir -p "${TEMP_DIR}/.ssh"
+    chmod 700 "${TEMP_DIR}/.ssh"
+    echo "${KNOWN_HOST}" > "${TEMP_DIR}/.ssh/known_hosts"
 
     ## Get a one-time upload token
     creds=$(curl --request POST 'https://access.redhat.com/hydra/rest/v2/sftp/token' \
@@ -36,11 +37,15 @@ function sftp_upload() {
     token=$(jq -r '.token' <<< "${creds}")
 
     ## Upload the file
-    sshpass -p "${token}" sftp "${SFTP_OPTIONS[@]}" - "${username}"@"${FTP_HOST}" << EOSSHPASS
+    sshpass -p "${token}" sftp -o "UserKnownHostsFile=${TEMP_DIR}/.ssh/known_hosts" "${username}"@"${FTP_HOST}" << EOSSHPASS
         put $1 $2
         bye
 EOSSHPASS
-    # convert the username to lowercase for ease of copy / paste
+
+    # Clean up the temporary directory
+    rm -rf "${TEMP_DIR}"
+
+    # Convert the username to lowercase for ease of copy/paste
     lower_case_username=$(tr '[:upper:]' '[:lower:]' <<< "${username}")
 
     echo "Uploaded file $1 to ${FTP_HOST}, Anonymous username: ${lower_case_username}, filename: $2"
