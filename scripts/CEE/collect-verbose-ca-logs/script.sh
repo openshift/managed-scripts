@@ -15,7 +15,10 @@ current_log_verbosity=$(oc get clusterautoscalers $CA_NAME -o jsonpath='{.spec.l
 
 # Check if current_log_verbosity is empty
 if [ -z "$current_log_verbosity" ]; then
-  echo "Failed to retrieve current logVerbosity value."
+  printf "Failed to retrieve current logVerbosity value.\n\
+Kindly verify if the cluster autoscaling is enabled. To verify it, search the cluster on OCM (https://console.redhat.com/openshift/) and on the overview page, check if the cluster autoscaling section is \"Enabled\". If it is \"Disabled\", enable the cluster-autoscaling by following:\n\
+1. Search the cluster on OCM (https://console.redhat.com/openshift/)\n\
+2. Navigate to Machine Pools tab -> Click on \"Edit cluster autoscaling\" -> Save the desired settings.\n"
   exit 1
 fi
 
@@ -34,8 +37,8 @@ echo
 # Wait for the update to take effect
 echo "Waiting for the log verbosity to update..."
 
-# Sleep for 5 seconds so that the new pod name gets reflected
-sleep 5
+# Sleep for 10 seconds so that the new pod name gets reflected
+sleep 10
 
 CA_POD=$(oc get pods -n openshift-machine-api | grep cluster-autoscaler-default | awk '{print $1}')
 echo "POD Name: $CA_POD"
@@ -95,8 +98,8 @@ echo
 echo "Waiting for the log verbosity to be reverted back..."
 echo
 
-# Sleep for 5 seconds so that the new pod name gets reflected
-sleep 5
+# Sleep for 10 seconds so that the new pod name gets reflected
+sleep 10
 
 CA_POD=$(oc get pods -n openshift-machine-api | grep cluster-autoscaler-default | awk '{print $1}')
 echo "POD Name: $CA_POD"
