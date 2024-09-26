@@ -11,8 +11,12 @@ The script will upload the compressed dump to the [SFTP](https://access.redhat.c
 
 Parameters:
 - CLUSTER_ID: hosted cluster id.
+- DUMP_GUEST_CLUSTER(true|false): also dump the must gather in the guest cluster.
 
 In the management cluster:
 ```bash
-ocm backplane managedjob create CEE/hs-must-gather -p CLUSTER_ID=my-hs-cluster-id
+ocm backplane managedjob create CEE/hs-must-gather -p CLUSTER_ID=my-hs-cluster-id -p DUMP_GUEST_CLUSTER=false
 ```
+
+Note:
+The debug handler is disabled in the production environment. Logs can not be collected by hypershift dump, and DUMP_GUEST_CLUSTER won't work in the production environment. Please use `osdctl cluster dt gather-logs` to collect logs in the production environment.

@@ -9,7 +9,7 @@ source /managed-scripts/lib/sftp_upload/lib.sh
 
 # Define expected values
 HS_BINARY_PATH="/usr/local/bin/hypershift"
-DUMP_DIR="${PWD}/${CLUSTER_ID}"
+DUMP_DIR="/tmp/${CLUSTER_ID}"
 TODAY=$(date -u +%Y%m%d)
 TARBALL_NAME="${TODAY}_${CLUSTER_ID}_dump.tar.gz"
 TARBALL_PATH="${DUMP_DIR}/${TARBALL_NAME}"
