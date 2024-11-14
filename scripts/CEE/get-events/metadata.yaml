@@ -5,6 +5,7 @@ author: Daniel Fernandez
 allowedGroups:
   - CEE
   - SREP
+  - TierTwoSupport
 rbac:
   clusterRoleRules:
     - verbs:
@@ -15,11 +16,9 @@ rbac:
       resources:
         - namespaces
         - events
-
 envs:
   - key: namespace
     description: Namespace(s) from which to retrieve and display the PDBs.
     optional: true
-
 language: bash
 customerDataAccess: true

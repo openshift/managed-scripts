@@ -6,33 +6,34 @@ allowedGroups:
   - SREP
   - LPSRE
   - CEE
+  - TierTwoSupport
 rbac:
   roles:
     - namespace: "default"
       rules:
         - verbs:
-          - "get"
-          - "patch"
-          - "list"
-          - "watch"
-          - "create"
-          - "delete"
+            - "get"
+            - "patch"
+            - "list"
+            - "watch"
+            - "create"
+            - "delete"
           apiGroups:
-          - ""
+            - ""
           resources:
-          - "pods"
-          - "pods/attach"
+            - "pods"
+            - "pods/attach"
   clusterRoleRules:
-      - verbs:
+    - verbs:
         - "get"
         - "patch"
         - "list"
         - "watch"
-        apiGroups:
+      apiGroups:
         - ""
-        resources:
+      resources:
         - "nodes"
-envs:          
+envs:
   - key: NODE
     description: The node name
     optional: false

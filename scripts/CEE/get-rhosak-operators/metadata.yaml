@@ -6,12 +6,12 @@ description: |
     * managed-application-services-observability
     * redhat-kas-fleetshard-operator
     * redhat-managed-kafka-operator
-
 author: Rachel Lawton
 allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 envs:
   - key: 'since'
     description: "The --since flag is used by the oc adm inspect command. Only return logs newer than a relative duration. Either since can be added or since_time can be added but not both."

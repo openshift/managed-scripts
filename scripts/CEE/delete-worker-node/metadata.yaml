@@ -5,6 +5,7 @@ author: Nelson Paez
 allowedGroups:
   - CEE
   - SREP
+  - TierTwoSupport
 rbac:
   clusterRoleRules:
     - verbs:
@@ -29,10 +30,8 @@ envs:
   - key: NODE
     description: The node name
     optional: false
-
   - key: MACHINE
     description: The machine name associated with the node
     optional: false
-
 language: bash
 customerDataAccess: false

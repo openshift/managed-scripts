@@ -2,33 +2,34 @@ file: script.sh
 name: get-targets-down # name should be the same as the subdir, eg: SRE/example in this case
 description: Lists pods marked as down by cluster Prometheus
 author: mdewald
-allowedGroups: 
+allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
-    roles:
-      - namespace: "openshift-monitoring"
-        rules:
-          - verbs:
+  roles:
+    - namespace: "openshift-monitoring"
+      rules:
+        - verbs:
             - "get"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "serviceaccounts"
-          - verbs:
+        - verbs:
             - "create"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "serviceaccounts/token"
-    clusterRoleRules:
+  clusterRoleRules:
     - verbs:
-      - "get"
-      - "list"
+        - "get"
+        - "list"
       apiGroups:
-      - ""
+        - ""
       resources:
-      - "pods"
+        - "pods"
 language: bash
 customerDataAccess: true

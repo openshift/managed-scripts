@@ -1,56 +1,57 @@
 file: script.sh
 name: etcd-complete-health-check
 description: Prints out the complete health check for etcd with recent logs incase of unhealthy clusters
-author: devppratik 
+author: devppratik
 allowedGroups:
   - SREP
   - LPSRE
   - CEE
+  - TierTwoSupport
 labels:
   - key: OSD_TYPES
     description: Compatible cluster types for this script
     values:
       - OSD
 rbac:
-    roles:
-      - namespace: "openshift-etcd"
-        rules:
-          - verbs:
+  roles:
+    - namespace: "openshift-etcd"
+      rules:
+        - verbs:
             - "get"
             - "list"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "pods"
-          - verbs:
+        - verbs:
             - "create"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "pods/exec"
-      - namespace: "default"
-        rules:
-          - verbs:
+    - namespace: "default"
+      rules:
+        - verbs:
             - "create"
             - "delete"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "pods"
-    clusterRoleRules:
-        - verbs:
-            - "get"
-            - "list"
-          apiGroups:
-            - ""
-          resources:
-            - "nodes"
-        - verbs:
-            - "get"
-            - "list"
-          apiGroups:
-            - "operator.openshift.io"
-          resources:
-            - "etcds"
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - ""
+      resources:
+        - "nodes"
+    - verbs:
+        - "get"
+        - "list"
+      apiGroups:
+        - "operator.openshift.io"
+      resources:
+        - "etcds"
 language: bash
 customerDataAccess: true

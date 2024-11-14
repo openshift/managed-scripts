@@ -3,7 +3,7 @@ name: pcap-collector
 shortDescription: Captures traffic on nodes and produce gzipped pcap file.
 description: |
   Capture network traffic with tcpdump on a node and then send the capture to the case SFTP server and ticket.
-  
+
   This script will only work if a secret exists in the managed scripts namespace that contains a valid single-use
   SFTP token.
 
@@ -19,13 +19,13 @@ description: |
     5. If the job completes, a gzipped pcap file should be available at your case URL.
 
     See https://source.redhat.com/groups/public/openshiftplatformsre/wiki/how_to_use_the_must_gather_operator for inspiration and reference.
-
 author: John Roche, Hector Kemp
 allowedGroups:
   - SREP
   - CEE
+  - TierTwoSupport
 rbac:
-    clusterRoleRules:
+  clusterRoleRules:
     - verbs:
         - "get"
         - "create"

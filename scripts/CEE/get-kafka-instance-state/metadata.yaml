@@ -12,6 +12,7 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
   clusterRoleRules:
     - verbs:

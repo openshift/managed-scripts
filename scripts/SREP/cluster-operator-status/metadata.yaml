@@ -2,34 +2,35 @@ file: script.sh
 name: cluster-operator-status # name should be the same as the subdir, eg: SRE/example in this case
 description: Retrieves status of the cluster's Cluster Operators
 author: mbargenq
-allowedGroups: 
+allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
-    roles: []
-    clusterRoleRules:
+  roles: []
+  clusterRoleRules:
     - verbs:
-      - "get"
-      - "list"
+        - "get"
+        - "list"
       apiGroups:
-      - "config.openshift.io"
+        - "config.openshift.io"
       resources:
-      - clusteroperators
+        - clusteroperators
     - verbs:
-      - "get"
-      - "list"
+        - "get"
+        - "list"
       apiGroups:
-      - "apps"
+        - "apps"
       resources:
-      - deployments
+        - deployments
     - verbs:
-      - "get"
-      - "list"
+        - "get"
+        - "list"
       apiGroups:
-      - ""
+        - ""
       resources:
-      - pods
+        - pods
 envs:
   - key: "CLUSTER_OPERATOR"
     description: "Cluster Operator to specifically target."

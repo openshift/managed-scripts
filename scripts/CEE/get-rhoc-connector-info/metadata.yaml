@@ -9,6 +9,7 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
   clusterRoleRules:
     # connectors   

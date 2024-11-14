@@ -6,6 +6,7 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 labels:
   - key: OSD_TYPES
     description: Compatible cluster types for this script
@@ -13,14 +14,14 @@ labels:
       - OSD
       - HyperShift
 rbac:
-    roles:
-      - namespace: "openshift-config"
-        rules:
-          - verbs:
+  roles:
+    - namespace: "openshift-config"
+      rules:
+        - verbs:
             - "get"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "secrets"
 language: bash
 customerDataAccess: false
