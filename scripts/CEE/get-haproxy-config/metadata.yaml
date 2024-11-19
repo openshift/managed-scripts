@@ -1,0 +1,25 @@
+---
+file: script.sh
+name: get-haproxy-config
+shortDescription: prints the contents of router pod's haproxy.config
+description: Prints the content of haproxy.config from a router pod to standard output.
+author: gvnnn
+language: bash
+allowedGroups:
+  - CEE
+  - SREP
+customerDataAccess: false
+rbac:
+  clusterRoleRules:
+    - apiGroups: ['']
+      resources: ['pods']
+      verbs:
+        - get
+        - list
+    - apiGroups: ['']
+      resources: ['pods/exec']
+      verbs: ['create']
+envs:
+  - key: ROUTER
+    description: The pod name you wish to print the configuration from
+    optional: true
