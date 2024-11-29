@@ -1,0 +1,23 @@
+file: script.sh
+name: extend-acs-tenant-expiration # name should be the same as the subdir, eg: SRE/example in this case
+description: Extend ACS tenant expiration time, defaults to 6 months, requires RHOAS_TOKEN, TENANT_ID and REASON.
+author: todabasi
+allowedGroups:
+  - LPSRE
+rbac:
+    roles: #TODO
+envs:
+  - key: "RHOAS_TOKEN"
+    description: "RHOAS token obtained using 'rhoas login --auth-url=https://auth.redhat.com/auth/realms/EmployeeIDP' and supplied using '-p RHOAS_TOKEN=$(rhoas authtoken)'"
+    optional: false
+  - key: "TENANT_ID"
+    description: "Tennant ID of a secured cluster that requires extention"
+    optional: false
+  - key: "REASON"
+    description: "Reason for extending a tennant including jira card"
+    optional: false
+  - key: "MONTHS"
+    description: "Period for extending a tennat, defaults to 6 months"
+    optional: true
+language: bash
+customerDataAccess: false
