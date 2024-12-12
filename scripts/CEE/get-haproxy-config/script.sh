@@ -5,6 +5,10 @@
 # file is printed; if no router pod is passed, the first default router in
 # openshift-ingress is used.
 
+set -o errexit
+set -o nounset
+set -o pipefail
+
 INGRESS_NS="openshift-ingress"
 OC_PARAMS="--namespace=${INGRESS_NS} \
 	   --output=custom-columns=:.metadata.name\
@@ -13,12 +17,12 @@ OC_CMD="oc get pods ${OC_PARAMS}"
 SELECTOR="ingresscontroller.operator.openshift.io/deployment-ingresscontroller"
 CFG_PATH="/var/lib/haproxy/conf/haproxy.config"
 
-if [ -n "${ROUTER}" ]; then
+if [ -n "${ROUTER:-}" ]; then
 	POD="$(${OC_CMD} "${ROUTER}")" || exit
 else
 	POD="$(${OC_CMD} \
 		--selector=${SELECTOR}=default \
-		--field-selector=status.phase==Running | \
+		--field-selector=status.phase==Running |
 		head --lines=1)"
 fi
 
