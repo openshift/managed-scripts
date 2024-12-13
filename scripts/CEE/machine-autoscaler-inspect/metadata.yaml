@@ -1,0 +1,22 @@
+file: script.sh
+name: machine-autoscaler-inspect
+shortDescription: Collects machine autoscaler inspect data.
+description: |
+
+  Collects and prints the machine autoscaler resources data in yaml format from OpenShift cluster.
+
+author: Alex Volkov
+allowedGroups:
+  - SREP
+  - CEE
+rbac:
+  clusterRoleRules:
+    - apiGroups:
+        - "autoscaling.openshift.io"
+      resources:
+        - "machineautoscalers"
+      verbs:
+        - "get"
+        - "list"
+language: bash
+customerDataAccess: false
