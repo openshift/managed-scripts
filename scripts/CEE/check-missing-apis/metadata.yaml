@@ -1,6 +1,7 @@
 file: script.sh
 name: check-missing-apis
-description: Gather missing APIs if any.
+shortDescription: prints the missing APIServices from OpenShift cluster if any.
+description: prints the missing APIServices from OpenShift cluster to standard output.
 author: Alex Volkov
 allowedGroups:
   - CEE

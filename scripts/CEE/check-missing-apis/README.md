@@ -2,12 +2,12 @@
 
 ## Purpose
 
-This script is designed to gather and retrieve the missing APIs from OpenShift cluster.
+This script prints the missing APIServices from OpenShift cluster if any.
 
 ## Usage
 
 ```bash
-ocm backplane managedjob create CEE/check-missing-crds
+ocm backplane managedjob create CEE/check-missing-apis
 ```
 
 
