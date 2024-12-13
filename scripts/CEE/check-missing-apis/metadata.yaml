@@ -1,0 +1,18 @@
+file: script.sh
+name: check-missing-apis
+description: Gather missing APIs if any.
+author: Alex Volkov
+allowedGroups:
+  - CEE
+rbac:
+  clusterRoleRules:
+    - apiGroups:
+        - "apiregistration.k8s.io"
+      resources:
+        - "apiservices"
+      verbs:
+        - "get"
+        - "list"
+
+language: bash
+customerDataAccess: false
