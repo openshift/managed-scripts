@@ -5,6 +5,7 @@ description: Deletes a single pod from openshift's reserved namespace.
 author: Alex Volkov
 allowedGroups:
   - CEE
+  - SREP
 rbac:
   clusterRoleRules:
     - apiGroups:
