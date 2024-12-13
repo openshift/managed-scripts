@@ -1,0 +1,27 @@
+file: script.sh
+name: delete-os-pod
+shortDescription: Deletes a pod from openshift namespace 
+description: Deletes a single pod from openshift's reserved namespace. 
+author: Alex Volkov
+allowedGroups:
+  - CEE
+rbac:
+  clusterRoleRules:
+    - apiGroups:
+        - ""
+      resources:
+        - "pods"
+      verbs:
+        - "delete"
+        - "get"
+
+envs:
+- key: NAMESPACE
+  description: Namespace name where por to delete is running, must start with openshift-*
+  optional: false
+- key: POD_NAME
+  description: Name of the pod to delete
+  optional: false
+
+language: bash
+customerDataAccess: false
