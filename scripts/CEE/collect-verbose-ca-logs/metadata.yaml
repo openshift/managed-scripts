@@ -5,32 +5,33 @@ author: Kushagra Kulshreshtha
 allowedGroups:
   - CEE
   - SREP
+  - TierTwoSupport
 rbac:
   roles:
     - namespace: "openshift-machine-api"
       rules:
         - verbs:
-          - "get"
-          - "logs"
+            - "get"
+            - "logs"
           apiGroups:
-          - "clusterautoscaler.autoscaling.openshift.io"
+            - "clusterautoscaler.autoscaling.openshift.io"
           resources:
-          - "pods"
-          - "pods/attach"
+            - "pods"
+            - "pods/attach"
   clusterRoleRules:
-      - verbs:
+    - verbs:
         - "get"
         - "patch"
-        apiGroups:
+      apiGroups:
         - "autoscaling.openshift.io"
-        resources:
+      resources:
         - "clusterautoscalers"
-      - verbs:
+    - verbs:
         - "get"
         - "list"
-        apiGroups:
+      apiGroups:
         - ""
-        resources:
+      resources:
         - "nodes"
 language: bash
 customerDataAccess: false

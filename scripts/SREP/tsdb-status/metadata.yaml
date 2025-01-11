@@ -7,18 +7,18 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
-    roles:
-      - namespace: "openshift-monitoring"
-        rules:
-          - apiGroups: [""]
-            verbs: ["get"]
-            resources: 
+  roles:
+    - namespace: "openshift-monitoring"
+      rules:
+        - apiGroups: [""]
+          verbs: ["get"]
+          resources:
             - "secrets"
             - "serviceaccounts"
-          - apiGroups: ["route.openshift.io"]
-            verbs: ["get"]
-            resources: 
+        - apiGroups: ["route.openshift.io"]
+          verbs: ["get"]
+          resources:
             - "routes"
 customerDataAccess: false
-

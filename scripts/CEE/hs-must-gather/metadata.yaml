@@ -1,11 +1,12 @@
 file: script.sh
-name: hs-must-gather 
+name: hs-must-gather
 description: Hypershift must gather script
 author: sjayasin
-allowedGroups: 
+allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 labels:
   - key: OSD_TYPES
     description: Compatible cluster types for this script
@@ -101,6 +102,6 @@ envs:
     optional: false
   - key: "DUMP_GUEST_CLUSTER"
     description: "Include the guest cluster the must gather"
-    optional: false 
+    optional: false
 language: bash
 customerDataAccess: true

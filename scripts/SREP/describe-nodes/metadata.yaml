@@ -2,24 +2,25 @@ file: script.sh
 name: describe-nodes
 description: Provide the full functionality of `oc describe nodes`, as the standard `oc describe nodes` in backplane restricts access to customer workload information.
 author: dsquirre
-allowedGroups: 
+allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
-    roles:
-      - namespace: "kube-node-lease"
-        rules:
-          - apiGroups: ['coordination.k8s.io']
-            resources: ['leases']
-            verbs:     ['get', 'list']
-    clusterRoleRules:
-        - apiGroups: ['']
-          resources: ['nodes']
-          verbs:     ['get', 'list']
-        - apiGroups: ['']
-          resources: ['pods']
-          verbs:     ['get', 'list']
+  roles:
+    - namespace: "kube-node-lease"
+      rules:
+        - apiGroups: ['coordination.k8s.io']
+          resources: ['leases']
+          verbs: ['get', 'list']
+  clusterRoleRules:
+    - apiGroups: ['']
+      resources: ['nodes']
+      verbs: ['get', 'list']
+    - apiGroups: ['']
+      resources: ['pods']
+      verbs: ['get', 'list']
 envs:
   - key: "SCRIPT_PARAMETERS"
     description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
@@ -32,4 +33,3 @@ labels:
       - HyperShift
     optional: true
 customerDataAccess: true
-      

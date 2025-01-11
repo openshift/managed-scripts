@@ -6,19 +6,20 @@ allowedGroups:
   - SREP
   - LPSRE
   - CEE
+  - TierTwoSupport
 rbac:
- roles:
-   - namespace: "openshift-dns"
-     rules:
-       - verbs:
-         - "get"
-         - "patch"
-         - "list"
-         - "watch"
-         apiGroups:
-         - "apps"
-         resources:
-         - "daemonsets"
-         - "pods"
+  roles:
+    - namespace: "openshift-dns"
+      rules:
+        - verbs:
+            - "get"
+            - "patch"
+            - "list"
+            - "watch"
+          apiGroups:
+            - "apps"
+          resources:
+            - "daemonsets"
+            - "pods"
 language: bash
 customerDataAccess: false

@@ -2,20 +2,21 @@ file: script.sh
 name: elasticsearch-status # name should be the same as the subdir, eg: SRE/example in this case
 description: Check status of elastic search on clusters
 author: lfalconm
-allowedGroups: 
+allowedGroups:
   - SREP
   - CEE
   - LPSRE
+  - TierTwoSupport
 rbac:
-    roles:
-      - namespace: "openshift-monitoring"
-        rules:
-          - verbs:
+  roles:
+    - namespace: "openshift-monitoring"
+      rules:
+        - verbs:
             - "get"
             - "list"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "pods"
             - "clusterlogging"
             - "elasticsearch"
@@ -23,18 +24,18 @@ rbac:
             - "deployment"
             - "resourcequota"
             - "persistentvolumeclaim"
-          - verbs:
+        - verbs:
             - "create"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "pods/exec"
-          - verbs:
+        - verbs:
             - "get"
             - "list"
-            apiGroups:
+          apiGroups:
             - "operators.coreos.com"
-            resources:
+          resources:
             - "subscriptions"
 language: bash
 customerDataAccess: false

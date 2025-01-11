@@ -6,24 +6,25 @@ author: karthikperu7
 allowedGroups:
   - CEE
   - SREP
+  - TierTwoSupport
 rbac:
-    roles:
-      - namespace: "openshift-image-registry"
-        rules:
-          - verbs:
+  roles:
+    - namespace: "openshift-image-registry"
+      rules:
+        - verbs:
             - "get"
             - "list"
-            apiGroups:
+          apiGroups:
             - ""
-            resources:
+          resources:
             - "secrets"
-    clusterRoleRules:
-      - verbs:
+  clusterRoleRules:
+    - verbs:
         - "get"
         - "list"
-        apiGroups:
+      apiGroups:
         - "imageregistry.operator.openshift.io"
-        resources:
+      resources:
         - configs
 language: bash
 customerDataAccess: false

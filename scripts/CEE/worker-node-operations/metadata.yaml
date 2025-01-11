@@ -5,42 +5,43 @@ author: Fabio Aldana
 allowedGroups:
   - CEE
   - SREP
+  - TierTwoSupport
 rbac:
   roles:
     - namespace: "default"
       rules:
         - verbs:
-          - "get"
-          - "patch"
-          - "list"
-          - "watch"
-          - "create"
-          - "delete"
+            - "get"
+            - "patch"
+            - "list"
+            - "watch"
+            - "create"
+            - "delete"
           apiGroups:
-          - ""
+            - ""
           resources:
-          - "pods"
-          - "pods/attach"
+            - "pods"
+            - "pods/attach"
   clusterRoleRules:
-      - verbs:
+    - verbs:
         - "get"
         - "patch"
         - "list"
         - "watch"
-        apiGroups:
+      apiGroups:
         - ""
-        resources:
+      resources:
         - "nodes"
         - "nodes/proxy"
-      - verbs:
+    - verbs:
         - "get"
         - "list"
         - "watch"
         - "delete"
         - "create"
-        apiGroups:
+      apiGroups:
         - ""
-        resources:
+      resources:
         - "pods"
         - "pods/eviction"
 envs:
