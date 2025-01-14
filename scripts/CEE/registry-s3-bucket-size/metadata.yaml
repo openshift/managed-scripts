@@ -6,7 +6,7 @@ author: karthikperu7
 allowedGroups:
   - CEE
   - SREP
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   roles:
     - namespace: "openshift-image-registry"

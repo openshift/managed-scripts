@@ -5,7 +5,7 @@ author: Fabio Aldana
 allowedGroups:
   - CEE
   - SREP
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   roles:
     - namespace: "default"

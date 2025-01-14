@@ -23,7 +23,7 @@ author: John Roche, Hector Kemp
 allowedGroups:
   - SREP
   - CEE
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   clusterRoleRules:
     - verbs:

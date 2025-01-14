@@ -6,7 +6,7 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   roles: []
   clusterRoleRules:

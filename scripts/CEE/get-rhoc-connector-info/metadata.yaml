@@ -9,7 +9,7 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   clusterRoleRules:
     # connectors   
