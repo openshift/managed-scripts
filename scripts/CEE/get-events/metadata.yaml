@@ -5,7 +5,7 @@ author: Daniel Fernandez
 allowedGroups:
   - CEE
   - SREP
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   clusterRoleRules:
     - verbs:

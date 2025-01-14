@@ -6,7 +6,7 @@ allowedGroups:
   - SREP
   - LPSRE
   - CEE
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   roles:
     - namespace: "default"

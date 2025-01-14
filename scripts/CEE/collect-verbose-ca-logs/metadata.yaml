@@ -5,7 +5,7 @@ author: Kushagra Kulshreshtha
 allowedGroups:
   - CEE
   - SREP
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   roles:
     - namespace: "openshift-machine-api"

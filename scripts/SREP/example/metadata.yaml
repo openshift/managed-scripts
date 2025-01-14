@@ -6,7 +6,7 @@ allowedGroups:
   - SREP
   - CEE
   - LPSRE
-  - TierTwoSupport
+  - MCSTierTwo
 labels:
   - key: OSD_TYPES
     description: Compatible cluster types for this script

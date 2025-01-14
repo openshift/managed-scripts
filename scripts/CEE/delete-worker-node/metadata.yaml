@@ -5,7 +5,7 @@ author: Nelson Paez
 allowedGroups:
   - CEE
   - SREP
-  - TierTwoSupport
+  - MCSTierTwo
 rbac:
   clusterRoleRules:
     - verbs:
