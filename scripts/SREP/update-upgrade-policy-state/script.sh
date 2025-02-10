@@ -26,7 +26,7 @@ get_cluster_uuid() {
 # Params:
 #   - Cluster UUID
 get_cluster_id() {
-    ocm list clusters --parameter search="external_id is '${1}'" --columns id --padding 20 --no-headers
+    oc get configmap cluster-config-v1 -n kube-system -o jsonpath='{.data.install-config}' | grep -oE 'api.openshift.com/id: [^ ]+' | awk '{print $2}'
 }
 
 # Get the UUID of the upgrade policy for the cluster.
@@ -34,7 +34,11 @@ get_cluster_id() {
 #   - Cluster ID
 get_policy_uuid() {
     local policy_uuid
-    policy_uuid=$(ocm get "/api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/" | jq '.items[]? | .id' | tr -d '"')
+    local ocm_slug="api/clusters_mgmt/v1/clusters/${1}/upgrade_policies"
+    policy_uuid=$(curl -s -XGET \
+        -H "Content-Type: application/json" \
+        -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
+        "https://api.openshift.com/${ocm_slug}" | jq -r '.items[]?.id // empty')
     if [[ -z "$policy_uuid" ]]; then
         echo "No upgrade policy found for cluster ID ${1}" >&2
         return 1
@@ -70,7 +74,7 @@ fi
 CLUSTER_UUID=$(get_cluster_uuid)
 
 # 3. Get the cluster ID.
-CLUSTER_ID=$(get_cluster_id "${CLUSTER_UUID}")
+CLUSTER_ID=$(get_cluster_id)
 
 # 4. Get the policy UUID.
 POLICY_UUID=$(get_policy_uuid "${CLUSTER_ID}")
