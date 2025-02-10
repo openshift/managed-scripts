@@ -21,5 +21,9 @@ rbac:
       - secrets
       namespaces:
       - "openshift-config"
+envs:
+  - key: "env"
+    description: "specify 'stage' if you want to run in staging env"
+    optional: true
 language: bash
 customerDataAccess: false
