@@ -35,7 +35,7 @@ get_cluster_id() {
 get_policy_uuid() {
     local policy_uuid
     local ocm_slug="api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/"
-    if [ -z "$env"]; then
+    if [[ -z "$env" ]]; then
         policy_uuid=$(curl -XGET \
         -H "Content-Type: application/json" \
         -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
@@ -60,7 +60,7 @@ get_policy_uuid() {
 #   - Policy UUID
 update_upgrade_policy() {
     local ocm_slug="api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/${2}/state"
-    if [ -z "$env"]; then
+    if [[ -z "$env" ]]; then
         curl -XPATCH \
             -H "Content-Type: application/json" \
             -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
