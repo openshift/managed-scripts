@@ -19,36 +19,44 @@ The following are prerequisites to create/test/deploy new scripts.
 5. [GitHub](https://github.com) account
 6. Any kind of advanced text editors like [VS Code](https://code.visualstudio.com/)
 
-Check available scripts [here](https://github.com/openshift/managed-scripts/tree/main/scripts).
+All the pre-created scripts are available [here](https://github.com/openshift/managed-scripts/tree/main/scripts) for reference.
 
+---
 
 <h3>Creating a new script</h3>
-Create a fork of the Managed Scripts repository. Please refer to Fork a repo for more information.
-Create a new branch (Don’t use the main/master branch to send the PR), assign a name that represents the subject or that is a feature. Refer to GitHub - How to create a new branch.
-With the new fork created, clone the repository from your new fork URL (Use a folder of your preference to place the git repository):
-            
-            $ git clone https://github.com/<git_user>/managed-scripts.git
 
-Create a new folder to place the new script:
-      
-           $ cd <path-to-folder>/managed-scripts/scripts/CEE
-           $ mkdir -p new-script
-           $ tree view -d .
+1. Create a fork of the [Managed Scripts GitHub Repo](https://github.com/openshift/managed-scripts). Please refer to [Fork a repo](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) for more information.
    
-          ├── check-tech-preview-features
-           <...>
-          ├── new-script    <<<< NEW FOLDER
+2. Create a new branch (Don’t use the main/master branch to send the PR), assign a name that represents the subject or that is a feature. Refer to [GitHub - How to create a new branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-and-deleting-branches-within-your-repository).
+   
+4. With the new fork created, clone the repository from your new fork URL (Use a folder of your preference to place the git repository):
+   ~~~
+   $ git clone https://github.com/<git_user>/managed-scripts.git
+   ~~~
 
-Inside the new folder, create metadata.yaml file according to the Metadata Schema defined here. A filled-in example could be this. This file is what translates the RBAC permissions to the script commands. Specify allowedGroups like CEE,SREP,etc.
+5. Create a new folder to place the new script:
+   ~~~
+      
+   $ cd <path-to-folder>/managed-scripts/scripts/CEE
+   $ mkdir -p new-script
+   $ tree view -d .
+   
+   ├── check-tech-preview-features
+   <...>
+   ├── new-script    <<<< NEW FOLDER
+   ~~~
+   
+6. Inside the new folder, create metadata.yaml file according to the Metadata Schema defined [here](https://github.com/openshift/managed-scripts/blob/main/hack/metadata.schema.json). A filled-in example could be [this](https://github.com/openshift/managed-scripts/blob/main/scripts/CEE/etcd-health-check/metadata.yaml). This file is what translates the RBAC permissions to the script commands. Specify allowedGroups like CEE,SREP,etc. 
+**Note**: _Do not use cluster-admin RBAC, like verbs/object [*]. Prefer the least privileged approach._
 
- Note: Do not use cluster-admin RBAC, like verbs/object [*]. Prefer the least privileged approach.
-
-Create the script.sh.
-            $ tree view new-script
-             new-script
-            ├── metadata.yaml
-            └── script.sh
-
+7. Create the script.sh.
+   ~~~
+   $ tree view new-script
+   new-script
+   ├── metadata.yaml
+   └── script.sh
+   ~~~
+   
 ---
 
 <h3>Testing the script</h3>
@@ -94,9 +102,9 @@ Create the script.sh.
 - To have the script available to clusters in production API, a PR must be opened and merged by the SRE team. SRE will review the code and further discussions may be needed. For any inquiry, the slack channel `#sd-ims-backplane` can be used by tagging `@backplane-team`.
 - Once the PR is fully accepted, the merge should happen automatically bi-weekly on Monday during APAC afternoon hours.
 - To validate that the script is available:
-    - connect to the [Backplane Production API](https://api.backplane.openshift.com),
-    - log in to a cluster,
-    - list the managed scripts using the below command
+    - Connect to the [Backplane Production API](https://api.backplane.openshift.com),
+    - Log in to a cluster,
+    - List the managed scripts using the below command
       > $ ocm backplane script list
 
 
