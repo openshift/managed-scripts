@@ -19,14 +19,35 @@ fetch_auth_token() {
 
 # Fetch UUID of the current OpenShift cluster.
 get_cluster_uuid() {
-    oc get clusterversion version -o json | jq -r '.spec.clusterID'
+    local cluster_uuid
+    cluster_uuid=$(oc get clusterversion version -o json | jq -r '.spec.clusterID')
+    if [[ -z "$cluster_uuid" ]]; then
+        echo "Cannot found the cluster" >&2
+        return 1
+    fi
+    echo "$cluster_uuid"
 }
 
 # Using the cluster's UUID, fetch the cluster's ID.
 # Params:
 #   - Cluster UUID
 get_cluster_id() {
-    oc get configmap cluster-config-v1 -n kube-system -o jsonpath='{.data.install-config}' | grep -oE 'api.openshift.com/id: [^ ]+' | awk '{print $2}'
+    local cluster_uuid="$1"  # Cluster UUID passed as an argument
+    local ocm_slug="api/clusters_mgmt/v1/clusters"
+    
+    # Query OCM API to find the cluster by its UUID
+    local cluster_id
+    cluster_id=$(curl -sS -G -XGET \
+        -H "Content-Type: application/json" \
+        -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
+        --data-urlencode "search=external_id = '${cluster_uuid}'" \
+        "${BASE_URL}/${ocm_slug}" | jq -r '.items[0].id // empty')
+
+    if [[ -z "$cluster_id" ]]; then
+        echo "Cluster with UUID ${cluster_uuid} not found in OCM" >&2
+        return 1
+    fi
+    echo "$cluster_id"
 }
 
 # Get the UUID of the upgrade policy for the cluster.
@@ -70,16 +91,18 @@ update_upgrade_policy() {
 
 # Main logic:
 
-# 1. Fetch the auth token
-AUTH_TOKEN=$(fetch_auth_token) || { echo "Failed to retrieve auth token"; exit 1; }
-
-# 2. Get cluster UUID and ID
-CLUSTER_UUID=$(get_cluster_uuid)
-CLUSTER_ID=$(get_cluster_id)
-
-# 3. Dynamically set base URL based on $env
+# 1. Dynamically set base URL based on $env early for consistency
 BASE_URL="https://api${env:+.stage}.openshift.com"
 
-# 4. Get policy UUID and cancel the upgrade
+# 2. Fetch the auth token
+AUTH_TOKEN=$(fetch_auth_token) || { echo "Failed to retrieve auth token"; exit 1; }
+
+# 3. Get cluster UUID and ID
+CLUSTER_UUID=$(get_cluster_uuid)
+
+# 4. Get cluster ID via API
+CLUSTER_ID=$(get_cluster_id "${CLUSTER_UUID}") || exit 1
+
+# 5. Get policy UUID and cancel the upgrade
 POLICY_UUID=$(get_policy_uuid "${CLUSTER_ID}") || exit 1
 update_upgrade_policy "${CLUSTER_ID}" "${POLICY_UUID}"
