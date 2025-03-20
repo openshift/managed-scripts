@@ -14,7 +14,7 @@ The `update_upgrade_policy` managed script allows you to cancel the upgrade poli
 
 To cancel the upgrade policy of the current cluster, you can run the following commands for prod and staging clusters:
 
-For production clusters (no need to specify env=prod as parameter since it is prod by default) : 
+For production clusters (prod is the default parameter , hence it needs no explicit specification) : 
 
 ```bash
 ocm backplane managedjob create SREP/update-upgrade-policy-state
