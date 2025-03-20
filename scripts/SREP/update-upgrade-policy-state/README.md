@@ -20,7 +20,7 @@ For production clusters (prod is the default parameter , hence it needs no expli
 ocm backplane managedjob create SREP/update-upgrade-policy-state
 ```
 
-For staging clusters (need to specify env=stage as parameter): 
+For staging clusters (environment parameter has to be specified as env=stage ): 
 
 ```bash
 ocm backplane managedjob create SREP/update-upgrade-policy-state -p env=stage
