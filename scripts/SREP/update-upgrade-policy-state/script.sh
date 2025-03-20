@@ -19,26 +19,54 @@ fetch_auth_token() {
 
 # Fetch UUID of the current OpenShift cluster.
 get_cluster_uuid() {
-    oc get clusterversion version -o json | jq -r '.spec.clusterID'
+    local cluster_uuid
+    cluster_uuid=$(oc get clusterversion version -o json | jq -r '.spec.clusterID')
+    if [[ -z "$cluster_uuid" ]]; then
+        echo "Cannot find the cluster" >&2
+        return 1
+    fi
+    echo "$cluster_uuid"
 }
 
 # Using the cluster's UUID, fetch the cluster's ID.
 # Params:
 #   - Cluster UUID
 get_cluster_id() {
-    ocm list clusters --parameter search="external_id is '${1}'" --columns id --padding 20 --no-headers
+    local cluster_uuid="$1"  # Cluster UUID passed as an argument
+    local ocm_slug="api/clusters_mgmt/v1/clusters"
+    
+    # Query OCM API to find the cluster by its UUID
+    local cluster_id
+    cluster_id=$(curl -sS -G -XGET \
+        -H "Content-Type: application/json" \
+        -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
+        --data-urlencode "search=external_id = '${cluster_uuid}'" \
+        "${BASE_URL}/${ocm_slug}" | jq -r '.items[0].id // empty')
+
+    if [[ -z "$cluster_id" ]]; then
+        echo "Cluster with UUID ${cluster_uuid} not found in OCM" >&2
+        return 1
+    fi
+    echo "$cluster_id"
 }
 
 # Get the UUID of the upgrade policy for the cluster.
 # Params:
 #   - Cluster ID
 get_policy_uuid() {
+    local cluster_id="$1"
+    local ocm_slug="api/clusters_mgmt/v1/clusters/${cluster_id}/upgrade_policies/"
     local policy_uuid
-    policy_uuid=$(ocm get "/api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/" | jq '.items[]? | .id' | tr -d '"')
-    if [[ -z "$policy_uuid" ]]; then
-        echo "No upgrade policy found for cluster ID ${1}" >&2
+
+    policy_uuid=$(curl -sS -XGET \
+        -H "Content-Type: application/json" \
+        -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
+        "${BASE_URL}/${ocm_slug}" | jq -r '.items[]?.id // empty')
+
+    [[ -z "$policy_uuid" ]] && {
+        echo "No upgrade policy found for cluster ID ${cluster_id}" >&2
         return 1
-    fi
+    }
     echo "$policy_uuid"
 }
 
@@ -46,12 +74,16 @@ get_policy_uuid() {
 # Params:
 #   - Cluster ID
 #   - Policy UUID
+
 update_upgrade_policy() {
-    local ocm_slug="api/clusters_mgmt/v1/clusters/${1}/upgrade_policies/${2}/state"
-    curl -XPATCH \
+    local cluster_id="$1"
+    local policy_uuid="$2"
+    local ocm_slug="api/clusters_mgmt/v1/clusters/${cluster_id}/upgrade_policies/${policy_uuid}/state"
+
+    curl -sS -XPATCH \
         -H "Content-Type: application/json" \
         -H "Authorization: AccessToken ${CLUSTER_UUID}:${AUTH_TOKEN}" \
-        "https://api.openshift.com/${ocm_slug}" -d '{
+        "${BASE_URL}/${ocm_slug}" -d '{
         "value": "cancelled",
         "description": "Manually cancelled by SRE"
     }'
@@ -59,25 +91,18 @@ update_upgrade_policy() {
 
 # Main logic:
 
-# 1. Fetch the auth token.
-AUTH_TOKEN=$(fetch_auth_token)
-if [ -z "$AUTH_TOKEN" ]; then
-    echo "Failed to retrieve the authentication token. Exiting."
-    exit 1
-fi
+# 1. Dynamically set base URL based on $env early for consistency
+BASE_URL="https://api${env:+.stage}.openshift.com"
 
-# 2. Get the cluster UUID.
+# 2. Fetch the auth token
+AUTH_TOKEN=$(fetch_auth_token) || { echo "Failed to retrieve auth token"; exit 1; }
+
+# 3. Get cluster UUID and ID
 CLUSTER_UUID=$(get_cluster_uuid)
 
-# 3. Get the cluster ID.
-CLUSTER_ID=$(get_cluster_id "${CLUSTER_UUID}")
+# 4. Get cluster ID via API
+CLUSTER_ID=$(get_cluster_id "${CLUSTER_UUID}") || exit 1
 
-# 4. Get the policy UUID.
-POLICY_UUID=$(get_policy_uuid "${CLUSTER_ID}")
-if [ -z "$POLICY_UUID" ]; then
-    echo "Error fetching the policy UUID. Exiting."
-    exit 1
-fi
-
-# 5. Cancel the upgrade policy.
+# 5. Get policy UUID and cancel the upgrade
+POLICY_UUID=$(get_policy_uuid "${CLUSTER_ID}") || exit 1
 update_upgrade_policy "${CLUSTER_ID}" "${POLICY_UUID}"
