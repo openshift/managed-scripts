@@ -22,7 +22,7 @@ get_cluster_uuid() {
     local cluster_uuid
     cluster_uuid=$(oc get clusterversion version -o json | jq -r '.spec.clusterID')
     if [[ -z "$cluster_uuid" ]]; then
-        echo "Cannot found the cluster" >&2
+        echo "Cannot find the cluster" >&2
         return 1
     fi
     echo "$cluster_uuid"
