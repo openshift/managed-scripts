@@ -1,0 +1,19 @@
+file: script.sh
+name: check-missing-apis
+shortDescription: prints the missing APIServices from OpenShift cluster if any.
+description: prints the missing APIServices from OpenShift cluster to standard output.
+author: Alex Volkov
+allowedGroups:
+  - CEE
+rbac:
+  clusterRoleRules:
+    - apiGroups:
+        - "apiregistration.k8s.io"
+      resources:
+        - "apiservices"
+      verbs:
+        - "get"
+        - "list"
+
+language: bash
+customerDataAccess: false
