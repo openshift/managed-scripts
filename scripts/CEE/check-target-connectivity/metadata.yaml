@@ -33,7 +33,7 @@ rbac:
   - apiGroups:
       - "security.openshift.io"
     verbs:
-      - "*"
+      - "use"
     resources:
       - "securitycontextconstraints"
 envs:
