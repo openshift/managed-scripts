@@ -4,8 +4,8 @@ shortDescription: Deletes a pod from openshift namespace
 description: Deletes a single pod from openshift's reserved namespace. 
 author: Alex Volkov
 allowedGroups:
-  - CEE
   - SREP
+  - MCSTierTwo
 rbac:
   clusterRoleRules:
     - apiGroups:
