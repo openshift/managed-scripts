@@ -6,18 +6,13 @@ set -o nounset
 set -o pipefail
 
 ## Input validation
-### Check the correct number of arguments is provided
-if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
-  echo "Usage: $0 <pod_name> <namespace> [--force]"
-  exit 1
+if ! declare -p FLAGS &>/dev/null || [[ -z "${FLAGS}" ]]; then
+  FLAGS=""
 fi
 
-POD_NAME=$1
-NAMESPACE=$2
+# If --force is in FLAGS, set FORCE_FLAG to true
 FORCE_FLAG=false
-
-# Check if force flag is provided
-if [[ "${3:-}" == "--force" ]]; then
+if [[ "$FLAGS" =~ --force ]]; then
   FORCE_FLAG=true
 fi
 
@@ -39,24 +34,28 @@ fi
 
 ## Validate if pod is owned by a replicaset
 check_owned_by_replicaset(){
-  echo -e "\nChecking replicaset owning the pod \"${POD_NAME}\" from \"${NAMESPACE}\" namespace."
-  local owner
-  owner=$(oc get pod "$POD_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.ownerReferences[0].kind}' || true)
+  echo -e "\n[INFO] Checking replicaset owning the pod \"${POD_NAME}\" from \"${NAMESPACE}\" namespace."
   
-  if [[ "$owner" == "ReplicaSet" ]]; then
-    echo "Pod '$POD_NAME' is owned by a ReplicaSet."
-    if [ "$FORCE_FLAG" = false ]; then
-      echo "Use the --force flag to bypass the validation."
-      exit 1
-    fi
+  local owner_kind
+  owner_kind=$(oc get pod "$POD_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.ownerReferences[0].kind}' 2>/dev/null || echo "")  
+  
+  if [[ "$owner_kind" == "ReplicaSet" ]]; then
+    echo "[INFO] Pod '${POD_NAME}' is owned by a ReplicaSet."
   else
-    echo "Pod '$POD_NAME' is not owned by a ReplicaSet, proceeding with deletion."
+    echo "[WARN] Pod '${POD_NAME}' is not owned by a ReplicaSet."
+
+    if [[ "$FORCE_FLAG" != true ]]; then
+      echo "[ERROR] Deletion blocked. Use --force to override." >&2
+      exit 1
+    else
+      echo "[INFO] --force flag detected. Proceeding with deletion."
+    fi
   fi
 }
 
 ## Delete pod
 delete_pod(){
-  echo -e "\nDeleting pod \"${POD_NAME}\" from \"${NAMESPACE}\" namespace."
+  echo -e "\n[INFO] Deleting pod \"${POD_NAME}\" from \"${NAMESPACE}\" namespace."
   oc delete pod "$POD_NAME" -n "$NAMESPACE"
 
   if [ $? -eq 0 ]; then
