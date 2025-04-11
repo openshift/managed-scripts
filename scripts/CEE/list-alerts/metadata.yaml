@@ -8,6 +8,21 @@ allowedGroups:
   - LPSRE
   - MCSTierTwo
 rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - ""
+      resources:
+        - namespaces
+    - verbs:
+        - get
+        - list
+      apiGroups:
+        - "project.openshift.io"
+      resources:
+        - projects
   roles:
     - namespace: "openshift-monitoring"
       rules:
@@ -17,9 +32,13 @@ rbac:
           apiGroups:
             - ""
           resources:
-            - "secrets"
             - "serviceaccounts"
-            - "namespaces"
+        - verbs:
+            - "create"
+          apiGroups:
+            - ""
+          resources:
+            - "serviceaccounts/token"
         - verbs:
             - "get"
             - "list"
