@@ -122,6 +122,15 @@ RUN OUT_DIR=/out make hypershift
 # Make binaries executable
 RUN chmod -R +x /out
 
+# build the golang scripts
+COPY goapp /goapp
+COPY scripts /scripts
+WORKDIR /goapp
+RUN go build -o /out/goapp main.go
+RUN chmod -R +x /out
+
+
+
 FROM registry.access.redhat.com/ubi8/ubi:8.9
 RUN  yum -y install --disableplugin=subscription-manager \
      python3.11 python3.11-pip jq openssh-clients sshpass \

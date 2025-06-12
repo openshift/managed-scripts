@@ -1,0 +1,27 @@
+file: script.sh
+name: get-node # name should be the same as the subdir, eg: SRE/example in this case
+description: Example script for golang
+author: feichashao
+allowedGroups:
+  - SREP
+  - CEE
+  - LPSRE
+  - MCSTierTwo
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "list"
+        - "watch"
+      apiGroups:
+        - ""
+      resources:
+        - "nodes"
+language: go
+customerDataAccess: false
