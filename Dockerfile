@@ -142,6 +142,7 @@ COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=build-stage0 /out/hypershift /usr/local/bin
 COPY --from=build-stage0 /out/ocm /usr/local/bin
+COPY --from=build-stage0 /out/goapp /usr/local/bin
 COPY scripts /managed-scripts
 
 # Install python packages

@@ -1,23 +1,37 @@
-package srepnodes
+// Assitsted by GenAI
+
+package nodes
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/openshift/managed-scripts/goapp/internal/cli"
+	"github.com/openshift/managed-scripts/goapp/pkg/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
-type NodeModule struct{}
+type NodeModule struct {
+	clientFn utils.ClientFactoryFunc
+}
+
+func NewNodeModule(clientFn utils.ClientFactoryFunc) *NodeModule {
+	return &NodeModule{
+		clientFn: clientFn,
+	}
+}
+
+func (n NodeModule) Name() string       { return "getnodes" }
+func (n NodeModule) Summary() string    { return "List nodes in the cluster" }
+func (n NodeModule) Params() cli.Params { return nil }
 
 func (n NodeModule) Execute() error {
-	clientset, err := getKubeClient()
+	client, err := n.clientFn()
 	if err != nil {
-		return fmt.Errorf("failed to create k8s client: %w", err)
+		return fmt.Errorf("failed to init Kubernetes client: %w", err)
 	}
 
-	nodes, err := clientset.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	nodes, err := client.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to list nodes: %w", err)
 	}
@@ -27,17 +41,4 @@ func (n NodeModule) Execute() error {
 		fmt.Printf("- %s\n", node.Name)
 	}
 	return nil
-}
-
-func getKubeClient() (*kubernetes.Clientset, error) {
-	// from the example in https://pkg.go.dev/k8s.io/client-go/tools/clientcmd#pkg-overview
-	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
-	configOverrides := &clientcmd.ConfigOverrides{}
-	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
-	config, err := kubeConfig.ClientConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	return kubernetes.NewForConfig(config)
 }
