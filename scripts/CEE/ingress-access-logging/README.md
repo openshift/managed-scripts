@@ -13,4 +13,4 @@ ocm backplane managedjob create CEE/ingress-access-logging -p ACCESS_LOGGING=ena
 ```
 
 ### Parameters
-- INGRESS_ACCESS_LOGGING(enable|disable): toggle to enable/disable ingress access logging
+- ACCESS_LOGGING(enable|disable): toggle to enable/disable ingress access logging

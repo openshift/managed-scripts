@@ -30,7 +30,6 @@ enable_access_logging() {
           "destination": {
             "type": "Container"
           },
-          "httpLogFormat": "json"
         }
       }
     }
