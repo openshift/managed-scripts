@@ -74,7 +74,7 @@ spec:
       # Check if the target is reachable via ICMP using ping
       echo "Pinging the target ($TARGET)..."
       sleep 5
-      timeout 10 ping -c 3 "$TARGET"
+      timeout 10 ping -c 3 "$TARGET" || echo "Ping failed or timed out. Continuing..."
       echo ".................................."
 
       # Check the routing to the target via traceroute with limits
