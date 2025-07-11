@@ -21,7 +21,7 @@ envs:
   description: Name of the pod to delete
   optional: false
 - key: NAMESPACE
-  description: Namespace name where por to delete is running, must start with openshift-*
+  description: Namespace name where pod to delete is running, must start with openshift-*
   optional: false
 - key: FLAGS
   description: Flag to bypass ReplicaSet validation
