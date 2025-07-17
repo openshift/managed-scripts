@@ -1,0 +1,29 @@
+file: script.sh
+name: get-pod
+description: Example script
+author: feichashao
+allowedGroups:
+  - SREP
+  - CEE
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "list"
+        - "watch"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+envs:
+  - key: "NAMESPACE"
+    description: "namespace to get pods"
+    optional: false
+language: go
+customerDataAccess: false
