@@ -22,8 +22,27 @@ rbac:
       resources: ['pods']
       verbs: ['get', 'list']
 envs:
-  - key: "SCRIPT_PARAMETERS"
-    description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
+  - key: "ALL"
+    description: "Describe all nodes in the cluster"
+    optional: true
+  - key: "MASTER"
+    description: "Describe the master nodes in the cluster"
+    optional: true
+  - key: "INFRA"
+    description: "Describe the infra nodes in the cluster"
+    optional: true
+  - key: "WORKER"
+    description: "Describe the worker nodes in the cluster"
+    optional: true
+  - key: "NODES"
+    description: "Describe the comma separated list ofspecified nodes"
+    optional: true
+  - key: "SELECTOR"
+    description: "Label selector to describe specified nodes"
+    optional: true
+  - key: "DEBUG"
+    description: "Enable debugged output"
+    optional: true
 language: bash
 labels:
   - key: OSD_TYPES
