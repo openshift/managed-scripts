@@ -144,5 +144,5 @@ RUN oc completion bash > /etc/bash_completion.d/oc
 RUN aws --version
 
 # Cleanup Home Dir
-RUN rm /root/anaconda* /root/original-ks.cfg
+RUN rm -f /root/anaconda* /root/original-ks.cfg
 WORKDIR /root
