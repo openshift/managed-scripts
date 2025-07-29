@@ -1,0 +1,30 @@
+file: script.sh
+name: hive-data-collection
+description: Script responsible for collecting data from Hive clusters.
+author: Fabio Aldana
+allowedGroups:
+  - CEE
+  - SREP
+  - MCSTierTwo
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - "get"
+        - "list"
+        - "watch"
+      apiGroups:
+        - ""
+      resources:
+        - "pods"
+        - "clusterdeployment"
+        - "clustersync"
+        - "events"
+envs:
+  - key: CLUSTER_ID
+    description: The internal cluster ID for which data is being collected
+    optional: false
+  - key: ACTION
+    description: The action being performed (e.g., 'full', 'pods', 'clusterdeployment', 'clustersync', or 'events')
+    optional: false
+language: bash
+customerDataAccess: true
