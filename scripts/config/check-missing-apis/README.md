@@ -7,7 +7,7 @@ This script prints the missing APIServices from OpenShift cluster if any.
 ## Usage
 
 ```bash
-ocm backplane managedjob create CEE/check-missing-apis
+ocm backplane managedjob create config/check-missing-apis
 ```
 
 

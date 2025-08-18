@@ -22,21 +22,21 @@ The managed script provides the following actions:
 ### Cordon/Uncordon
 
 ```bash
-ocm backplane managedjob create CEE/worker-node-operations -p WORKER="<node_name>" -p ACTION="[cordon|uncordon]"
+ocm backplane managedjob create node/worker-node-operations -p WORKER="<node_name>" -p ACTION="[cordon|uncordon]"
 ```
 
 ### Drain
 
 ```bash
-ocm backplane managedjob create CEE/worker-node-operations -p WORKER="<node_name>" -p ACTION="drain" -p DRAINMODE="<drain parameters>"
+ocm backplane managedjob create node/worker-node-operations -p WORKER="<node_name>" -p ACTION="drain" -p DRAINMODE="<drain parameters>"
 ```
 Ex:
 ```bash
-ocm backplane managedjob create CEE/worker-node-operations -p WORKER="ip_x.x.x.x" -p ACTION="drain" -p DRAINMODE="--ignore-daemonsets --delete-emptydir-data --force"
+ocm backplane managedjob create node/worker-node-operations -p WORKER="ip_x.x.x.x" -p ACTION="drain" -p DRAINMODE="--ignore-daemonsets --delete-emptydir-data --force"
 ```
 Or, to avoid the PDB check: 
 ```bash
-ocm backplane managedjob create CEE/worker-node-operations -p WORKER="ip_x.x.x.x" -p ACTION="drain" -p DRAINMODE="--ignore-daemonsets --delete-emptydir-data --force --disable-eviction"
+ocm backplane managedjob create node/worker-node-operations -p WORKER="ip_x.x.x.x" -p ACTION="drain" -p DRAINMODE="--ignore-daemonsets --delete-emptydir-data --force --disable-eviction"
 ```
 Ref: https://docs.openshift.com/container-platform/4.15/nodes/nodes/nodes-nodes-working.html
 
@@ -44,5 +44,5 @@ Ref: https://docs.openshift.com/container-platform/4.15/nodes/nodes/nodes-nodes-
 ### Reboot
 
 ```bash
-ocm backplane managedjob create CEE/worker-node-operations -p WORKER="<node_name>" -p ACTION="reboot"
+ocm backplane managedjob create node/worker-node-operations -p WORKER="<node_name>" -p ACTION="reboot"
 ```

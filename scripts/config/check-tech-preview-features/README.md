@@ -12,7 +12,7 @@ It checks for any feature sets in the cluster, if found then it lists the featur
 ### Usage
 ```bash
 # Create a managed job
-ocm backplane managedjob create CEE/check-tech-preview-features
+ocm backplane managedjob create config/check-tech-preview-features
 
 # Check the logs
 ocm backplane managedjob logs <Job_Id>

@@ -2,7 +2,7 @@
 
 This script creates a job that runs in the namespace `openshift-backplane-managed-scripts`, which inside the logs of the job pod have the result of the health check.
 ## Create the job to run the health check
-ocm backplane managedjob create CEE/etcd-health-check
+ocm backplane managedjob create health/etcd-health-check
 
 ## Getting the result of the job in a file
 ocm backplane managedjob logs <JOBNAME> | gunzip > etcd-health-check.txt
