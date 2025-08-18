@@ -1,0 +1,24 @@
+file: script.sh
+name: cgroupmode-change
+description: Update cgroup mode on the nodes of the cluster.
+author: Leszek Jakubowski
+allowedGroups:
+  - CEE
+  - SREP
+  - MCSTierTwo
+rbac:
+  clusterRoleRules:
+    - verbs:
+        - get
+        - list
+        - patch
+      apiGroups:
+        - "config.openshift.io"
+      resources:
+        - "nodes"
+envs:
+  - key: CGROUP_VERSION
+    description: cgroup version to use in the spec.cgroupMode field of the cluster node.config.openshift.io object
+    optional: true
+language: bash
+customerDataAccess: false
