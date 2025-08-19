@@ -36,25 +36,25 @@ For usage with managed-scripts, there are two options that can be passed through
 The `SCRIPT_PARAMETERS` environment variable which is a list of alert options:
 
 ```bash
-ocm backplane managedjob create CEE/list-alerts -p SCRIPT_PARAMETERS="--warning-only --pending-only"
+ocm backplane managedjob create alerting/list-alerts -p SCRIPT_PARAMETERS="--warning-only --pending-only"
 
-ocm backplane managedjob create CEE/list-alerts -p SCRIPT_PARAMETERS="--all-states" 
+ocm backplane managedjob create alerting/list-alerts -p SCRIPT_PARAMETERS="--all-states" 
 
-ocm backplane managedjob create CEE/list-alerts -p SCRIPT_PARAMETERS="--list-silences"
+ocm backplane managedjob create alerting/list-alerts -p SCRIPT_PARAMETERS="--list-silences"
 
 # [Default] This will list all the firing alerts (warning and critical)
-ocm backplane managedjob create CEE/list-alerts 
+ocm backplane managedjob create alerting/list-alerts 
 ```
 
 #### Host Options
 The `NAMESPACES_TO_CHECK` environment variable which is a list of namespaces containing a Prometheus instance that you want to check the alerts in:
 ```bash
 # Checks Prometheus the application-services-observability namespace only
-ocm backplane managedjob create CEE/list-alerts -p NAMESPACES_TO_CHECK="application-services-observability"
+ocm backplane managedjob create alerting/list-alerts -p NAMESPACES_TO_CHECK="application-services-observability"
 
 # Checks Prometheus in the application-services-observability and user-observability namespaces
-ocm backplane managedjob create CEE/list-alerts -p NAMESPACES_TO_CHECK="application-services-observability user-observability"
+ocm backplane managedjob create alerting/list-alerts -p NAMESPACES_TO_CHECK="application-services-observability user-observability"
 
 # [Default] Checks the openshift-monitoring Prometheus instance only
-ocm backplane managedjob create CEE/list-alerts 
+ocm backplane managedjob create alerting/list-alerts 
 ```

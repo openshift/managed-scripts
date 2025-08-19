@@ -9,5 +9,5 @@ This script will detect and delete the failed jobs that are running in the `open
 
 ## Create the ManagedJob to restart the failed jobs
 ```
-ocm backplane managedjob create SREP/retry-failed-pruning-cronjob 
+ocm backplane managedjob create storage-registry/retry-failed-pruning-cronjob 
 ```

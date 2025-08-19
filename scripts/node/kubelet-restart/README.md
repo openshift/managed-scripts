@@ -8,6 +8,6 @@ This script will restart kubelet on Node. Scenarios where a restart might be req
 
 Example:
 ```
-ocm backplane managedjob create CEE/kubelet-restart -p NODE="$NODE_NAME"
+ocm backplane managedjob create node/kubelet-restart -p NODE="$NODE_NAME"
 ```
 

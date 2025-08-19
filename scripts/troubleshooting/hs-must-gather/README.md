@@ -15,7 +15,7 @@ Parameters:
 
 In the management cluster:
 ```bash
-ocm backplane managedjob create CEE/hs-must-gather -p CLUSTER_ID=my-hs-cluster-id -p DUMP_GUEST_CLUSTER=false
+ocm backplane managedjob create troubleshooting/hs-must-gather -p CLUSTER_ID=my-hs-cluster-id -p DUMP_GUEST_CLUSTER=false
 ```
 
 Note:

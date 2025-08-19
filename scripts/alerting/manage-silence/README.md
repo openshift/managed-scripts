@@ -31,12 +31,12 @@ When creating a new silence, `--username` is mandatory as the backplane user whi
 For usage with managed-scripts, the options need to be passed through the `SCRIPT_PARAMETERS` environment variable. Here are some examples : 
 
 ```bash
-ocm backplane managedjob create SREP/manage-silence -p SCRIPT_PARAMETERS="--create-silence --silence-duration 20  --silence-comment \"This is a test silence\" "
+ocm backplane managedjob create alerting/manage-silence -p SCRIPT_PARAMETERS="--create-silence --silence-duration 20  --silence-comment \"This is a test silence\" "
 
-ocm backplane managedjob create SREP/manage-silence -p SCRIPT_PARAMETERS="--create-silence --silence-duration 20  --silence-comment OHSS-xxxx "
+ocm backplane managedjob create alerting/manage-silence -p SCRIPT_PARAMETERS="--create-silence --silence-duration 20  --silence-comment OHSS-xxxx "
 
-ocm backplane managedjob create SREP/manage-silence -p SCRIPT_PARAMETERS="--clear-silences "
+ocm backplane managedjob create alerting/manage-silence -p SCRIPT_PARAMETERS="--clear-silences "
 
 # This will list the existing silences
-ocm backplane managedjob create SREP/manage-silence 
+ocm backplane managedjob create alerting/manage-silence 
 ```

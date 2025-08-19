@@ -23,7 +23,7 @@ The `NODE` environment variable which is the name of the node and the `MACHINE` 
 
 
 ```bash
-ocm backplane managedjob create CEE/delete-worker-node -p NODE="<node name>" -p MACHINE="<machine name>"
+ocm backplane managedjob create node/delete-worker-node -p NODE="<node name>" -p MACHINE="<machine name>"
 
 ```
 

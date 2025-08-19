@@ -7,7 +7,7 @@ This script is designed to collect and retrieve the machine autoscaler data from
 ## Usage
 
 ```bash
-ocm backplane managedjob create CEE/machine-autoscaler-inspect
+ocm backplane managedjob create maintenance/machine-autoscaler-inspect
 ```
 
 ## Important Notes

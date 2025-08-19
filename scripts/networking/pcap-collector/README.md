@@ -15,10 +15,10 @@ Parameters:
 
 ```bash
 # Capture traffic on node ip-10-0-253-170.ap-southeast-2.compute.internal for 10 mins
-ocm backplane managedjob create CEE/pcap-collector -p TIME=600 -p NODE=ip-10-0-253-170.ap-southeast-2.compute.internal
+ocm backplane managedjob create networking/pcap-collector -p TIME=600 -p NODE=ip-10-0-253-170.ap-southeast-2.compute.internal
 
 # Capture traffic for all interfaces on a node
-ocm backplane managedjob create CEE/pcap-collector -p TIME=600 -p NODE=ip-10-0-253-170.ap-southeast-2.compute.internal -p INTERFACE=any
+ocm backplane managedjob create networking/pcap-collector -p TIME=600 -p NODE=ip-10-0-253-170.ap-southeast-2.compute.internal -p INTERFACE=any
 
 # Getting the resulting pcap file
 # The response is a gzipped pcap file.

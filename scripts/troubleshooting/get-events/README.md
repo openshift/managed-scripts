@@ -33,11 +33,11 @@ For usage with managed-scripts, the options need to be passed through the `names
 Some examples are:
 
 ```bash
-ocm backplane managedjob create CEE/get-events
+ocm backplane managedjob create troubleshooting/get-events
 
-ocm backplane managedjob create CEE/get-events -p namespace="namespace1,namespace2"
+ocm backplane managedjob create troubleshooting/get-events -p namespace="namespace1,namespace2"
 
-ocm backplane managedjob create CEE/get-events -p namespace="--all"
+ocm backplane managedjob create troubleshooting/get-events -p namespace="--all"
 ```
 
 ## Important Notes
