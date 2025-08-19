@@ -9,39 +9,30 @@ It supports 4 different modes for listing the nodes:
 * Requesting types of nodes (master, infra, worker)
 * Requesting nodes that match a selector
 
-## Parameters and usage 
-### Script usage
-
-```bash
-usage: describe-nodes [--all | --master | --infra | --worker | --nodes <node>,<node>,...]
-  -a, --all             : Describe all nodes in the cluster
-  -m, --master          : Describe the master nodes in the cluster
-  -i, --infra           : Describe the infra nodes in the cluster
-  -w, --worker          : Describe the worker nodes in the cluster
-  -l, --selector        : A Label selector to pass to oc describe nodes
-  -n, --nodes, --node   : Specify the nodes to describe in the cluster separated by a ',' with no spaces
-  -d, --debug           : Enable debugging
-  -h, --help            : Print this help
+## Parameters and usage
 
 Argument precedence as only one mode can be used at a time: (the first available is used)
-  --help
-  --nodes
-  --selector
-  --all
-  --master and|or --worker --and|or infra
-  The --debug argument can be used at anytime"
-```
+* `NODES`: Specify the nodes to describe in the cluster separated by a ',' with no spaces
+* `SELECTOR`: A Label selector to pass to oc describe nodes
+* `ALL`: Describe all nodes in the cluster
+* `MASTER` and/or `WORKER` and/or `INFRA`
+
+* `DEBUG`: Enable debugging (can always be used)
 
 ### Usage with managed-scripts
 
-For usage with managed-scripts, the options need to be passed through the `SCRIPT_PARAMETERS` environment variable. Here are some examples : 
+Here are some examples of how to run the script with `ocm backplane managedjob`:
 
 ```bash
-ocm backplane managedjob create node/describe-nodes -p SCRIPT_PARAMETERS="--all"
+# Describe all nodes
+ocm backplane managedjob create SREP/describe-nodes -p ALL=true
 
-ocm backplane managedjob create node/describe-nodes -p SCRIPT_PARAMETERS="--master --infra"
+# Describe master and infra nodes
+ocm backplane managedjob create SREP/describe-nodes -p MASTER=true -p INFRA=true
 
-ocm backplane managedjob create node/describe-nodes -p SCRIPT_PARAMETERS="--nodes ip-10-0-137-48.us-east-2.compute.internal,ip-10-0-135-110.us-east-2.compute.internal" 
+# Describe a list of specified nodes
+ocm backplane managedjob create SREP/describe-nodes -p NODES="ip-10-0-137-48.us-east-2.compute.internal,ip-10-0-135-110.us-east-2.compute.internal" 
 
-ocm backplane managedjob create node/describe-nodes -p SCRIPT_PARAMETERS="--selector node-role.kubernetes.io=infra"
+# Describe nodes with a specific label
+ocm backplane managedjob create SREP/describe-nodes -p SELECTOR="node-role.kubernetes.io/infra"
 ```
