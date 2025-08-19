@@ -7,7 +7,7 @@ This script will trigger a rollout of daemonset, controlling dns default pods. S
 ## Usage
 
 ```bash
-ocm backplane managedjob create CEE/restart-dns-default
+ocm backplane managedjob create networking/restart-dns-default
 ```
 
 

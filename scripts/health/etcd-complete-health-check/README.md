@@ -13,4 +13,4 @@ This script provides a rich summary of etcd concerning the health of OpenShift c
 This script creates a job that runs in the namespace `openshift-backplane-managed-scripts`, which inside the logs of the job pod has the result of the health check.
 
 ## Create the job to run the health check
-ocm backplane managedjob create SREP/etcd-complete-health-check
+ocm backplane managedjob create health/etcd-complete-health-check

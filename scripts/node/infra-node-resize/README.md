@@ -12,5 +12,5 @@ This script runs on a production Hive shard and helps resize the infra nodes of 
 ```
 ocm backplane login <hive_shard>
 
-ocm backplane managedjob create SREP/infra-node-resize -p CLUSTER_ID=<Internal CLUSTER_ID> -p INSTANCE_SIZE=<desired instance size>
+ocm backplane managedjob create node/infra-node-resize -p CLUSTER_ID=<Internal CLUSTER_ID> -p INSTANCE_SIZE=<desired instance size>
 ```

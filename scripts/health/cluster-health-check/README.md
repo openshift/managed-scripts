@@ -20,6 +20,6 @@ This script runs many health check tasks against the cluster and prints out the 
 ## Usage
 
 ```bash
-ocm backplane managedjob create CEE/cluster-health-check
+ocm backplane managedjob create health/cluster-health-check
 ```
 

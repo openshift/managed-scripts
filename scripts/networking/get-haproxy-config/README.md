@@ -13,13 +13,13 @@ from the default ingress controller will be used.
 **Get the contents of haproxy.config from the first router pod**
 
 ```bash
-ocm backplane managedjob create CEE/get-haproxy-config
+ocm backplane managedjob create networking/get-haproxy-config
 ```
 
 **Get the contents of haproxy.config from a specific pod**:
 
 ```bash
-ocm backplane managedjob create CEE/get-haproxy-config -p ROUTER=<pod_name>
+ocm backplane managedjob create networking/get-haproxy-config -p ROUTER=<pod_name>
 ```
 
 

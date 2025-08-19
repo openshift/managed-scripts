@@ -8,5 +8,5 @@ This script allows the users to validate the email without exposing the authenti
 
 ## Usage
 ```
-ocm backplane managedjob create SREP/get-pull-secret-email 
+ocm backplane managedjob create security/get-pull-secret-email 
 ```

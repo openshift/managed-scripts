@@ -19,6 +19,6 @@ This script is responsible for collecting verbose logs (logVerbosity=6) from clu
 - The usage of this script is audited.
 
 ```bash
-ocm backplane managedjob create CEE/collect-verbose-ca-logs"
+ocm backplane managedjob create troubleshooting/collect-verbose-ca-logs"
 ```
 

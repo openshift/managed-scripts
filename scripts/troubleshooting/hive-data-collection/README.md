@@ -26,5 +26,5 @@ $ ocm backplane login $ECLUSTERID --manager
 After logging in, the command below can be run to collect the Hive data. Please inform the "ACTION" to be executed: "full" for full data collect, or by specifying the information do be collected:
 
 ```bash
-ocm backplane managedjob create CEE/hive-data-collection -p CLUSTER_ID=$ICLUSTERID -p ACTION="<full|clusterdeployment|clustersync|pods|events>"
+ocm backplane managedjob create troubleshooting/hive-data-collection -p CLUSTER_ID=$ICLUSTERID -p ACTION="<full|clusterdeployment|clustersync|pods|events>"
 ```

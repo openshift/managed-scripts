@@ -16,11 +16,11 @@ The script can target a specific cluster operator through the use of the `CLUSTE
 If the `CLUSTER_OPERATOR` environment variable is empty or not set, the script will by default target all degraded or unavailable cluster operators.
 
 ```bash
-ocm backplane managedjob create SREP/cluster-operator-status 
+ocm backplane managedjob create operators-lifecycle/cluster-operator-status 
 
 or
 
-ocm backplane managedjob create SREP/cluster-operator-status -p CLUSTER_OPERATOR=machine-config
+ocm backplane managedjob create operators-lifecycle/cluster-operator-status -p CLUSTER_OPERATOR=machine-config
 ```
 
 The script can adjust the time interval of logging retrieved through the use of the `OC_LOGS_SINCE` parameter. The interval can be in the form of `<duration>` followed by a unit such as `s` for seconds, `m` for minutes or `h` for hours. When specified, the last `<duration>` worth of logs are retrieved.
