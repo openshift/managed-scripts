@@ -13,10 +13,8 @@ set -e
 set -o nounset
 set -o pipefail
 
-CURRENTDATE=$(date +"%Y-%m-%d %T")
-
 start_job(){
-    echo "Job started at $CURRENTDATE"
+    echo "Job started at $(date +"%Y-%m-%d %T")"
     echo ".................................."
     echo
 }
@@ -24,7 +22,7 @@ start_job(){
 finish_job(){
     echo
     echo ".................................."
-    echo "Job finished at $CURRENTDATE"
+    echo "Job finished at $(date +"%Y-%m-%d %T")"
 }
 
 ## Function which checks if the node is a Worker node
