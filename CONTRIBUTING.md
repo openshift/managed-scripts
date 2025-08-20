@@ -106,6 +106,8 @@ All pre-existing scripts can be found [here](https://github.com/openshift/manage
   - Once your changes are well tested and pushed, create a PR containing a brief information about the script's utility and usage.
   - The script must be reviewed and approved by the SRE team.
   - Use Slack channel `#sre-operators` or `#sd-ims-backplane` and tag `@managed-scripts` for discussions.
+    
+- **Promote the script using ops-sop/v4/util/promote-managed-scripts.sh
 
 - **Validate Production Deployment**
   1. Connect to the [Backplane Production API](https://api.backplane.openshift.com).
@@ -114,4 +116,3 @@ All pre-existing scripts can be found [here](https://github.com/openshift/manage
      ```sh
      ocm backplane script list
      ```
-     
