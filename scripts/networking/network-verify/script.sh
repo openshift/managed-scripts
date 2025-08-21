@@ -14,8 +14,6 @@ readonly LOG_WARN="WARNING:"
 
 # Validate environment for Kubernetes access
 validate_environment() {
-    echo "$LOG_INFO Validating environment..."
-    
     # Check if running in a pod with service account
     if [[ -f "/var/run/secrets/kubernetes.io/serviceaccount/token" ]]; then
         echo "$LOG_INFO Running in pod with ServiceAccount token"
@@ -34,24 +32,48 @@ validate_environment() {
     return 1
 }
 
-# Detect the current region from cluster metadata
-detect_region() {
+# Detect the cloud provider, region, and platform from cluster metadata
+detect_platform_and_region() {
     local region=""
+    local cloud_provider=""
+    local platform=""
+
+    # Try to get cloud provider from cluster infrastructure
+    cloud_provider=$(oc get infrastructure cluster -o jsonpath='{.status.platform}' 2>/dev/null || echo "")
     
-    echo "$LOG_INFO Attempting to detect AWS region..."
-    
-    # Try to get region from cluster infrastructure
-    if command -v oc &> /dev/null; then
-        region=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.aws.region}' 2>/dev/null || echo "")
-        if [[ -n "$region" ]]; then
-            echo "$LOG_INFO Detected region from cluster infrastructure: $region"
-            echo "$region"
-            return 0
-        fi
+    if [[ -z "$cloud_provider" ]]; then
+        echo "$LOG_ERROR Could not determine cloud provider from cluster infrastructure" >&2
+        return 1
     fi
     
-    echo "$LOG_ERROR Could not auto-detect region"
-    return 1
+    case "$cloud_provider" in
+        "AWS")
+            region=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.aws.region}' 2>/dev/null || echo "")
+            platform="aws-classic"
+            if [[ -n "$region" ]]; then
+                echo "$region $platform"
+                return 0
+            else
+                echo "$LOG_ERROR Could not determine AWS region" >&2
+                return 1
+            fi
+            ;;
+        "GCP")
+            region=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.gcp.region}' 2>/dev/null || echo "")
+            platform="gcp-classic"
+            if [[ -n "$region" ]]; then
+                echo "$region $platform"
+                return 0
+            else
+                echo "$LOG_ERROR Could not determine GCP region" >&2
+                return 1
+            fi
+            ;;
+        *)
+            echo "$LOG_ERROR Unsupported cloud provider: $cloud_provider" >&2
+            return 1
+            ;;
+    esac
 }
 
 # Download the latest osdctl binary from GitHub
@@ -69,8 +91,6 @@ download_osdctl() {
         return 1
     fi
     
-    echo "$LOG_INFO Downloading from: $latest_url"
-    
     # Download and extract the binary
     curl -L -o "/tmp/osdctl.tar.gz" "$latest_url"
     tar -xzf "/tmp/osdctl.tar.gz" -C /tmp
@@ -84,11 +104,13 @@ download_osdctl() {
         return 1
     fi
     
-    # Move to standard location and make executable
-    mv "$binary_path" "$OSDCTL_BINARY"
-    chmod +x "$OSDCTL_BINARY"
+    # Check if binary is already at target location
+    if [[ "$binary_path" != "$OSDCTL_BINARY" ]]; then
+        mv "$binary_path" "$OSDCTL_BINARY"
+    fi
     
-    echo "$LOG_INFO Successfully downloaded osdctl binary"
+    # Make sure it's executable
+    chmod +x "$OSDCTL_BINARY"
     
     # Clean up
     rm -f "/tmp/osdctl.tar.gz"
@@ -96,31 +118,72 @@ download_osdctl() {
 
 # Run network verification in pod mode
 run_network_verification() {
-    local region
-    region=$(detect_region)
+    local region platform region_platform_output
+    
+    # Get both region and platform in one call
+    if ! region_platform_output=$(detect_platform_and_region); then
+        echo "$LOG_ERROR Failed to detect platform and region"
+        return 1
+    fi
+    
+    region=$(echo "$region_platform_output" | cut -d' ' -f1)
+    platform=$(echo "$region_platform_output" | cut -d' ' -f2)
+    
+    if [[ -z "$region" || -z "$platform" ]]; then
+        echo "$LOG_ERROR Invalid region or platform detected. Region: '$region', Platform: '$platform'"
+        return 1
+    fi
     
     echo "$LOG_INFO Running network egress verification in pod mode..."
-    echo "$LOG_INFO Using region: $region"
-    echo "$LOG_INFO Using namespace: $NAMESPACE"
+    echo "$LOG_INFO Using platform: $platform, region: $region"
+    
+    # Create a writable config directory for osdctl
+    local config_dir="/tmp/osdctl-config"
+    mkdir -p "$config_dir"
+    
+    # Set environment variables for osdctl configuration
+    export TEMP_HOME="/tmp"
+    export XDG_CONFIG_TEMP_HOME="$config_dir"
+    export XDG_CACHE_TEMP_HOME="/tmp/cache"
+    export XDG_DATA_TEMP_HOME="/tmp/data"
     
     # Run osdctl network verification
     local cmd_args=(
         "network"
         "verify-egress"
         "--pod-mode"
+        "--platform" "$platform"
         "--skip-service-log"
         "--region" "$region"
         "--namespace" "$NAMESPACE"
-        "--debug"
     )
     
-    echo "$LOG_INFO Executing: $OSDCTL_BINARY ${cmd_args[*]}"
-    "$OSDCTL_BINARY" "${cmd_args[@]}"
+    echo "$LOG_INFO ============================================"
+    echo "$LOG_INFO Network Verification Output:"
+    echo "$LOG_INFO ============================================"
+    
+    # Run the command and capture both output and exit code
+    local output exit_code
+    output=$("$OSDCTL_BINARY" "${cmd_args[@]}" 2>&1)
+    exit_code=$?
+    
+    # Display the output
+    echo "$output"
+    
+    echo "$LOG_INFO ============================================"
+    echo "$LOG_INFO End of Network Verification Output"
+    echo "$LOG_INFO ============================================"
+    
+    if [[ $exit_code -ne 0 ]]; then
+        echo "$LOG_ERROR Network verification failed with exit code: $exit_code"
+        return 1
+    fi
+    
+    echo "$LOG_INFO Network verification completed successfully"
 }
 
 # Cleanup function
 cleanup() {
-    echo "$LOG_INFO Cleaning up temporary files..."
     rm -f "$OSDCTL_BINARY" "/tmp/osdctl.tar.gz"
 }
 
@@ -130,11 +193,22 @@ trap cleanup EXIT
 main() {
     echo "$LOG_INFO Starting osdctl network verification script"
     
-    validate_environment
-    download_osdctl
-    run_network_verification
+    if ! validate_environment; then
+        echo "$LOG_ERROR Environment validation failed"
+        exit 1
+    fi
     
-    echo "$LOG_INFO Network verification completed successfully"
+    if ! download_osdctl; then
+        echo "$LOG_ERROR Failed to download osdctl binary"
+        exit 1
+    fi
+    
+    if ! run_network_verification; then
+        echo "$LOG_ERROR Network verification failed"
+        exit 1
+    fi
+    
+    echo "$LOG_INFO Network verification script completed successfully"
     exit 0
 }
 

@@ -43,7 +43,6 @@ rbac:
     - verbs:
         - "get"
         - "list"
-        - "create"
         - "delete"
         - "watch"
       apiGroups:
