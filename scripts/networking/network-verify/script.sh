@@ -12,6 +12,10 @@ readonly LOG_INFO="INFO:"
 readonly LOG_ERROR="ERROR:"
 readonly LOG_WARN="WARNING:"
 
+# Global variables set by detect_platform_and_region()
+REGION=""
+PLATFORM=""
+
 # Validate environment for Kubernetes access
 validate_environment() {
     # Check if running in a pod with service account
@@ -32,11 +36,9 @@ validate_environment() {
     return 1
 }
 
-# Detect the cloud provider, region, and platform from cluster metadata
+# Detect the cloud provider and platform from cluster metadata
 detect_platform_and_region() {
-    local region=""
     local cloud_provider=""
-    local platform=""
 
     # Try to get cloud provider from cluster infrastructure
     cloud_provider=$(oc get infrastructure cluster -o jsonpath='{.status.platform}' 2>/dev/null || echo "")
@@ -48,26 +50,15 @@ detect_platform_and_region() {
     
     case "$cloud_provider" in
         "AWS")
-            region=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.aws.region}' 2>/dev/null || echo "")
-            platform="aws-classic"
-            if [[ -n "$region" ]]; then
-                echo "$region $platform"
-                return 0
-            else
+            PLATFORM="aws-classic"
+            REGION=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.aws.region}' 2>/dev/null || echo "")
+            if [[ -z "$REGION" ]]; then
                 echo "$LOG_ERROR Could not determine AWS region" >&2
                 return 1
             fi
             ;;
         "GCP")
-            region=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.gcp.region}' 2>/dev/null || echo "")
-            platform="gcp-classic"
-            if [[ -n "$region" ]]; then
-                echo "$region $platform"
-                return 0
-            else
-                echo "$LOG_ERROR Could not determine GCP region" >&2
-                return 1
-            fi
+            PLATFORM="gcp-classic"
             ;;
         *)
             echo "$LOG_ERROR Unsupported cloud provider: $cloud_provider" >&2
@@ -118,45 +109,48 @@ download_osdctl() {
 
 # Run network verification in pod mode
 run_network_verification() {
-    local region platform region_platform_output
-    
-    # Get both region and platform in one call
-    if ! region_platform_output=$(detect_platform_and_region); then
-        echo "$LOG_ERROR Failed to detect platform and region"
+    # Get platform and region (if applicable)
+    if ! detect_platform_and_region; then
+        echo "$LOG_ERROR Failed to detect platform"
         return 1
     fi
     
-    region=$(echo "$region_platform_output" | cut -d' ' -f1)
-    platform=$(echo "$region_platform_output" | cut -d' ' -f2)
-    
-    if [[ -z "$region" || -z "$platform" ]]; then
-        echo "$LOG_ERROR Invalid region or platform detected. Region: '$region', Platform: '$platform'"
+    if [[ -z "$PLATFORM" ]]; then
+        echo "$LOG_ERROR Invalid platform detected: '$PLATFORM'"
         return 1
     fi
     
     echo "$LOG_INFO Running network egress verification in pod mode..."
-    echo "$LOG_INFO Using platform: $platform, region: $region"
+    if [[ -n "$REGION" ]]; then
+        echo "$LOG_INFO Using platform: $PLATFORM, region: $REGION"
+    else
+        echo "$LOG_INFO Using platform: $PLATFORM"
+    fi
     
     # Create a writable config directory for osdctl
     local config_dir="/tmp/osdctl-config"
     mkdir -p "$config_dir"
     
     # Set environment variables for osdctl configuration
-    export TEMP_HOME="/tmp"
-    export XDG_CONFIG_TEMP_HOME="$config_dir"
-    export XDG_CACHE_TEMP_HOME="/tmp/cache"
-    export XDG_DATA_TEMP_HOME="/tmp/data"
+    export HOME="/tmp"
+    export XDG_CONFIG_HOME="$config_dir"
+    export XDG_CACHE_HOME="/tmp/cache"
+    export XDG_DATA_HOME="/tmp/data"
     
-    # Run osdctl network verification
+    # Build command arguments
     local cmd_args=(
         "network"
         "verify-egress"
         "--pod-mode"
-        "--platform" "$platform"
+        "--platform" "$PLATFORM"
         "--skip-service-log"
-        "--region" "$region"
         "--namespace" "$NAMESPACE"
     )
+    
+    # Add region flag only for AWS
+    if [[ -n "$REGION" ]]; then
+        cmd_args+=("--region" "$REGION")
+    fi
     
     echo "$LOG_INFO ============================================"
     echo "$LOG_INFO Network Verification Output:"
