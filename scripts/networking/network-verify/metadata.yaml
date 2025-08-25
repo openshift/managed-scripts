@@ -39,16 +39,6 @@ rbac:
         - ""
       resources:
         - "pods"
-    # Permissions for namespaces - needed to access and create the verification namespace
-    - verbs:
-        - "get"
-        - "list"
-        - "delete"
-        - "watch"
-      apiGroups:
-        - ""
-      resources:
-        - "namespaces"
     # Permissions for jobs - needed to create and manage Kubernetes jobs for verification
     - verbs:
         - "get"
@@ -74,5 +64,9 @@ rbac:
         - ""
       resources:
         - "pods/log"
+envs:
+  - key: "SCRIPT_PARAMETERS"
+    description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
+    optional: true
 language: bash
-customerDataAccess: false 
+customerDataAccess: false

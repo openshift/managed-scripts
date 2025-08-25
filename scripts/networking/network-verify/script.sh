@@ -15,6 +15,37 @@ readonly LOG_WARN="WARNING:"
 # Global variables set by detect_platform_and_region()
 REGION=""
 PLATFORM=""
+HCP_CLUSTER=false
+ZERO_EGRESS=false
+
+# Parse script parameters (follows managed-scripts convention)
+parse_script_parameters() {
+    # If SCRIPT_PARAMETERS is not set, nothing to parse
+    if [[ -z "${SCRIPT_PARAMETERS:-}" ]]; then
+        return 0
+    fi
+    
+    # Split SCRIPT_PARAMETERS into array
+    IFS=' ' read -r -a ARG_ARRAY <<< "${SCRIPT_PARAMETERS}"
+    
+    # Parse arguments
+    for ARG in "${ARG_ARRAY[@]}"; do
+        if [[ "$ARG" == "--hcp" ]]; then
+            HCP_CLUSTER=true
+        elif [[ "$ARG" == "--zero-egress" ]]; then
+            ZERO_EGRESS=true
+        elif [[ "$ARG" == "-h" || "$ARG" == "--help" ]]; then
+            echo "Usage: SCRIPT_PARAMETERS=\"[--hcp] [--zero-egress]\""
+            echo "  --hcp           Specify that this is an HCP (Hosted Control Plane) cluster"
+            echo "  --zero-egress   Specify that this is an HCP cluster with zero egress configuration"
+            exit 0
+        else
+            echo "$LOG_ERROR Unknown parameter: $ARG"
+            echo "$LOG_INFO Valid parameters: --hcp, --zero-egress, --help"
+            exit 1
+        fi
+    done
+}
 
 # Validate environment for Kubernetes access
 validate_environment() {
@@ -50,7 +81,14 @@ detect_platform_and_region() {
     
     case "$cloud_provider" in
         "AWS")
-            PLATFORM="aws-classic"
+            if [[ "$ZERO_EGRESS" == true ]]; then
+                PLATFORM="aws-hcp-zeroegress"
+            elif [[ "$HCP_CLUSTER" == true ]]; then
+                PLATFORM="aws-hcp"
+            else
+                PLATFORM="aws-classic"
+            fi
+            
             REGION=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.aws.region}' 2>/dev/null || echo "")
             if [[ -z "$REGION" ]]; then
                 echo "$LOG_ERROR Could not determine AWS region" >&2
@@ -186,6 +224,9 @@ trap cleanup EXIT
 
 main() {
     echo "$LOG_INFO Starting osdctl network verification script"
+    
+    # Parse script parameters
+    parse_script_parameters
     
     if ! validate_environment; then
         echo "$LOG_ERROR Environment validation failed"
