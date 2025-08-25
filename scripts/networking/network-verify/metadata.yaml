@@ -28,42 +28,35 @@ allowedGroups:
   - MCSTierTwo
 rbac:
   clusterRoleRules:
-    # Permissions for pods - needed to create, monitor, and clean up verification pods
-    - verbs:
-        - "get"
-        - "list"
-        - "create"
-        - "delete"
-        - "watch"
-      apiGroups:
-        - ""
-      resources:
-        - "pods"
-    # Permissions for jobs - needed to create and manage Kubernetes jobs for verification
-    - verbs:
-        - "get"
-        - "list"
-        - "create"
-        - "delete"
-        - "watch"
-      apiGroups:
-        - "batch"
-      resources:
-        - "jobs"
-    # Permission to read cluster infrastructure for region detection
+    # Permission to read cluster infrastructure for region detection (must be cluster-scoped)
     - verbs:
         - "get"
       apiGroups:
         - "config.openshift.io"
       resources:
         - "infrastructures"
-    # Permission to read pod logs for debugging verification results
-    - verbs:
-        - "get"
-      apiGroups:
-        - ""
-      resources:
-        - "pods/log"
+  roles:
+    # Permissions scoped to openshift-network-diagnostics namespace only
+    - namespace: "openshift-network-diagnostics"
+      rules:
+        # Permissions for jobs - needed to create and manage Kubernetes jobs for verification
+        - verbs:
+            - "get"
+            - "list"
+            - "create"
+            - "delete"
+            - "watch"
+          apiGroups:
+            - "batch"
+          resources:
+            - "jobs"
+        # Permission to read pod logs for debugging verification results
+        - verbs:
+            - "get"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/log"
 envs:
   - key: "SCRIPT_PARAMETERS"
     description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
