@@ -8,18 +8,22 @@ description: |
   It uses osd-network-verifier's pod mode which runs verification as Kubernetes Jobs within the target cluster,
   providing more accurate results as it tests from within the actual cluster environment.
   
+  Supports multiple platform configurations:
+  - AWS Classic (default): Standard ROSA/OSD clusters
+  - AWS HCP: Hosted Control Plane clusters (use --hcp flag)
+  - AWS HCP Zero Egress: HCP clusters with zero egress (use --zero-egress flag)
+  - GCP Classic: GCP-based clusters (auto-detected)
+  
   The script automatically:
   - Downloads the latest osdctl binary from GitHub releases
-  - Detects the AWS region from cluster infrastructure or metadata service
+  - Detects the cloud provider and platform type from cluster infrastructure
+  - Detects the region for AWS-based clusters
   - Runs network verification in pod mode with service log sending disabled
   - Uses the openshift-network-diagnostics namespace for verification pods
   
-  Pod mode verification is more accurate than traditional cloud instance verification as it:
-  - Tests from within the actual cluster environment
-  - Works correctly with both public and private subnets
-  - Doesn't require NAT gateway access like traditional probe instances
-  
-  This script requires cluster-level RBAC permissions to create and manage verification pods and jobs.
+
+  This script requires cluster-level RBAC permissions to read infrastructure and namespace-scoped
+  permissions to create and manage verification pods and jobs.
 
 author: OpenShift SRE
 allowedGroups:
@@ -59,7 +63,7 @@ rbac:
             - "pods/log"
 envs:
   - key: "SCRIPT_PARAMETERS"
-    description: "Parameters to be passed to the script. You can set the variable to '--help' to get list of supported parameters"
+    description: "Platform configuration parameters. Use '--hcp' for Hosted Control Plane clusters, '--zero-egress' for HCP zero egress clusters, or '--help' for usage information. Leave empty for AWS Classic or GCP clusters."
     optional: true
 language: bash
 customerDataAccess: false
