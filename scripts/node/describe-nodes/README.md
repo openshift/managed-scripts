@@ -25,14 +25,14 @@ Here are some examples of how to run the script with `ocm backplane managedjob`:
 
 ```bash
 # Describe all nodes
-ocm backplane managedjob create SREP/describe-nodes -p ALL=true
+ocm backplane managedjob create node/describe-nodes -p ALL=true
 
 # Describe master and infra nodes
-ocm backplane managedjob create SREP/describe-nodes -p MASTER=true -p INFRA=true
+ocm backplane managedjob create node/describe-nodes -p MASTER=true -p INFRA=true
 
 # Describe a list of specified nodes
-ocm backplane managedjob create SREP/describe-nodes -p NODES="ip-10-0-137-48.us-east-2.compute.internal,ip-10-0-135-110.us-east-2.compute.internal" 
+ocm backplane managedjob create node/describe-nodes -p NODES="ip-10-0-137-48.us-east-2.compute.internal,ip-10-0-135-110.us-east-2.compute.internal" 
 
 # Describe nodes with a specific label
-ocm backplane managedjob create SREP/describe-nodes -p SELECTOR="node-role.kubernetes.io/infra"
+ocm backplane managedjob create node/describe-nodes -p SELECTOR="node-role.kubernetes.io/infra"
 ```

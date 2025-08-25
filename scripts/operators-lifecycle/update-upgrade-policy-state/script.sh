@@ -7,7 +7,7 @@
 
 # Usage:
 # To utilize this script, invoke it through a managed job using the following command:
-# ocm backplane managedjob create SREP/update-upgrade-policy-state
+# ocm backplane managedjob create operators-lifecycle/update-upgrade-policy-state
 
 # Defined Functions
 
