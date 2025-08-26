@@ -124,8 +124,8 @@ RUN OUT_DIR=/out make hypershift
 RUN mkdir -p /osdctl
 WORKDIR /osdctl
 RUN git clone https://github.com/openshift/osdctl.git /osdctl
-# Build binary (ci-build will download goreleaser first, then build)
-RUN make ci-build
+# Build binary (ci-build will download goreleaser first, then build only for current platform)
+RUN SINGLE_TARGET=true make ci-build
 RUN cp dist/osdctl_linux_amd64_v1/osdctl /out/osdctl
 
 # Make binaries executable
