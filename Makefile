@@ -31,7 +31,7 @@ validation:
 .PHONY: shellcheck
 shellcheck:
 	$(CONTAINER_ENGINE) pull $(SHELL_CHECK_IMAGE)
-	$(CONTAINER_ENGINE) run --security-opt label=disable -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(SHELL_CHECK_IMAGE) -c "yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && yum install -y ShellCheck && find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
+	$(CONTAINER_ENGINE) run --security-opt label=disable -v $(shell pwd):/app --entrypoint=/bin/sh -w=/app/scripts $(SHELL_CHECK_IMAGE) -c "dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && dnf install -y ShellCheck && find . -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154 "
 
 .PHONY: pyflakes
 pyflakes:

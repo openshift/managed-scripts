@@ -10,7 +10,7 @@ ARG AWSCLI_VERSION="awscli-exe-linux-x86_64.zip"
 ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
 
 # install tools needed for installation
-RUN yum install -y unzip git make gcc
+RUN dnf install -y unzip git make gcc
 
 # Directory for the extracted binary
 RUN mkdir -p /out
@@ -124,17 +124,17 @@ RUN OUT_DIR=/out make hypershift
 RUN mkdir -p /osdctl
 WORKDIR /osdctl
 RUN git clone https://github.com/openshift/osdctl.git /osdctl
-# Build binary
-RUN make build
-RUN cp osdctl /out/osdctl
+# Build binary (ci-build will download goreleaser first, then build)
+RUN make ci-build
+RUN cp dist/osdctl_linux_amd64_v1/osdctl /out/osdctl
 
 # Make binaries executable
 RUN chmod -R +x /out
 
 FROM registry.access.redhat.com/ubi8/ubi:8.9
-RUN  yum -y install --disableplugin=subscription-manager \
+RUN  dnf -y install \
      python3.11 python3.11-pip jq openssh-clients sshpass \
-     && yum --disableplugin=subscription-manager clean all
+     && dnf clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
 COPY --from=build-stage0 /out/yq_linux_amd64  /usr/local/bin/yq
