@@ -119,6 +119,15 @@ RUN git clone https://github.com/openshift/hypershift.git /hypershift
 # Build binary
 RUN OUT_DIR=/out make hypershift
 
+# Attach osdctl binary into the image
+# Fetch the source code
+RUN mkdir -p /osdctl
+WORKDIR /osdctl
+RUN git clone https://github.com/openshift/osdctl.git /osdctl
+# Build binary
+RUN make build
+RUN cp osdctl /out/osdctl
+
 # Make binaries executable
 RUN chmod -R +x /out
 
@@ -133,6 +142,7 @@ COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=build-stage0 /out/hypershift /usr/local/bin
 COPY --from=build-stage0 /out/ocm /usr/local/bin
+COPY --from=build-stage0 /out/osdctl /usr/local/bin
 COPY scripts /managed-scripts
 
 # Install python packages
