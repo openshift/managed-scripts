@@ -119,14 +119,25 @@ RUN git clone https://github.com/openshift/hypershift.git /hypershift
 # Build binary
 RUN OUT_DIR=/out make hypershift
 
-# Attach osdctl binary into the image
-# Fetch the source code
+## Attach osdctl binary into the image
+# Setting ENV variables
+ENV OSDCTL_URL="https://github.com/openshift/osdctl/releases/latest/download/osdctl_0.46.0_Linux_x86_64.tar.gz"
+ENV OSDCTL_SHA256_CHECKSUM_URL="https://github.com/openshift/osdctl/releases/latest/download/sha256sum.txt"
+
+# Creating a working directory
 RUN mkdir -p /osdctl
 WORKDIR /osdctl
-RUN git clone https://github.com/openshift/osdctl.git /osdctl
-# Build binary (ci-build will download goreleaser first, then build only for current platform)
-RUN SINGLE_TARGET=true make ci-build
-RUN cp dist/osdctl_linux_amd64_v1/osdctl /out/osdctl
+
+# Downloading the osdctl binary
+RUN curl -sSLf -O $OSDCTL_URL
+
+# Checking the SHA-256 hash
+RUN curl -sSLf $OSDCTL_SHA256_CHECKSUM_URL | grep "osdctl_0.46.0_Linux_x86_64.tar.gz" | sha256sum -c -
+
+# Extract the tarball and move the validated osdctl binary to /out
+RUN tar -xzf osdctl_0.46.0_Linux_x86_64.tar.gz
+RUN mv osdctl /out/osdctl
+RUN chmod +x /out/osdctl
 
 # Make binaries executable
 RUN chmod -R +x /out
