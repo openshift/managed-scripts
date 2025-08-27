@@ -10,7 +10,7 @@ ARG AWSCLI_VERSION="awscli-exe-linux-x86_64.zip"
 ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
 
 # install tools needed for installation
-RUN dnf install -y unzip git make gcc
+RUN yum install -y unzip git make gcc
 
 # Directory for the extracted binary
 RUN mkdir -p /out
@@ -143,9 +143,9 @@ RUN chmod +x /out/osdctl
 RUN chmod -R +x /out
 
 FROM registry.access.redhat.com/ubi8/ubi:8.9
-RUN  dnf -y install \
+RUN  yum -y install \
      python3.11 python3.11-pip jq openssh-clients sshpass \
-     && dnf clean all
+     && yum clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
 COPY --from=build-stage0 /out/yq_linux_amd64  /usr/local/bin/yq
