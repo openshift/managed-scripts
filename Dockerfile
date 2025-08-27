@@ -121,21 +121,25 @@ RUN OUT_DIR=/out make hypershift
 
 ## Attach osdctl binary into the image
 # Setting ENV variables
-ENV OSDCTL_URL="https://github.com/openshift/osdctl/releases/latest/download/osdctl_0.46.0_Linux_x86_64.tar.gz"
-ENV OSDCTL_SHA256_CHECKSUM_URL="https://github.com/openshift/osdctl/releases/latest/download/sha256sum.txt"
+ENV OSDCTL_BASE_URL="https://github.com/openshift/osdctl/releases/latest/download"
 
 # Creating a working directory
 RUN mkdir -p /osdctl
 WORKDIR /osdctl
 
-# Downloading the osdctl binary
-RUN curl -sSLf -O $OSDCTL_URL
+# Download the checksum file
+RUN curl -sSLf ${OSDCTL_BASE_URL}/sha256sum.txt -o sha256sum.txt
 
-# Checking the SHA-256 hash
-RUN curl -sSLf $OSDCTL_SHA256_CHECKSUM_URL | grep "osdctl_0.46.0_Linux_x86_64.tar.gz" | sha256sum -c -
+# Extract the Linux x86_64 filename and download the binary
+RUN export OSDCTL_LINUX_X86_TARBALL=$(cat sha256sum.txt | grep "Linux_x86_64" | awk '{print $2; exit}') && \
+    curl -sSLf -O ${OSDCTL_BASE_URL}/${OSDCTL_LINUX_X86_TARBALL} && \
+    echo ${OSDCTL_LINUX_X86_TARBALL} > tarball_name.txt
 
-# Extract the tarball and move the validated osdctl binary to /out
-RUN tar -xzf osdctl_0.46.0_Linux_x86_64.tar.gz
+# Check the tarball and checksum match
+RUN sha256sum --check --ignore-missing sha256sum.txt
+
+# Extract the specific osdctl tarball and move the validated osdctl binary to /out
+RUN tar -xzf $(cat tarball_name.txt)
 RUN mv osdctl /out/osdctl
 RUN chmod +x /out/osdctl
 
