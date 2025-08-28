@@ -119,13 +119,37 @@ RUN git clone https://github.com/openshift/hypershift.git /hypershift
 # Build binary
 RUN OUT_DIR=/out make hypershift
 
+## Attach osdctl binary into the image
+# Setting ENV variables
+ENV OSDCTL_BASE_URL="https://github.com/openshift/osdctl/releases/latest/download"
+
+# Creating a working directory
+RUN mkdir -p /osdctl
+WORKDIR /osdctl
+
+# Download the checksum file
+RUN curl -sSLf ${OSDCTL_BASE_URL}/sha256sum.txt -o sha256sum.txt
+
+# Extract the Linux x86_64 filename and download the binary
+RUN export OSDCTL_LINUX_X86_TARBALL=$(cat sha256sum.txt | grep "Linux_x86_64" | awk '{print $2; exit}') && \
+    curl -sSLf -O ${OSDCTL_BASE_URL}/${OSDCTL_LINUX_X86_TARBALL} && \
+    echo ${OSDCTL_LINUX_X86_TARBALL} > tarball_name.txt
+
+# Check the tarball and checksum match
+RUN sha256sum --check --ignore-missing sha256sum.txt
+
+# Extract the specific osdctl tarball and move the validated osdctl binary to /out
+RUN tar -xzf $(cat tarball_name.txt)
+RUN mv osdctl /out/osdctl
+RUN chmod +x /out/osdctl
+
 # Make binaries executable
 RUN chmod -R +x /out
 
 FROM registry.access.redhat.com/ubi8/ubi:8.9
-RUN  yum -y install --disableplugin=subscription-manager \
+RUN  yum -y install \
      python3.11 python3.11-pip jq openssh-clients sshpass \
-     && yum --disableplugin=subscription-manager clean all
+     && yum clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
 COPY --from=build-stage0 /out/yq_linux_amd64  /usr/local/bin/yq
@@ -133,6 +157,7 @@ COPY --from=build-stage0 /aws/bin/  /usr/local/bin
 COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=build-stage0 /out/hypershift /usr/local/bin
 COPY --from=build-stage0 /out/ocm /usr/local/bin
+COPY --from=build-stage0 /out/osdctl /usr/local/bin
 COPY scripts /managed-scripts
 
 # Install python packages
