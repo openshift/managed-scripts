@@ -1,0 +1,68 @@
+file: script.sh
+name: osdctl-network-verifier
+shortDescription: Runs network egress verification in pod mode using the osdctl binary.
+description: |
+  Runs network egress verification using the osdctl binary and Kubernetes jobs in pod mode.
+  
+  This script verifies that a ROSA/OSD cluster can reach all required external URLs necessary for full support.
+  It uses osd-network-verifier's pod mode which runs verification as Kubernetes Jobs within the target cluster,
+  providing more accurate results as it tests from within the actual cluster environment.
+  
+  Supports multiple platform configurations:
+  - AWS Classic (default): Standard ROSA/OSD clusters
+  - AWS HCP: Hosted Control Plane clusters (use --hcp flag)
+  - AWS HCP Zero Egress: HCP clusters with zero egress (use --zero-egress flag)
+  - GCP Classic: GCP-based clusters (auto-detected)
+  
+  The script automatically:
+  - Detects the cloud provider and platform type from cluster infrastructure
+  - Detects the region for AWS-based clusters
+  - Runs network verification in pod mode with service log sending disabled
+  - Uses the openshift-network-diagnostics namespace for verification pods
+  
+
+  This script requires cluster-level RBAC permissions to read infrastructure and namespace-scoped
+  permissions to create and manage verification pods and jobs.
+
+author: OpenShift SRE
+allowedGroups:
+  - SREP
+  - CEE
+  - MCSTierTwo
+rbac:
+  clusterRoleRules:
+    # Permission to read cluster infrastructure for region detection (must be cluster-scoped)
+    - verbs:
+        - "get"
+      apiGroups:
+        - "config.openshift.io"
+      resources:
+        - "infrastructures"
+  roles:
+    # Permissions scoped to openshift-network-diagnostics namespace only
+    - namespace: "openshift-network-diagnostics"
+      rules:
+        # Permissions for jobs - needed to create and manage Kubernetes jobs for verification
+        - verbs:
+            - "get"
+            - "list"
+            - "create"
+            - "delete"
+            - "watch"
+          apiGroups:
+            - "batch"
+          resources:
+            - "jobs"
+        # Permission to read pod logs for debugging verification results
+        - verbs:
+            - "get"
+          apiGroups:
+            - ""
+          resources:
+            - "pods/log"
+envs:
+  - key: "SCRIPT_PARAMETERS"
+    description: "Platform configuration parameters. Use '--hcp' for Hosted Control Plane clusters, '--zero-egress' for HCP zero egress clusters, or '--help' for usage information. Leave empty for AWS Classic or GCP clusters."
+    optional: true
+language: bash
+customerDataAccess: false
