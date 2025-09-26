@@ -60,7 +60,6 @@ check_uncordon(){
 cordon_worker(){
     if oc adm cordon "${WORKER}"; then
         echo "[OK] Node ${WORKER} cordoned successfully"
-        exit 0
     else
         echo "[Error] Something went wrong"
         exit 1
@@ -71,7 +70,6 @@ cordon_worker(){
 uncordon_worker(){
     if oc adm uncordon "${WORKER}"; then
         echo "[OK] Node ${WORKER} uncordoned successfully"
-        exit 0
     else
         echo "[Error] Something went wrong"
         exit 1
@@ -90,7 +88,6 @@ drain_worker(){
         IFS=' ' read -r -a drainparams <<< "${1}"
         if ${DRAIN_CMD} "${drainparams[@]}"; then
             echo "[OK] Node ${WORKER} drained successfully."
-            exit 0
         else
             echo "[Error] Something went wrong."
             exit 1
@@ -102,7 +99,6 @@ drain_worker(){
             echo "Draining node ${WORKER} with no options."
             if ${DRAIN_CMD} ; then
                 echo "[OK] Node ${WORKER} drained successfully."
-                exit 0
             else
                 echo "[Error] Something went wrong."
                 exit 1
@@ -113,7 +109,6 @@ drain_worker(){
             IFS=' ' read -r -a drainparams <<< "${DRAINMODE}"
             if ${DRAIN_CMD} "${drainparams[@]}"; then
                 echo "[OK] Node ${WORKER} drained successfully."
-                exit 0
             else
                 echo "[Error] Something went wrong."
                 exit 1
