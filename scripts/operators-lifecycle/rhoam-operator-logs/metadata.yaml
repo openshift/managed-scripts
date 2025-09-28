@@ -1,28 +1,25 @@
 file: rhoam-operator-logs.sh
 name: rhoam-operator-logs
-shortDescription: Inspect Production resources such as logs, event and managedKafkaAgents for certain namespaces.
+shortDescription: collect logs from Pods in namespaces managed by RHOAM.
 description: |
-  The rhoam-operator-logs.sh script uses oc adm inspect to get a multitude of Production resources including; logs and events for the following namespaces:
-    * redhat-rhoam-operator
-    * redhat-rhoam-cloud-resources-operator
-    * redhat-rhoam-3scale-operator
-    * redhat-rhoam-3scale
-    * redhat-rhoam-rhsso-operator
-    * redhat-rhoam-rhsso
-    * redhat-rhoam-user-sso-operator
-    * redhat-rhoam-user-sso
+  The rhoam-operator-logs.sh script collects logs from Pods in namespaces managed by RHOAM:
+  redhat-rhoam-3scale
+  redhat-rhoam-3scale-operator
+  redhat-rhoam-cloud-resources-operator
+  redhat-rhoam-customer-monitoring
+  redhat-rhoam-marin3r
+  redhat-rhoam-marin3r-operator
+  redhat-rhoam-operator
+  redhat-rhoam-operator-observability
+  redhat-rhoam-rhsso
+  redhat-rhoam-rhsso-operator
+  redhat-rhoam-user-sso
+  redhat-rhoam-user-sso-operator
 author: Valery Mogilevsky
 allowedGroups:
   - SREP
   - CEE
   - LPSRE
   - MCSTierTwo
-envs:
-  - key: 'since'
-    description: "The --since flag is used by the oc adm inspect command. Only return logs newer than a relative duration. Either since can be added or since_time can be added but not both."
-    optional: true
-  - key: 'since_time'
-    description: "The --since-time flag is used by the oc adm inspect command. Only return logs after a specific date. Date is in RFC 3339 format. Either since can be added or since_time can be added but not both."
-    optional: true
 language: bash
 customerDataAccess: true

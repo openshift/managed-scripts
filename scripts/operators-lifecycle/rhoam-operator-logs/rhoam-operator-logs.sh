@@ -1,25 +1,11 @@
 #!/bin/bash
 
 MAIN_LOG_BASENAME="rhoam-logs"
-timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+timestamp=$(date +"%s")
 main_log_dir="${MAIN_LOG_BASENAME}-${timestamp}"
 mkdir -p "$main_log_dir"
 echo "Created main log directory: $main_log_dir"
 
-## === Handle 'since' value and create since file if defined ===
-#if [[ -n ${since+x} ]]; then
-#    since_str=$(date -d "$since" +"%Y-%m-%dT%H:%M:%S" 2>/dev/null || echo "$since")
-#elif [[ -n ${since_time+x} ]]; then
-#    since_str=$(date -d "$since_time" +"%Y-%m-%dT%H:%M:%S" 2>/dev/null || echo "$since_time")
-#else
-#    since_str=""
-#fi
-#
-#if [[ -n "$since_str" ]]; then
-#    since_file="$main_log_dir/since_${since_str//[:]/-}.txt"
-#    echo "$since_str" > "$since_file"
-#    echo "Created since file: $since_file"
-#fi
 
 function create_directory() {
     if [[ -z "$1" ]]; then
@@ -76,7 +62,7 @@ function 3scale_logs(){
   cd ../..
 }
 
-function keycloak_logs(){
+function sso_logs(){
   create_directory "keycloak"
   cd "$main_log_dir/keycloak"
 
@@ -86,10 +72,75 @@ function keycloak_logs(){
   cd ../..
 }
 
-function tar_logdir(){
-    tar -zcf - ./"$main_log_dir"
+
+## Operators logs
+function collect_logs_single_pod() {
+  local logdir="$1"
+  local namespace="$2"
+  local pod_pattern="$3"
+
+  create_directory "$logdir"
+  cd "$main_log_dir/$logdir"
+
+  local pod
+  pod=$(oc get po -n "$namespace" | grep "$pod_pattern" | grep Running | awk '{print $1}' | head -n 1)
+  [ -n "$pod" ] && oc logs "$pod" -n "$namespace" > "$pod.log"
+
+  cd ../..
 }
 
+function rhsso-operator_logs(){
+  collect_logs_single_pod "rhsso-operator" "redhat-rhoam-rhsso-operator" "rhsso-operator"
+}
+function user-sso-operator_logs(){
+  collect_logs_single_pod "user-sso-operator" "redhat-rhoam-user-sso-operator" "rhsso-operator"
+}
+function 3scale-operator_logs() {
+  collect_logs_single_pod "3scale-operator" "redhat-rhoam-3scale-operator" "threescale-operator-controller-manager"
+}
+function cloud-resources-operator_logs() {
+  collect_logs_single_pod "cloud-resources-operator" "redhat-rhoam-cloud-resources-operator" "cloud-resource-operator"
+}
+function customer-monitoring-operator_logs(){
+  collect_logs_single_pod "customer-monitoring-operator" "redhat-rhoam-customer-monitoring" "grafana-deployment"
+}
+
+function marin3r-operator_logs(){
+  create_directory "marin3r-operator"
+  cd "$main_log_dir/marin3r-operator"
+  for value in $(oc get po -n redhat-rhoam-marin3r-operator | grep marin3r-controller | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-marin3r-operator > $value.log ; done
+  cd ../..
+}
+function rhoam-operator-observability_logs(){
+  create_directory "rhoam-operator-observability"
+  cd "$main_log_dir/rhoam-operator-observability"
+  for value in $(oc get po -n redhat-rhoam-operator-observability | grep alertmanager | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-operator-observability > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-operator-observability | grep blackbox-exporter | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-operator-observability > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-operator-observability | grep prometheus-rhoam | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-operator-observability > $value.log ; done
+  cd ../..
+}
+function rhoam-operator_logs(){
+  collect_logs_single_pod "rhoam-operator" "redhat-rhoam-operator" "rhmi-operator"
+}
+
+function operators_logs(){
+  rhsso-operator_logs
+  rhsso-operator_logs
+  marin3r-operator_logs
+  3scale-operator_logs
+  cloud-resources-operator_logs
+  customer-monitoring-operator_logs
+  rhoam-operator-observability_logs
+  rhoam-operator_logs
+}
+
+function tar_logdir(){
+    tar -zcf "$main_log_dir.tar.gz" ./"$main_log_dir"
+}
+
+## main flow
+
 3scale_logs
-keycloak_logs
-#tar_logdir
+sso_logs
+operators_logs
+tar_logdir
