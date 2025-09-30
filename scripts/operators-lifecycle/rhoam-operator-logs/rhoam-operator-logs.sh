@@ -22,54 +22,54 @@ function create_directory() {
 
 function 3scale_logs(){
   create_directory "3scale"
-  cd "$main_log_dir/3scale"
+  cd "$main_log_dir/3scale" || return
 
   # Gather logs, creates a log file based on the pod name
 
   # apicast-production
-  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-production | grep Running| awk '{print $1}'); do oc logs $value -c apicast-production -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-production | grep Running| awk '{print $1}'); do oc logs "$value" -c apicast-production -n redhat-rhoam-3scale > "$value.log" ; done
   # apicast-production envoy-sidecar
-  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-production | grep Running| awk '{print $1}'); do oc logs $value -c envoy-sidecar -n redhat-rhoam-3scale > $value-envoy.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-production | grep Running| awk '{print $1}'); do oc logs "$value" -c envoy-sidecar -n redhat-rhoam-3scale > "$value-envoy.log" ; done
   # apicast-staging
-  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-staging | grep Running| awk '{print $1}'); do oc logs $value -c apicast-staging -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-staging | grep Running| awk '{print $1}'); do oc logs "$value" -c apicast-staging -n redhat-rhoam-3scale > "$value.log" ; done
   # apicast-staging envoy sidecar
-  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-staging | grep Running| awk '{print $1}'); do oc logs $value -c envoy-sidecar -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep apicast-staging | grep Running| awk '{print $1}'); do oc logs "$value" -c envoy-sidecar -n redhat-rhoam-3scale > "$value.log" ; done
 
   # backend-cron
-  for value in $(oc get po -n redhat-rhoam-3scale | grep backend-cron | grep Running| awk '{print $1}'); do oc logs $value -c backend-cron -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep backend-cron | grep Running| awk '{print $1}'); do oc logs "$value" -c backend-cron -n redhat-rhoam-3scale > "$value.log" ; done
   # backend-listener
-  for value in $(oc get po -n redhat-rhoam-3scale | grep backend-listener | grep Running| awk '{print $1}'); do oc logs $value -c backend-listener -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep backend-listener | grep Running| awk '{print $1}'); do oc logs "$value" -c backend-listener -n redhat-rhoam-3scale > "$value.log" ; done
   # backend-worker
-  for value in $(oc get po -n redhat-rhoam-3scale | grep backend-worker | grep Running| awk '{print $1}'); do oc logs $value -c backend-worker -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep backend-worker | grep Running| awk '{print $1}'); do oc logs "$value" -c backend-worker -n redhat-rhoam-3scale > "$value.log" ; done
 
   # system-app
-  for value in $(oc get po -n redhat-rhoam-3scale | grep system-app | grep Running| awk '{print $1}'); do oc logs $value -c system-master -n redhat-rhoam-3scale > $value-system-master.log ; done
-  for value in $(oc get po -n redhat-rhoam-3scale | grep system-app | grep Running| awk '{print $1}'); do oc logs $value -c system-provider -n redhat-rhoam-3scale > $value-system-provider.log ; done
-  for value in $(oc get po -n redhat-rhoam-3scale | grep system-app | grep Running| awk '{print $1}'); do oc logs $value -c system-developer -n redhat-rhoam-3scale > $value-system-developer.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep system-app | grep Running| awk '{print $1}'); do oc logs "$value" -c system-master -n redhat-rhoam-3scale > "$value-system-master.log" ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep system-app | grep Running| awk '{print $1}'); do oc logs "$value" -c system-provider -n redhat-rhoam-3scale > "$value-system-provider.log" ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep system-app | grep Running| awk '{print $1}'); do oc logs "$value" -c system-developer -n redhat-rhoam-3scale > "$value-system-developer.log" ; done
   # system-memcache
-  for value in $(oc get po -n redhat-rhoam-3scale | grep system-memcache | grep Running| awk '{print $1}'); do oc logs $value -c memcache -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep system-memcache | grep Running| awk '{print $1}'); do oc logs "$value" -c memcache -n redhat-rhoam-3scale > "$value.log" ; done
   # system-sidekiq
-  for value in $(oc get po -n redhat-rhoam-3scale | grep system-sidekiq | grep Running| awk '{print $1}'); do oc logs $value -c system-sidekiq -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep system-sidekiq | grep Running| awk '{print $1}'); do oc logs "$value" -c system-sidekiq -n redhat-rhoam-3scale > "$value.log" ; done
   # system-sphinx
-  for value in $(oc get po -n redhat-rhoam-3scale | grep system-sphinx | grep Running| awk '{print $1}'); do oc logs $value -c system-sphinx -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep system-sphinx | grep Running| awk '{print $1}'); do oc logs "$value" -c system-sphinx -n redhat-rhoam-3scale > "$value.log" ; done
 
   # zync
-  for value in $(oc get po -n redhat-rhoam-3scale | grep zync | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep zync | grep Running| awk '{print $1}'); do oc logs "$value" -n redhat-rhoam-3scale > "$value.log" ; done
 
   # marin3r
-  for value in $(oc get po -n redhat-rhoam-3scale | grep marin3r | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-3scale > $value.log ; done
+  for value in $(oc get po -n redhat-rhoam-3scale | grep marin3r | grep Running| awk '{print $1}'); do oc logs "$value" -n redhat-rhoam-3scale > "$value.log" ; done
 
-  cd ../..
+  cd ../.. || return
 }
 
 function sso_logs(){
   create_directory "keycloak"
-  cd "$main_log_dir/keycloak"
+  cd "$main_log_dir/keycloak" || return
 
-  for value in $(oc get po -n redhat-rhoam-rhsso | grep keycloak | grep Running| awk '{print $1}'); do oc logs $value -c keycloak -n redhat-rhoam-rhsso > $value-rhsso.log ; done
-  for value in $(oc get po -n redhat-rhoam-user-sso | grep keycloak | grep Running| awk '{print $1}'); do oc logs $value -c keycloak -n redhat-rhoam-user-sso > $value-user-sso.log ; done
+  for value in $(oc get po -n redhat-rhoam-rhsso | grep keycloak | grep Running| awk '{print $1}'); do oc logs "$value" -c keycloak -n redhat-rhoam-rhsso > "$value-rhsso.log" ; done
+  for value in $(oc get po -n redhat-rhoam-user-sso | grep keycloak | grep Running| awk '{print $1}'); do oc logs "$value" -c keycloak -n redhat-rhoam-user-sso > "$value-user-sso.log" ; done
 
-  cd ../..
+  cd ../.. || return
 }
 
 
@@ -80,13 +80,13 @@ function collect_logs_single_pod() {
   local pod_pattern="$3"
 
   create_directory "$logdir"
-  cd "$main_log_dir/$logdir"
+  cd "$main_log_dir/$logdir" || return
 
   local pod
   pod=$(oc get po -n "$namespace" | grep "$pod_pattern" | grep Running | awk '{print $1}' | head -n 1)
   [ -n "$pod" ] && oc logs "$pod" -n "$namespace" > "$pod.log"
 
-  cd ../..
+  cd ../.. || return
 }
 
 function rhsso-operator_logs(){
@@ -107,17 +107,17 @@ function customer-monitoring-operator_logs(){
 
 function marin3r-operator_logs(){
   create_directory "marin3r-operator"
-  cd "$main_log_dir/marin3r-operator"
-  for value in $(oc get po -n redhat-rhoam-marin3r-operator | grep marin3r-controller | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-marin3r-operator > $value.log ; done
-  cd ../..
+  cd "$main_log_dir/marin3r-operator" || return
+  for value in $(oc get po -n redhat-rhoam-marin3r-operator | grep marin3r-controller | grep Running| awk '{print $1}'); do oc logs "$value" -n redhat-rhoam-marin3r-operator > "$value.log" ; done
+  cd ../.. || return
 }
 function rhoam-operator-observability_logs(){
   create_directory "rhoam-operator-observability"
-  cd "$main_log_dir/rhoam-operator-observability"
-  for value in $(oc get po -n redhat-rhoam-operator-observability | grep alertmanager | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-operator-observability > $value.log ; done
-  for value in $(oc get po -n redhat-rhoam-operator-observability | grep blackbox-exporter | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-operator-observability > $value.log ; done
-  for value in $(oc get po -n redhat-rhoam-operator-observability | grep prometheus-rhoam | grep Running| awk '{print $1}'); do oc logs $value -n redhat-rhoam-operator-observability > $value.log ; done
-  cd ../..
+  cd "$main_log_dir/rhoam-operator-observability" || return
+  for value in $(oc get po -n redhat-rhoam-operator-observability | grep alertmanager | grep Running| awk '{print $1}'); do oc logs "$value" -n redhat-rhoam-operator-observability > "$value.log" ; done
+  for value in $(oc get po -n redhat-rhoam-operator-observability | grep blackbox-exporter | grep Running| awk '{print $1}'); do oc logs "$value" -n redhat-rhoam-operator-observability > "$value.log" ; done
+  for value in $(oc get po -n redhat-rhoam-operator-observability | grep prometheus-rhoam | grep Running| awk '{print $1}'); do oc logs "$value" -n redhat-rhoam-operator-observability > "$value.log" ; done
+  cd ../.. || return
 }
 function rhoam-operator_logs(){
   collect_logs_single_pod "rhoam-operator" "redhat-rhoam-operator" "rhmi-operator"
