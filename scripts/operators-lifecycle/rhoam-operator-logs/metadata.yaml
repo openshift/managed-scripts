@@ -1,0 +1,25 @@
+file: rhoam-operator-logs.sh
+name: rhoam-operator-logs
+shortDescription: collect logs from Pods in namespaces managed by RHOAM.
+description: |
+  The rhoam-operator-logs.sh script collects logs from Pods in namespaces managed by RHOAM:
+  redhat-rhoam-3scale
+  redhat-rhoam-3scale-operator
+  redhat-rhoam-cloud-resources-operator
+  redhat-rhoam-customer-monitoring
+  redhat-rhoam-marin3r
+  redhat-rhoam-marin3r-operator
+  redhat-rhoam-operator
+  redhat-rhoam-operator-observability
+  redhat-rhoam-rhsso
+  redhat-rhoam-rhsso-operator
+  redhat-rhoam-user-sso
+  redhat-rhoam-user-sso-operator
+author: Valery Mogilevsky
+allowedGroups:
+  - SREP
+  - CEE
+  - LPSRE
+  - MCSTierTwo
+language: bash
+customerDataAccess: true
