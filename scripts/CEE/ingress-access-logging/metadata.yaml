@@ -1,0 +1,25 @@
+file: script.sh
+name: ingress-access-logging
+description: Enables/Disables ingress access logging.
+author: alvolkov
+allowedGroups: 
+  - SREP
+  - CEE
+  - LPSRE
+rbac:
+  roles:
+    - namespace: "openshift-ingress-operator"
+      rules:
+        - verbs:
+            - "get"
+            - "patch"
+          apiGroups:
+            - "operator.openshift.io"
+          resources:
+            - "ingresscontrollers"
+envs:          
+  - key: ACCESS_LOGGING
+    description: Enable/Disable toggle for access logging.
+    optional: false
+language: bash
+customerDataAccess: false
