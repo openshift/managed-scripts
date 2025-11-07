@@ -1,5 +1,5 @@
 file: script.sh
-name: osdctl-network-verifier
+name: network-verify
 shortDescription: Runs network egress verification in pod mode using the osdctl binary.
 description: |
   Runs network egress verification using the osdctl binary and Kubernetes jobs in pod mode.
@@ -29,6 +29,12 @@ allowedGroups:
   - SREP
   - CEE
   - MCSTierTwo
+labels:
+  - key: OSD_TYPES
+    description: Compatible cluster types for this script
+    values:
+      - OSD
+      - HyperShift
 rbac:
   clusterRoleRules:
     # Permission to read cluster infrastructure for region detection (must be cluster-scoped)
