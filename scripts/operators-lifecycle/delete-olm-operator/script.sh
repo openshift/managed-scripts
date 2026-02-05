@@ -17,7 +17,19 @@ if [[ "${NAMESPACE}" != openshift-* && "${NAMESPACE}" != redhat-* ]]; then
 	exit "${ERR_INVALID_NS}"
 fi
 
-"$DELETE" || echo "Not going to delete resources"
+if ! $DELETE; then
+	echo "========================================"
+	echo "       DRY-RUN MODE - NO CHANGES        "
+	echo "========================================"
+	echo "This script is running in DRY-RUN mode."
+	echo "NO resources will be deleted."
+	echo ""
+	echo "To execute deletions, re-run with:"
+	echo "  --params NAMESPACE=${NAMESPACE} \\"
+	echo "  --params FORCE=y"
+	echo "========================================"
+	echo ""
+fi
 
 SUBSCRIPTION_SAVED=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -ojson | jq -r 'del(.items[].metadata.annotations."kubectl.kubernetes.io/last-applied-configuration")')
 SUBSCRIPTION=$(oc get subscriptions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{.items[*].metadata.name}')
@@ -41,12 +53,12 @@ if $DELETE; then
     oc delete operatorgroups.operators.coreos.com "${OPERATOR_GROUP}" -n "${NAMESPACE}"
   fi
 else
-  echo "Will delete Subscription: ${SUBSCRIPTION}"
-  echo "Will delete CatalogSource: ${CATALOG_SOURCE}"
-  echo "Will delete OperatorGroup: ${OPERATOR_GROUP}"
+  echo "[DRY-RUN] Would delete Subscription: ${SUBSCRIPTION}"
+  echo "[DRY-RUN] Would delete CatalogSource: ${CATALOG_SOURCE}"
+  echo "[DRY-RUN] Would delete OperatorGroup: ${OPERATOR_GROUP}"
 fi
 
-"${DELETE}" || echo "Will delete CSVs:"
+"${DELETE}" || echo "[DRY-RUN] Would delete the following CSVs:"
 for csv in $(oc get clusterserviceversions.operators.coreos.com -n "${NAMESPACE}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
 do
   if "${DELETE}"; then
@@ -71,4 +83,23 @@ if "${DELETE}"; then
     echo "Recreating OperatorGroup: ${OPERATOR_GROUP}"
     echo "${OPERATOR_GROUP_SAVED}" | oc create -f -
   fi
+fi
+
+echo ""
+if $DELETE; then
+	echo "========================================"
+	echo "    DELETION COMPLETED SUCCESSFULLY     "
+	echo "========================================"
+	echo "All OLM resources have been deleted and recreated."
+	echo "========================================"
+else
+	echo "========================================"
+	echo "       DRY-RUN COMPLETED                "
+	echo "========================================"
+	echo "No resources were deleted."
+	echo ""
+	echo "To execute these deletions, re-run with:"
+	echo "  --params NAMESPACE=${NAMESPACE} \\"
+	echo "  --params FORCE=y"
+	echo "========================================"
 fi
