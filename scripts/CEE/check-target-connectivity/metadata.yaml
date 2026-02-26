@@ -1,0 +1,48 @@
+file: script.sh
+name: check-target-connectivity
+shortDescription: Performs multiple checks to validate target connectivity.
+description: |
+  Performs multiple checks to validate target connectivity. 
+
+  Performed checks:
+  - DNS resolution check via nslookup: $ nslookup "$TARGET"
+  - DNS resolution via Dig: $ dig +short "$TARGET"
+  - ICMP check via ping: $ timeout 10 ping -c 3 "$TARGET"
+  - Routing Check via traceroute: $ timeout 5 traceroute -m 10 -w 1 -q 1 "$TARGET"
+  - Check Target Port is Open via nmap: $ timeout 5 nmap -p "$PORT" "$TARGET" 2>&1 | grep -q "$PORT/tcp open"
+
+  Notes: 
+  - Each check awaits for 5 seconds before starting to minimize impact on the network. 
+
+author: Alex Volkov
+allowedGroups:
+  - SREP
+  - CEE
+rbac:
+  clusterRoleRules:
+  - apiGroups:
+    - ""
+    resources:
+      - "pods"
+      - "pods/exec"
+      - "pods/log"
+    verbs:
+      - "create"
+      - "get"
+      - "delete"
+  - apiGroups:
+      - "security.openshift.io"
+    verbs:
+      - "use"
+    resources:
+      - "securitycontextconstraints"
+envs:
+- key: TARGET
+  description: Target hostname
+  optional: false
+- key: PORT
+  description: Target port
+  optional: false
+
+language: bash
+customerDataAccess: false
