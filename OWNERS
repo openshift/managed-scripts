@@ -16,6 +16,7 @@ reviewers:
 - petrkotas
 - zmird-r
 - typeid
+- gvnnn
 
 approvers:
 - bmeng
@@ -33,3 +34,4 @@ approvers:
 - petrkotas
 - zmird-r
 - typeid
+- gvnnn
