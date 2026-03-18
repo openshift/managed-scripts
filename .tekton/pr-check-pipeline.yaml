@@ -1,0 +1,80 @@
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: managed-scripts-pr-check
+spec:
+  params:
+    - name: SNAPSHOT
+      description: The snapshot to test
+      type: string
+    - name: git-url
+      description: The git repository URL
+      type: string
+      default: "https://github.com/openshift/managed-scripts"
+    - name: revision
+      description: The git revision to check out
+      type: string
+      default: "main"
+  workspaces:
+    - name: workspace
+  tasks:
+    - name: clone-repository
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/konflux-ci/build-definitions
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: task/git-clone/0.1/git-clone.yaml
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.revision)
+      workspaces:
+        - name: output
+          workspace: workspace
+
+    - name: run-pr-check
+      runAfter:
+        - clone-repository
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: pr-check
+            image: registry.access.redhat.com/ubi8/ubi:latest
+            workingDir: $(workspaces.source.path)
+            script: |
+              #!/bin/bash
+              set -e
+
+              echo "Installing dependencies..."
+              dnf install -y git make
+
+              echo "Running app_sre PR check..."
+              chmod +x ./hack/app_sre_pr_check.sh
+              ./hack/app_sre_pr_check.sh
+
+              echo "PR check completed successfully"
+      workspaces:
+        - name: source
+          workspace: workspace
+
+  finally:
+    - name: test-report
+      taskSpec:
+        params:
+          - name: SNAPSHOT
+        steps:
+          - name: report
+            image: registry.access.redhat.com/ubi8/ubi-minimal:latest
+            script: |
+              #!/bin/bash
+              echo "PR check pipeline completed for snapshot: $(params.SNAPSHOT)"
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
