@@ -6,9 +6,6 @@ metadata:
     pipelinesascode.tekton.dev/on-event: "[pull_request]"
     pipelinesascode.tekton.dev/on-target-branch: "[main]"
 spec:
-  params:
-    - name: SNAPSHOT
-      value: '{{SNAPSHOT}}'
   pipelineSpec:
     params:
       - name: SNAPSHOT
@@ -38,48 +35,40 @@ spec:
     - name: run-validation
       runAfter:
         - clone-repository
-      taskRef:
-        resolver: bundles
-        params:
-          - name: name
-            value: bash
-          - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-bash:0.1
-          - name: kind
-            value: task
-      params:
-        - name: SCRIPT
-          value: |
-            #!/bin/bash
-            set -eo pipefail
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: validation
+            image: registry.access.redhat.com/ubi8/ubi:8.10-1770785762
+            workingDir: $(workspaces.source.path)/source
+            script: |
+              #!/bin/bash
+              set -eo pipefail
 
-            cd source
+              echo "Installing dependencies..."
+              yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm >/dev/null 2>&1
+              yum install -y python3.11 python3.11-pip ShellCheck >/dev/null 2>&1
 
-            echo "Installing dependencies..."
-            yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm >/dev/null 2>&1
-            yum install -y python3.11 python3.11-pip ShellCheck >/dev/null 2>&1
+              echo "Installing Python packages..."
+              python3.11 -m pip install -q check-jsonschema pyflakes
 
-            echo "Installing Python packages..."
-            python3.11 -m pip install -q check-jsonschema pyflakes
+              echo "Running metadata validation..."
+              YAML_FILES=$(find scripts -name 'metadata.yaml')
+              if [ -n "$YAML_FILES" ]; then
+                echo "$YAML_FILES" | xargs python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json
+              else
+                echo "No metadata.yaml files found!"
+                exit 1
+              fi
 
-            echo "Running metadata validation..."
-            YAML_FILES=$(find scripts -name 'metadata.yaml')
-            if [ -n "$YAML_FILES" ]; then
-              echo "$YAML_FILES" | xargs check-jsonschema --schemafile hack/metadata.schema.json
-            else
-              echo "No metadata.yaml files found!"
-              exit 1
-            fi
+              echo "Running shellcheck..."
+              find scripts -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154
 
-            echo "Running shellcheck..."
-            find scripts -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154
+              echo "Running pyflakes..."
+              find scripts -name '*.py' -print0 | xargs -0 -n1 pyflakes
 
-            echo "Running pyflakes..."
-            find scripts -name '*.py' -print0 | xargs -0 -n1 pyflakes
-
-            echo "All PR checks passed!"
-        - name: IMAGE
-          value: registry.access.redhat.com/ubi8/ubi:8.10-1770785762
+              echo "All PR checks passed!"
       workspaces:
         - name: source
           workspace: workspace
