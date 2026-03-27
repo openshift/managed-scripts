@@ -53,7 +53,7 @@ spec:
               echo "Running metadata validation..."
               YAML_FILES=$(find scripts -name 'metadata.yaml')
               if [ -n "$YAML_FILES" ]; then
-                echo "$YAML_FILES" | xargs python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json
+                python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json $YAML_FILES
               else
                 echo "No metadata.yaml files found!"
                 exit 1
