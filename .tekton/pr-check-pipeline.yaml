@@ -51,13 +51,7 @@ spec:
               python3.11 -m pip install -q check-jsonschema pyflakes
 
               echo "Running metadata validation..."
-              YAML_FILES=$(find scripts -name 'metadata.yaml')
-              if [ -n "$YAML_FILES" ]; then
-                python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json $YAML_FILES
-              else
-                echo "No metadata.yaml files found!"
-                exit 1
-              fi
+              python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json $(find scripts -name 'metadata.yaml')
 
               echo "Running shellcheck..."
               find scripts -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154
