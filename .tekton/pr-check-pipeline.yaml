@@ -37,7 +37,7 @@ spec:
           - name: source
         steps:
           - name: validation
-            image: registry.access.redhat.com/ubi8/ubi:8.10-1770785762
+            image: registry.access.redhat.com/ubi8/ubi:8.10-1774368078
             workingDir: $(workspaces.source.path)/source
             script: |
               #!/bin/bash
