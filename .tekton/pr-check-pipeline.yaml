@@ -11,7 +11,39 @@ spec:
     workspaces:
       - name: workspace
     tasks:
+    - name: parse-snapshot
+      taskSpec:
+        params:
+          - name: SNAPSHOT
+            type: string
+        results:
+          - name: git-url
+            description: Git repository URL from SNAPSHOT
+          - name: git-revision
+            description: Git revision from SNAPSHOT
+        steps:
+          - name: parse
+            image: registry.access.redhat.com/ubi8/ubi:8.10
+            script: |
+              #!/bin/bash
+              set -ex
+
+              # Install jq
+              yum install -y jq >/dev/null 2>&1
+
+              # Parse SNAPSHOT and write results (tr -d '\n' removes newlines)
+              echo '$(params.SNAPSHOT)' | jq -r '.components[0].source.git.url' | tr -d '\n' > $(results.git-url.path)
+              echo '$(params.SNAPSHOT)' | jq -r '.components[0].source.git.revision' | tr -d '\n' > $(results.git-revision.path)
+
+              # Debug output
+              echo "Git URL: $(cat $(results.git-url.path))"
+              echo "Git revision: $(cat $(results.git-revision.path))"
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
     - name: clone-repository
+      runAfter:
+        - parse-snapshot
       taskRef:
         resolver: bundles
         params:
@@ -23,9 +55,9 @@ spec:
             value: task
       params:
         - name: url
-          value: https://github.com/openshift/managed-scripts
+          value: $(tasks.parse-snapshot.results.git-url)
         - name: revision
-          value: main
+          value: $(tasks.parse-snapshot.results.git-revision)
       workspaces:
         - name: output
           workspace: workspace
@@ -51,13 +83,7 @@ spec:
               python3.11 -m pip install -q check-jsonschema pyflakes
 
               echo "Running metadata validation..."
-              YAML_FILES=$(find scripts -name 'metadata.yaml')
-              if [ -n "$YAML_FILES" ]; then
-                python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json $YAML_FILES
-              else
-                echo "No metadata.yaml files found!"
-                exit 1
-              fi
+              python3.11 -m check_jsonschema --schemafile hack/metadata.schema.json $(find scripts -name 'metadata.yaml')
 
               echo "Running shellcheck..."
               find scripts -name '*.sh' -print0 | xargs -0 -n1 shellcheck -e SC2154
