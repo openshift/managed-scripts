@@ -139,7 +139,7 @@ RUN export OSDCTL_LINUX_X86_TARBALL=$(cat sha256sum.txt | grep "Linux_x86_64" | 
 RUN sha256sum --check --ignore-missing sha256sum.txt
 
 # Extract the specific osdctl tarball and move the validated osdctl binary to /out
-RUN tar -xzf $(cat tarball_name.txt)
+RUN tar --no-same-owner -xzf $(cat tarball_name.txt)
 RUN mv osdctl /out/osdctl
 RUN chmod +x /out/osdctl
 
