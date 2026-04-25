@@ -52,3 +52,4 @@ Once every 3 weeks.
 
 In case you have changes that have immediate impact and would need an immediate promotion, please reach out to:
 Managed-scripts team (alias : @managed-scripts) in #sd-ims-backplane slack channel 
+
