@@ -9,6 +9,18 @@ then
     exit 1
 fi
 
+# Validate NODE format
+if [[ ! "$NODE" =~ ^[a-z0-9.-]+$ ]]; then
+    echo "NODE contains invalid characters" >&2
+    exit 1
+fi
+
+# Validate INTERFACE format if provided
+if [[ -n "$INTERFACE" && ! "$INTERFACE" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
+    echo "INTERFACE contains invalid characters" >&2
+    exit 1
+fi
+
 #VARS
 NS="openshift-backplane-managed-scripts"
 OUTPUTFILE="/tmp/capture-${NODE}.pcap"
@@ -20,9 +32,8 @@ FTP_HOST="sftp.access.redhat.com"
 SFTP_OPTIONS="-o BatchMode=no -o StrictHostKeyChecking=no -b"
 
 ALL_NODES=$(oc get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
-if [[ ! "${ALL_NODES[*]}" =~ ${NODE} ]]
-then
-    echo -e "There is no node with name ${NODE} in this cluster" >&2
+if ! echo "${ALL_NODES}" | grep -qxF "${NODE}"; then
+    echo "There is no node with name ${NODE} in this cluster" >&2
     exit 1
 fi
 
@@ -51,7 +62,7 @@ oc -n $NS get secret "${SECRET_NAME}" 1>/dev/null
 
 #Create the capture pod
 # shellcheck disable=SC1039
-oc create -f -  >/dev/null 2>&1 <<EOF
+cat <<EOF | FILTERS="${FILTERS:-}" yq '(.spec.initContainers[0].env[] | select(.name == "FILTERS")).value = strenv(FILTERS)' | oc create -f - >/dev/null 2>&1
 apiVersion: v1
 kind: Pod
 metadata:
@@ -77,9 +88,12 @@ spec:
 
       # https://stackoverflow.com/questions/25731643/how-to-schedule-tcpdump-to-run-for-a-specific-period-of-time
       # tcpdump -G just hangs if there is no traffic (so use safer timeout command)
-      timeout --preserve-status ${TIME} tcpdump -W 1 -w ${OUTPUTFILE} -i ${INTERFACE} -nn -s0 ${FILTERS} 1> /dev/null
+      timeout --preserve-status ${TIME} tcpdump -W 1 -w ${OUTPUTFILE} -i ${INTERFACE} -nn -s0 "\${FILTERS}" 1> /dev/null
 
       tar -czf /home/upload/${SFTP_FILENAME} ${OUTPUTFILE}
+    env:
+    - name: FILTERS
+      value: ""
     volumeMounts:
     - mountPath: /home/upload
       name: pcap-upload-volume
