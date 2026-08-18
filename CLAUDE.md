@@ -16,18 +16,24 @@ This is the OpenShift Dedicated managed-scripts repository, containing scripts e
 - `make pyflakes` - Run pyflakes on all .py files
 
 ### Testing with Backplane
-Scripts are tested using the Backplane CLI:
+The `testjob create`, `get`, and `logs` subcommands are deprecated. Use `ocm backplane testjob render` to generate Kubernetes YAML (ServiceAccount, RBAC, and Pod) locally, then apply it with `oc` on a non-production cluster where you have `cluster-admin` access:
 ```bash
-# Connect to stage environment
-ocm backplane config set url https://api.stage.backplane.openshift.com
-ocm backplane login <stage-cluster-id>
+# Log in to a non-production cluster with cluster-admin (normal IDP login; no backplane login needed)
+oc login <cluster-api-url>
 
-# Test a script
-ocm backplane testjob create [-p var1=val1]
+# Render the test job YAML from the script directory (contains metadata.yaml + the script)
+cd scripts/CEE/new-script
+ocm backplane testjob render [-p var1=val1] > test-job.yaml
 
-# Check status and logs
-ocm backplane testjob get <job-id>
-ocm backplane testjob logs <job-id>
+# Review, then apply
+oc apply -f test-job.yaml
+
+# Watch / inspect with standard oc
+oc -n openshift-backplane-managed-scripts get pods
+oc -n openshift-backplane-managed-scripts logs <pod-name>
+
+# Clean up
+oc delete -f test-job.yaml
 ```
 
 ## Architecture and Structure

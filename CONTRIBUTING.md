@@ -60,44 +60,44 @@ All pre-existing scripts can be found [here](https://github.com/openshift/manage
 
 ## Testing the Script
 
-1. **Ensure You Are Using the Stage API**
+The `ocm backplane testjob create`, `get`, and `logs` commands are deprecated. Use `ocm backplane testjob render` instead, which generates the Kubernetes YAML (ServiceAccount, RBAC, and Pod) for your draft script locally — no backplane API call is made. You then apply it directly with `oc` on a non-production cluster where you have `cluster-admin` access, and use plain `oc` to watch, inspect, and clean up.
+
+1. **Log In to a Non-Production Cluster**
+   - Use a normal IDP login to a non-production cluster where you have `cluster-admin` access (no `ocm backplane login` needed).
    ```sh
-   ocm backplane config set url https://api.stage.backplane.openshift.com
-   ocm backplane config get url
-   ```
-   Output:
-   ```
-   url: https://api.stage.backplane.openshift.com
+   oc login <cluster-api-url>
    ```
 
-2. **Connect to a Stage Cluster**
+2. **Render the Test Job YAML**
+   - Run this from the script directory (which contains `metadata.yaml` and the script).
    ```sh
-   ocm backplane login <stage-cluster-id>
+   cd scripts/CEE/new-script
+   ocm backplane testjob render [-p var1=val1] > test-job.yaml
    ```
+   Useful flags:
+   - `-p`/`--params` - script parameter, repeatable.
+   - `-s`/`--source-dir` - script source directory (defaults to the current directory).
+   - `-i`/`--base-image-override` - override the base image (defaults to the latest managed-scripts image resolved from GitHub).
+   - `-o`/`--output` - write to a file instead of stdout.
 
-3. **Run a Test Job**
+3. **Review and Apply the YAML**
    ```sh
-   ocm backplane testjob create [-p var1=val1]
-   ```
-   Example Output:
-   ```
-   Test job openshift-job-dev-7m755 created successfully    
-   Run "ocm backplane testjob get openshift-job-dev-7m755" for details
-   Run "ocm backplane testjob logs openshift-job-dev-7m755" for job logs
+   oc apply -f test-job.yaml
    ```
 
 4. **Check Job Status**
    ```sh
-   ocm backplane testjob get openshift-job-dev-7m755
-   ```
-   Example Output:
-   ```
-   TestId: openshift-job-dev-7m755, Status: Succeeded
+   oc -n openshift-backplane-managed-scripts get pods
    ```
 
 5. **View Logs**
    ```sh
-   ocm backplane testjob logs openshift-job-dev-7m755
+   oc -n openshift-backplane-managed-scripts logs <pod-name>
+   ```
+
+6. **Clean Up**
+   ```sh
+   oc delete -f test-job.yaml
    ```
 
 ## Deploying the Script to Production
