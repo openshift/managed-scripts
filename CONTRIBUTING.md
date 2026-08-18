@@ -20,7 +20,7 @@ Before creating, testing, or deploying new scripts, ensure you have the followin
 1. VPN connectivity
 2. [OCM CLI Binary](https://github.com/openshift-online/ocm-cli)
 3. [Backplane CLI Binary](https://source.redhat.com/groups/public/sre/wiki/setup_backplane_cli)
-4. Access to the [Stage API](https://api.stage.backplane.openshift.com)
+4. A non-production cluster where you have `cluster-admin` access to test on
 
 All pre-existing scripts can be found [here](https://github.com/openshift/managed-scripts/tree/main/scripts) for reference.
 
@@ -64,15 +64,20 @@ The `ocm backplane testjob create`, `get`, and `logs` commands are deprecated. U
 
 1. **Log In to a Non-Production Cluster**
    - Use a normal IDP login to a non-production cluster where you have `cluster-admin` access (no `ocm backplane login` needed).
+   - Replace `https://api.example.openshift.com:6443` with your cluster's API URL.
    ```sh
-   oc login <cluster-api-url>
+   oc login https://api.example.openshift.com:6443
    ```
 
 2. **Render the Test Job YAML**
    - Run this from the script directory (which contains `metadata.yaml` and the script).
    ```sh
    cd scripts/CEE/new-script
-   ocm backplane testjob render [-p var1=val1] > test-job.yaml
+   ocm backplane testjob render > test-job.yaml
+   ```
+   - If your script requires parameters, pass them with `-p` (repeatable):
+   ```sh
+   ocm backplane testjob render -p var1=value > test-job.yaml
    ```
    Useful flags:
    - `-p`/`--params` - script parameter, repeatable.
@@ -91,8 +96,9 @@ The `ocm backplane testjob create`, `get`, and `logs` commands are deprecated. U
    ```
 
 5. **View Logs**
+   - Replace `example-test-job-pod` with the pod name from the previous step.
    ```sh
-   oc -n openshift-backplane-managed-scripts logs <pod-name>
+   oc -n openshift-backplane-managed-scripts logs example-test-job-pod
    ```
 
 6. **Clean Up**

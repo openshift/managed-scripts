@@ -19,18 +19,20 @@ This is the OpenShift Dedicated managed-scripts repository, containing scripts e
 The `testjob create`, `get`, and `logs` subcommands are deprecated. Use `ocm backplane testjob render` to generate Kubernetes YAML (ServiceAccount, RBAC, and Pod) locally, then apply it with `oc` on a non-production cluster where you have `cluster-admin` access:
 ```bash
 # Log in to a non-production cluster with cluster-admin (normal IDP login; no backplane login needed)
-oc login <cluster-api-url>
+# Replace the API URL with your cluster's.
+oc login https://api.example.openshift.com:6443
 
 # Render the test job YAML from the script directory (contains metadata.yaml + the script)
+# If the script requires parameters, add them with -p (repeatable), e.g. -p var1=value
 cd scripts/CEE/new-script
-ocm backplane testjob render [-p var1=val1] > test-job.yaml
+ocm backplane testjob render > test-job.yaml
 
 # Review, then apply
 oc apply -f test-job.yaml
 
-# Watch / inspect with standard oc
+# Watch / inspect with standard oc (replace the pod name with the one from the previous step)
 oc -n openshift-backplane-managed-scripts get pods
-oc -n openshift-backplane-managed-scripts logs <pod-name>
+oc -n openshift-backplane-managed-scripts logs example-test-job-pod
 
 # Clean up
 oc delete -f test-job.yaml
