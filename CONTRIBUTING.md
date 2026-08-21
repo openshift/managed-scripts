@@ -20,7 +20,7 @@ Before creating, testing, or deploying new scripts, ensure you have the followin
 1. VPN connectivity
 2. [OCM CLI Binary](https://github.com/openshift-online/ocm-cli)
 3. [Backplane CLI Binary](https://source.redhat.com/groups/public/sre/wiki/setup_backplane_cli)
-4. Access to the [Stage API](https://api.stage.backplane.openshift.com)
+4. A non-production cluster where you have `cluster-admin` access to test on
 
 All pre-existing scripts can be found [here](https://github.com/openshift/managed-scripts/tree/main/scripts) for reference.
 
@@ -60,44 +60,50 @@ All pre-existing scripts can be found [here](https://github.com/openshift/manage
 
 ## Testing the Script
 
-1. **Ensure You Are Using the Stage API**
+The `ocm backplane testjob create`, `get`, and `logs` commands are deprecated. Use `ocm backplane testjob render` instead, which generates the Kubernetes YAML (ServiceAccount, RBAC, and Pod) for your draft script locally — no backplane API call is made. You then apply it directly with `oc` on a non-production cluster where you have `cluster-admin` access, and use plain `oc` to watch, inspect, and clean up.
+
+1. **Log In to a Non-Production Cluster**
+   - Use a normal IDP login to a non-production cluster where you have `cluster-admin` access (no `ocm backplane login` needed).
+   - Replace `https://api.example.openshift.com:6443` with your cluster's API URL.
    ```sh
-   ocm backplane config set url https://api.stage.backplane.openshift.com
-   ocm backplane config get url
-   ```
-   Output:
-   ```
-   url: https://api.stage.backplane.openshift.com
+   oc login https://api.example.openshift.com:6443
    ```
 
-2. **Connect to a Stage Cluster**
+2. **Render the Test Job YAML**
+   - Run this from the script directory (which contains `metadata.yaml` and the script).
    ```sh
-   ocm backplane login <stage-cluster-id>
+   cd scripts/CEE/new-script
+   ocm backplane testjob render > test-job.yaml
    ```
+   - If your script requires parameters, pass them with `-p` (repeatable):
+   ```sh
+   ocm backplane testjob render -p var1=value > test-job.yaml
+   ```
+   Useful flags:
+   - `-p`/`--params` - script parameter, repeatable.
+   - `-s`/`--source-dir` - script source directory (defaults to the current directory).
+   - `-i`/`--base-image-override` - override the base image (defaults to the latest managed-scripts image resolved from GitHub).
+   - `-o`/`--output` - write to a file instead of stdout.
 
-3. **Run a Test Job**
+3. **Review and Apply the YAML**
    ```sh
-   ocm backplane testjob create [-p var1=val1]
-   ```
-   Example Output:
-   ```
-   Test job openshift-job-dev-7m755 created successfully    
-   Run "ocm backplane testjob get openshift-job-dev-7m755" for details
-   Run "ocm backplane testjob logs openshift-job-dev-7m755" for job logs
+   oc apply -f test-job.yaml
    ```
 
 4. **Check Job Status**
    ```sh
-   ocm backplane testjob get openshift-job-dev-7m755
-   ```
-   Example Output:
-   ```
-   TestId: openshift-job-dev-7m755, Status: Succeeded
+   oc -n openshift-backplane-managed-scripts get pods
    ```
 
 5. **View Logs**
+   - Replace `example-test-job-pod` with the pod name from the previous step.
    ```sh
-   ocm backplane testjob logs openshift-job-dev-7m755
+   oc -n openshift-backplane-managed-scripts logs example-test-job-pod
+   ```
+
+6. **Clean Up**
+   ```sh
+   oc delete -f test-job.yaml
    ```
 
 ## Deploying the Script to Production
