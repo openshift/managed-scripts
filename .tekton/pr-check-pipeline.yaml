@@ -23,7 +23,7 @@ spec:
             description: Git revision from SNAPSHOT
         steps:
           - name: parse
-            image: registry.access.redhat.com/ubi8/ubi:8.10-1786322297@sha256:c3c7184394ffb0224e2361a8ce78193aa04601375eae638e66083a8d45afa9b3
+            image: registry.access.redhat.com/ubi8/ubi:8.10-1790238698@sha256:45efff79b3a5b35b21f8df8ac108b8ac615c27396d1448195e7ed01ebbf0a903
             script: |
               #!/bin/bash
               set -ex
@@ -69,7 +69,7 @@ spec:
           - name: source
         steps:
           - name: validation
-            image: registry.access.redhat.com/ubi8/ubi:8.10-1786322297@sha256:c3c7184394ffb0224e2361a8ce78193aa04601375eae638e66083a8d45afa9b3
+            image: registry.access.redhat.com/ubi8/ubi:8.10-1790238698@sha256:45efff79b3a5b35b21f8df8ac108b8ac615c27396d1448195e7ed01ebbf0a903
             workingDir: $(workspaces.source.path)/source
             script: |
               #!/bin/bash
