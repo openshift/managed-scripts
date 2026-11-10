@@ -37,10 +37,18 @@ function sftp_upload() {
     token=$(jq -r '.token' <<< "${creds}")
 
     ## Upload the file
-    sshpass -p "${token}" sftp -o "UserKnownHostsFile=${TEMP_DIR}/.ssh/known_hosts" "${username}"@"${FTP_HOST}" << EOSSHPASS
+    ## OpenSSH >= 8.4: SSH_ASKPASS_REQUIRE=force makes sftp use the askpass
+    ## helper for password auth without a tty (replaces sshpass).
+    # shellcheck disable=SC2016  # $SFTP_TOKEN must expand when the askpass runs, not here
+    ASKPASS_SCRIPT=$(mktemp)
+    export SFTP_TOKEN="${token}"
+    export SSH_ASKPASS_REQUIRE=force
+    sftp -o "UserKnownHostsFile=${TEMP_DIR}/.ssh/known_hosts" "${username}"@"${FTP_HOST}" << EOSSHPASS
         put $1 $2
         bye
 EOSSHPASS
+    unset SSH_ASKPASS SSH_ASKPASS_REQUIRE SFTP_TOKEN
+    rm -f "${ASKPASS_SCRIPT}"
 
     # Clean up the temporary directory
     rm -rf "${TEMP_DIR}"
