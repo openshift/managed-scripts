@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.10-1779891713 AS build-stage0
+FROM registry.access.redhat.com/ubi9/ubi:9.8-1794186345 AS build-stage0
 
 ARG OC_VERSION="stable-4.15"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
@@ -146,9 +146,9 @@ RUN chmod +x /out/osdctl
 # Make binaries executable
 RUN chmod -R +x /out
 
-FROM registry.access.redhat.com/ubi8/ubi:8.10-1779891713
+FROM registry.access.redhat.com/ubi9/ubi:9.8-1794186345
 RUN  yum -y install \
-     python3.11 python3.11-pip jq openssh-clients sshpass \
+     python3.11 python3.11-pip jq openssh-clients \
      && yum clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
 COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
@@ -161,8 +161,8 @@ COPY --from=build-stage0 /out/osdctl /usr/local/bin
 COPY scripts /managed-scripts
 
 # Install python packages
-RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install tabulate openshift-client check-jsonschema --user
+RUN python3.11 -m pip install --upgrade pip
+RUN python3.11 -m pip install tabulate openshift-client check-jsonschema --user
 
 # Validate
 RUN oc completion bash > /etc/bash_completion.d/oc

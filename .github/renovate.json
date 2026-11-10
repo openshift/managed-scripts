@@ -1,4 +1,23 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>openshift/boilerplate//.github/renovate.json"]
+  "extends": ["github>openshift/boilerplate//.github/renovate.json"],
+  "dockerfile": {
+    "includePaths": [
+      "Dockerfile",
+      "Dockerfile.hummingbird"
+    ],
+    "packageRules": [
+      {
+        "description": "Review Hummingbird base digest updates before merging",
+        "matchPackageNames": [
+          "registry.access.redhat.com/hi/python"
+        ],
+        "matchUpdateTypes": [
+          "digest"
+        ],
+        "automerge": false,
+        "platformAutomerge": false
+      }
+    ]
+  }
 }
