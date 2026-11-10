@@ -1,0 +1,181 @@
+# Hardened (Project Hummingbird) build-only variant of the production Dockerfile.
+# The production image (Dockerfile) is unchanged; this file builds a parallel
+# image on Red Hat Hardened Images bases. Do NOT parameterize the base images
+# via ARG — Renovate/MintMaker can only pin digest updates on literal FROM lines.
+
+FROM registry.access.redhat.com/ubi8/ubi:8.10-1779891713 AS build-stage0
+
+ARG OC_VERSION="stable-4.15"
+ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
+
+# AWS cli args and env variables
+# Replace AWS client zipfile with specific file to pin to a specific version
+# (eg: "awscli-exe-linux-x86_64-2.0.30.zip")
+ARG AWSCLI_VERSION="awscli-exe-linux-x86_64.zip"
+ENV AWSCLI_URL="https://awscli.amazonaws.com/${AWSCLI_VERSION}"
+
+# install tools needed for installation
+RUN yum install -y unzip git make gcc
+
+# Directory for the extracted binary
+RUN mkdir -p /out
+
+# Install the latest OC Binary from the mirror and scripts
+RUN mkdir /oc
+WORKDIR /oc
+
+# Download the checksum
+RUN curl -sSLf ${OC_URL}/sha256sum.txt -o sha256sum.txt
+
+# Download the binary x86 tarball
+RUN export OC_LINUX_X86_CLIENT=$(cat sha256sum.txt | grep openshift-client-linux | grep -v arm64 | awk '{print $2; exit}') && \
+    curl -sSLf -O ${OC_URL}/${OC_LINUX_X86_CLIENT}
+
+# Check the tarball and checksum match
+RUN sha256sum --check --ignore-missing sha256sum.txt
+RUN tar --extract --gunzip --no-same-owner --directory /out oc --file *.tar.gz
+
+### Temporary solution to integrate the oc-hc
+ENV OC_HC_TAR_URL="https://github.com/givaldolins/openshift-cluster-health-check/releases/download/v0.1.3/oc-hc-v0.1.3-linux-amd64.tar.gz"
+ENV OC_HC_MD5="e75e9a9801601e53d7ad555b498e7c08"
+RUN mkdir -p /oc-hc
+WORKDIR /oc-hc
+
+# Download the binary and md5
+RUN curl -sSLf -O $OC_HC_TAR_URL
+
+# Check md5sum for the downloaded tar
+RUN md5sum -b oc-hc-v0.1.3-linux-amd64.tar.gz | grep $OC_HC_MD5
+
+# Extract the binary
+RUN tar xzf oc-hc-v0.1.3-linux-amd64.tar.gz --directory /out
+
+
+### Attach yq binary into the image
+ENV YQ_URL="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64.tar.gz"
+ENV YQ_CHECKSUMS="https://github.com/mikefarah/yq/releases/latest/download/checksums"
+ENV YQ_CHECKSUM_TOOL="https://github.com/mikefarah/yq/releases/latest/download/extract-checksum.sh"
+ENV YQ_CHECKSUMS_HASHES_ORDER="https://github.com/mikefarah/yq/releases/latest/download/checksums_hashes_order"
+# ENV YQ_MD5="7e8bff5d0342f0090e866825cc75d2fc"
+RUN mkdir -p /yq
+WORKDIR /yq
+
+# Download the yq release
+RUN curl -sSLf -O $YQ_URL
+
+# Extract the md5sum for the release
+RUN curl -sSLf -O $YQ_CHECKSUM_TOOL
+RUN curl -sSLf -O $YQ_CHECKSUMS
+RUN curl -sSLf -O $YQ_CHECKSUMS_HASHES_ORDER
+
+# Check md5sum for the downloaded tar
+RUN sh extract-checksum.sh MD5 yq_linux_amd64.tar.gz | awk '{ print $2 " " $1}' | md5sum -c -
+
+# Extract the yq binary
+RUN tar xzf yq_linux_amd64.tar.gz --directory /out
+
+# Install aws-cli
+RUN mkdir -p /aws/bin
+WORKDIR /aws
+# Download the awscli zip file
+RUN curl -sSLf $AWSCLI_URL -o awscliv2.zip
+# Extract the awscli zip
+RUN unzip awscliv2.zip
+# Install the libs to the usual location, so the symlinks will be right
+# The final image build will copy them later
+# Install the bins to the /aws/bin dir so the final image build copy is easier
+RUN ./aws/install -b /aws/bin
+
+## Attach ocm binary into the image
+# Setting ENV variables
+ENV OCM_URL="https://github.com/openshift-online/ocm-cli/releases/latest/download/ocm-linux-amd64"
+ENV OCM_SHA256_CHECKSUM_URL="https://github.com/openshift-online/ocm-cli/releases/latest/download/ocm-linux-amd64.sha256"
+
+# Creating a working directory
+RUN mkdir -p /ocm-cli
+WORKDIR /ocm-cli
+
+# Downloading the ocm binary
+RUN curl -sSLf -O $OCM_URL
+
+# Checking the SHA-256 hash
+RUN curl -sSLf $OCM_SHA256_CHECKSUM_URL | sha256sum -c -
+
+# Moving the validated ocm binary to /out and make it executable
+RUN mv ocm-linux-amd64 /out/ocm
+RUN chmod +x /out/ocm
+
+# Install golang with specific version
+# The go is used to build the hypershift binary, so make it match with the one in hypershift repo
+ENV HYPERSHIFT_GO_MOD="https://raw.githubusercontent.com/openshift/hypershift/main/go.mod"
+RUN echo "export GO_VERSION=$(curl -sSLf $HYPERSHIFT_GO_MOD | grep -E "go\s+[0-9]+\.[0-9]+\.[0-9]+" | awk -F ' ' '{print $2}')" > /out/envfile
+RUN . /out/envfile ; curl -sSLf https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz -o go$GO_VERSION.linux-amd64.tar.gz
+RUN . /out/envfile ; rm -rf /usr/local/go && tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz
+ENV PATH=$PATH:/usr/local/go/bin
+RUN go version
+
+# Attach hypershift binary into the image
+# TODO: Currently there is no pre-build hypershift bin yet, once
+# it is ready we need to update this to fetch the released bin directly
+# Fetch the source code
+RUN mkdir -p /hypershift
+WORKDIR /hypershift
+RUN git clone https://github.com/openshift/hypershift.git /hypershift
+# Build binary
+RUN OUT_DIR=/out make hypershift
+
+## Attach osdctl binary into the image
+# Setting ENV variables
+ENV OSDCTL_BASE_URL="https://github.com/openshift/osdctl/releases/latest/download"
+
+# Creating a working directory
+RUN mkdir -p /osdctl
+WORKDIR /osdctl
+
+# Download the checksum file
+RUN curl -sSLf ${OSDCTL_BASE_URL}/sha256sum.txt -o sha256sum.txt
+
+# Extract the Linux x86_64 filename and download the binary
+RUN export OSDCTL_LINUX_X86_TARBALL=$(cat sha256sum.txt | grep "Linux_x86_64" | awk '{print $2; exit}') && \
+    curl -sSLf -O ${OSDCTL_BASE_URL}/${OSDCTL_LINUX_X86_TARBALL} && \
+    echo ${OSDCTL_LINUX_X86_TARBALL} > tarball_name.txt
+
+# Check the tarball and checksum match
+RUN sha256sum --check --ignore-missing sha256sum.txt
+
+# Extract the specific osdctl tarball and move the validated osdctl binary to /out
+RUN tar --no-same-owner -xzf $(cat tarball_name.txt)
+RUN mv osdctl /out/osdctl
+RUN chmod +x /out/osdctl
+
+# Make binaries executable
+RUN chmod -R +x /out
+
+# Hummingbird runtime stage. Per repo decision the final runtime uses the
+# hi/python builder variant directly (provides python3, dnf and bash; the
+# scripts are bash-driven). Builder variants default to a non-root user, so
+# switch to root for package installation.
+FROM registry.access.redhat.com/hi/python:3.15-builder@sha256:90aa0b207095909a8c846df783ef3d2a0b701edb91cfaac3bfcca34071235770 AS runner
+USER root
+RUN dnf install -y jq openssh-clients && dnf clean all
+COPY --from=build-stage0 /out/oc  /usr/local/bin
+COPY --from=build-stage0 /out/oc-hc  /usr/local/bin
+COPY --from=build-stage0 /out/yq_linux_amd64  /usr/local/bin/yq
+COPY --from=build-stage0 /aws/bin/  /usr/local/bin
+COPY --from=build-stage0 /usr/local/aws-cli /usr/local/aws-cli
+COPY --from=build-stage0 /out/hypershift /usr/local/bin
+COPY --from=build-stage0 /out/ocm /usr/local/bin
+COPY --from=build-stage0 /out/osdctl /usr/local/bin
+COPY scripts /managed-scripts
+
+# Install python packages (same set as the production image)
+RUN python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir tabulate openshift-client check-jsonschema
+
+# Validate
+RUN aws --version && \
+    jq --version && \
+    ssh -V && \
+    python3 -c "import tabulate, openshift_client, check_jsonschema"
+
+WORKDIR /root
