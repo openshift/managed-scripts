@@ -155,7 +155,7 @@ RUN chmod -R +x /out
 # hi/python builder variant directly (provides python3, dnf and bash; the
 # scripts are bash-driven). Builder variants default to a non-root user, so
 # switch to root for package installation.
-FROM registry.access.redhat.com/hi/python:3.15-builder@sha256:90aa0b207095909a8c846df783ef3d2a0b701edb91cfaac3bfcca34071235770 AS runner
+FROM registry.access.redhat.com/hi/python:3.15-builder@sha256:4987ca44cedb116115b52cb82bdbc3d582a5a05ae98bf2350c8308aeda63da2c AS runner
 USER root
 RUN dnf install -y jq openssh-clients && dnf clean all
 COPY --from=build-stage0 /out/oc  /usr/local/bin
