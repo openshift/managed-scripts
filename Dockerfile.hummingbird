@@ -3,7 +3,7 @@
 # image on Red Hat Hardened Images bases. Do NOT parameterize the base images
 # via ARG — Renovate/MintMaker can only pin digest updates on literal FROM lines.
 
-FROM registry.access.redhat.com/ubi8/ubi:8.10-1779891713 AS build-stage0
+FROM registry.access.redhat.com/ubi8/ubi:8.10-1779891713@sha256:f2f9d7f22d8082e9b78d3b25dbc9c85300a335f8f9c0186352df2cf364bacb6b AS build-stage0
 
 ARG OC_VERSION="stable-4.15"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
