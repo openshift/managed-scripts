@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.8-1794186345 AS build-stage0
+FROM registry.access.redhat.com/ubi9/ubi:9.9-1795197514@sha256:6636b79fba9e5044360366f189333c30b5ce528efd92c40c68b074592b971fcd AS build-stage0
 
 ARG OC_VERSION="stable-4.15"
 ENV OC_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC_VERSION}"
@@ -146,7 +146,7 @@ RUN chmod +x /out/osdctl
 # Make binaries executable
 RUN chmod -R +x /out
 
-FROM registry.access.redhat.com/ubi9/ubi:9.8-1794186345
+FROM registry.access.redhat.com/ubi9/ubi:9.9-1795197514@sha256:6636b79fba9e5044360366f189333c30b5ce528efd92c40c68b074592b971fcd
 RUN  yum -y install \
      python3.11 python3.11-pip jq openssh-clients \
      && yum clean all
