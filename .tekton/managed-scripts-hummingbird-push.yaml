@@ -11,7 +11,7 @@ metadata:
       == "main"
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: managed-scripts-hummingbird
+    appstudio.openshift.io/application: managed-scripts
     appstudio.openshift.io/component: managed-scripts-hummingbird
     pipelines.appstudio.openshift.io/type: build
   name: managed-scripts-hummingbird-on-push
@@ -596,7 +596,7 @@ spec:
     - name: netrc
       optional: true
   taskRunTemplate:
-    serviceAccountName: build-pipeline-managed-scripts
+    serviceAccountName: build-pipeline-managed-scripts-hummingbird
   workspaces:
   - name: workspace
     volumeClaimTemplate:
