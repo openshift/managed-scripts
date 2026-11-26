@@ -23,7 +23,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rosa-tenant/managed-scripts:{{revision}}-hummingbird
+    value: quay.io/redhat-user-workloads/rosa-tenant/managed-scripts-hummingbird:{{revision}}
   - name: dockerfile
     value: Dockerfile.hummingbird
   - name: path-context
